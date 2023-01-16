@@ -1,0 +1,61 @@
+#pragma once
+#include <cstdint>
+#include "../Serializers/Serializable.h"
+
+namespace L2Bot::Domain::ValueObjects
+{
+	class InventoryInfo : public Serializers::Serializable
+	{
+	public:
+		const bool IsOverloaded() const
+		{
+			return m_Weight >= m_MaxWeight;
+		}
+		const uint16_t GetMaxWeight() const
+		{
+			return m_MaxWeight;
+		}
+		const uint16_t GetWeight() const
+		{
+			return m_Weight;
+		}
+		const uint16_t GetSlots() const
+		{
+			return m_Slots;
+		}
+		const bool IsEqual(const InventoryInfo* other) const
+		{
+			return m_MaxWeight == other->m_MaxWeight &&
+				m_Weight == other->m_Weight &&
+				m_Slots == other->m_Slots;
+		}
+
+		const std::vector<Serializers::Node> BuildSerializationNodes() const override
+		{
+			return std::vector<Serializers::Node>
+			{
+				{ "maxWeight", std::to_string(m_MaxWeight) },
+				{ "weight", std::to_string(m_Weight) },
+				{ "slots", std::to_string(m_Slots) }
+			};
+		}
+
+		InventoryInfo(
+			const uint16_t maxWeight,
+			const uint16_t weight,
+			const uint16_t slots
+		) :
+			m_MaxWeight(maxWeight),
+			m_Weight(weight),
+			m_Slots(slots)
+		{
+		}
+
+		InventoryInfo() = default;
+		virtual ~InventoryInfo() = default;
+	private:
+		uint16_t m_MaxWeight = 0;
+		uint16_t m_Weight = 0;
+		uint16_t m_Slots = 0;
+	};
+}
