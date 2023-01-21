@@ -38,7 +38,7 @@ namespace Interlude
 
 	User* NetworkHandlerWrapper::GetHero() const
 	{
-		const auto creatures = GetAllObjects<User*>(0.1f, [this](float_t radius, int32_t prevId) {
+		const auto creatures = FindAllObjects<User*>(0.1f, [this](float_t radius, int32_t prevId) {
 			return GetNextCreature(radius, prevId);
 		});
 

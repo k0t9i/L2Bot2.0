@@ -4,7 +4,6 @@
 #include <string>
 
 #include "Services/WorldHandler.h"
-#include "Domain/Repositories/SkillRepositoryInterface.h"
 #include "Serializers/JsonSerializer.h"
 #include "Transports/NamedPipeTransport.h"
 

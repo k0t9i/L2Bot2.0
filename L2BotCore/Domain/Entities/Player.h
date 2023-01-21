@@ -1,6 +1,5 @@
 #pragma once
 #include "WorldObject.h"
-#include "../DTO/Player.h"
 #include "../ValueObjects/FullName.h"
 #include "../ValueObjects/VitalStats.h"
 #include "../ValueObjects/Phenotype.h"
@@ -10,21 +9,12 @@ namespace L2Bot::Domain::Entities
 	class Player : public WorldObject
 	{
 	public:
-		const ValueObjects::FullName& GetFullName() const
+		void Update(const EntityInterface* other) override
 		{
-			return m_FullName;
-		}
-		const ValueObjects::Phenotype& GetPhenotype() const
-		{
-			return m_Phenotype;
-		}
-
-		void UpdateFromDTO(const DTO::WorldObject* dto) override
-		{
-			const DTO::Player* castedDto = static_cast<const DTO::Player*>(dto);
-			WorldObject::UpdateFromDTO(dto);
-			m_FullName = castedDto->fullName;
-			m_Phenotype = castedDto->phenotype;
+			const Player* casted = static_cast<const Player*>(other);
+			WorldObject::Update(other);
+			m_FullName = casted->m_FullName;
+			m_Phenotype = casted->m_Phenotype;
 		}
 		void SaveState() override
 		{
@@ -35,21 +25,12 @@ namespace L2Bot::Domain::Entities
 				m_Phenotype
 			};
 		}
-		const static Player CreateFromDTO(const DTO::Player& dto)
+		const bool IsEqual(const EntityInterface* other) const override
 		{
-			return Player(
-				dto.id,
-				dto.transform,
-				dto.fullName,
-				dto.phenotype
-			);
-		}
-		const bool IsEqual(const DTO::WorldObject* dto) const override
-		{
-			const DTO::Player* castedDto = static_cast<const DTO::Player*>(dto);
-			return WorldObject::IsEqual(dto) &&
-				m_FullName.IsEqual(&castedDto->fullName) &&
-				m_Phenotype.IsEqual(&castedDto->phenotype);
+			const Player* casted = static_cast<const Player*>(other);
+			return WorldObject::IsEqual(other) &&
+				m_FullName.IsEqual(&casted->m_FullName) &&
+				m_Phenotype.IsEqual(&casted->m_Phenotype);
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -85,7 +66,7 @@ namespace L2Bot::Domain::Entities
 		virtual ~Player() = default;
 
 	private:
-		struct State
+		struct GetState
 		{
 			ValueObjects::FullName fullName = ValueObjects::FullName();
 			ValueObjects::Phenotype phenotype = ValueObjects::Phenotype();
@@ -96,6 +77,6 @@ namespace L2Bot::Domain::Entities
 	private:
 		ValueObjects::FullName m_FullName = ValueObjects::FullName();
 		ValueObjects::Phenotype m_Phenotype = ValueObjects::Phenotype();
-		State m_PrevState = State();
+		GetState m_PrevState = GetState();
 	};
 }

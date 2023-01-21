@@ -1,7 +1,6 @@
 #pragma once
 #include <cstdint>
 #include "WorldObject.h"
-#include "../DTO/NPC.h"
 #include "../ValueObjects/FullName.h"
 #include "../ValueObjects/VitalStats.h"
 #include "../Serializers/Serializable.h"
@@ -12,40 +11,15 @@ namespace L2Bot::Domain::Entities
 	class NPC : public WorldObject
 	{
 	public:
-		const bool IsHostile() const
+		void Update(const EntityInterface* other) override
 		{
-			return m_IsHostile;
-		}
-		const uint32_t GetNpcId() const
-		{
-			return m_NpcId;
-		}
-		const bool IsSpoiled() const
-		{
-			return m_SpoilState == Enums::SpoilStateEnum::spoiled;
-		}
-		const bool CanBeSweeped() const
-		{
-			return !m_VitalStats.IsAlive() && m_SpoilState == Enums::SpoilStateEnum::sweepable;
-		}
-		const ValueObjects::FullName& GetFullName() const
-		{
-			return m_FullName;
-		}
-		const ValueObjects::VitalStats& GetVitalStats() const
-		{
-			return m_VitalStats;
-		}
-
-		void UpdateFromDTO(const DTO::WorldObject* dto) override
-		{
-			const DTO::NPC* castedDto = static_cast<const DTO::NPC*>(dto);
-			WorldObject::UpdateFromDTO(dto);
-			m_IsHostile = castedDto->isHostile;
-			m_NpcId = castedDto->npcId;
-			m_SpoilState = castedDto->spoilState;
-			m_FullName = castedDto->fullName;
-			m_VitalStats = castedDto->vitalStats;
+			const NPC* casted = static_cast<const NPC*>(other);
+			WorldObject::Update(other);
+			m_IsHostile = casted->m_IsHostile;
+			m_NpcId = casted->m_NpcId;
+			m_SpoilState = casted->m_SpoilState;
+			m_FullName = casted->m_FullName;
+			m_VitalStats = casted->m_VitalStats;
 		}
 		void SaveState() override
 		{
@@ -58,27 +32,15 @@ namespace L2Bot::Domain::Entities
 				false
 			};
 		}
-		const static NPC CreateFromDTO(const DTO::NPC& dto)
+		const bool IsEqual(const EntityInterface* other) const override
 		{
-			return NPC(
-				dto.id,
-				dto.transform,
-				dto.isHostile,
-				dto.npcId,
-				dto.spoilState,
-				dto.fullName,
-				dto.vitalStats
-			);
-		}
-		const bool IsEqual(const DTO::WorldObject* dto) const override
-		{
-			const DTO::NPC* castedDto = static_cast<const DTO::NPC*>(dto);
-			return WorldObject::IsEqual(dto) &&
-				m_IsHostile == castedDto->isHostile &&
-				m_NpcId == castedDto->npcId &&
-				m_SpoilState == castedDto->spoilState &&
-				m_FullName.IsEqual(&castedDto->fullName) &&
-				m_VitalStats.IsEqual(&castedDto->vitalStats);
+			const NPC* casted = static_cast<const NPC*>(other);
+			return WorldObject::IsEqual(other) &&
+				m_IsHostile == casted->m_IsHostile &&
+				m_NpcId == casted->m_NpcId &&
+				m_SpoilState == casted->m_SpoilState &&
+				m_FullName.IsEqual(&casted->m_FullName) &&
+				m_VitalStats.IsEqual(&casted->m_VitalStats);
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -129,7 +91,7 @@ namespace L2Bot::Domain::Entities
 		virtual ~NPC() = default;
 
 	private:
-		struct State
+		struct GetState
 		{
 			ValueObjects::FullName fullName = ValueObjects::FullName();
 			Enums::SpoilStateEnum spoilState = Enums::SpoilStateEnum::none;
@@ -144,6 +106,6 @@ namespace L2Bot::Domain::Entities
 		Enums::SpoilStateEnum m_SpoilState = Enums::SpoilStateEnum::none;
 		ValueObjects::FullName m_FullName = ValueObjects::FullName();
 		ValueObjects::VitalStats m_VitalStats = ValueObjects::VitalStats();
-		State m_PrevState = State();
+		GetState m_PrevState = GetState();
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../Common/Common.h"
+#include "Domain/Entities/Player.h"
 
 namespace Interlude
 {
@@ -10,9 +11,9 @@ namespace Interlude
 		PlayerFactory() = default;
 		virtual ~PlayerFactory() = default;
 
-		const DTO::Player Create(const User* item) const
+		Entities::EntityInterface* Create(const User* item) const
 		{
-			return DTO::Player{
+			return new Entities::Player{
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

@@ -2,16 +2,14 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include "../DTO/Skill.h"
-#include "../Serializers/Serializable.h"
-#include "../Serializers/Node.h"
+#include "WorldObject.h"
 
-namespace L2Bot::Domain::ValueObjects
+namespace L2Bot::Domain::Entities
 {
-	class Skill : public Serializers::Serializable
+	class Skill : public EntityInterface
 	{
 	public:
-		const uint32_t GetId() const
+		const uint32_t GetId() const override
 		{
 			return m_SkillId;
 		}
@@ -19,23 +17,46 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return !m_IsCasting && !m_IsReloading;
 		}
-		void UpdateFromDTO(const DTO::Skill* dto)
+		const bool IsToggled() const
 		{
+			return m_IsToggled;
+		}
+
+		void UpdateReloadingState(const bool isReloading)
+		{
+			m_IsReloading = isReloading;
+		}
+		void UpdateCastingState(const bool isCasting)
+		{
+			m_IsCasting = isCasting;
+		}
+		void UpdateToggle(const bool isToggled)
+		{
+			m_IsToggled = isToggled;
+		}
+		void UpdateLevel(const uint8_t level)
+		{
+			m_Level = level;
+		}
+
+		void Update(const EntityInterface* other) override
+		{
+			const Skill* casted = static_cast<const Skill*>(other);
 			SaveState();
 
-			m_SkillId = dto->skillId;
-			m_Level = dto->level;
-			m_IsActive = dto->isActive;
-			m_Cost = dto->cost;
-			m_Range = dto->range;
-			m_Name = dto->name;
-			m_Description = dto->description;
-			m_IconName = dto->iconName;
-			m_IsToggled = dto->isToggled;
-			m_IsCasting = dto->isCasting;
-			m_IsReloading = dto->isReloading;
+			m_SkillId = casted->m_SkillId;
+			m_Level = casted->m_Level;
+			m_IsActive = casted->m_IsActive;
+			m_Cost = casted->m_Cost;
+			m_Range = casted->m_Range;
+			m_Name = casted->m_Name;
+			m_Description = casted->m_Description;
+			m_IconName = casted->m_IconName;
+			m_IsToggled = casted->m_IsToggled;
+			m_IsCasting = casted->m_IsCasting;
+			m_IsReloading = casted->m_IsReloading;
 		}
-		void SaveState()
+		void SaveState() override
 		{
 			m_PrevState =
 			{
@@ -49,35 +70,20 @@ namespace L2Bot::Domain::ValueObjects
 				false
 			};
 		}
-		const static Skill CreateFromDTO(const DTO::Skill& dto)
+		const bool IsEqual(const EntityInterface* other) const override
 		{
-			return Skill(
-				dto.skillId,
-				dto.level,
-				dto.isActive,
-				dto.cost,
-				dto.range,
-				dto.name,
-				dto.description,
-				dto.iconName,
-				dto.isToggled,
-				dto.isCasting,
-				dto.isReloading
-			);
-		}
-		const bool IsEqual(const DTO::Skill* dto) const
-		{
-			return m_SkillId == dto->skillId &&
-				m_Level == dto->level &&
-				m_IsActive == dto->isActive &&
-				m_Cost == dto->cost &&
-				m_Range == dto->range &&
-				m_Name == dto->name &&
-				m_Description == dto->description &&
-				m_IconName == dto->iconName &&
-				m_IsToggled == dto->isToggled &&
-				m_IsCasting == dto->isCasting &&
-				m_IsReloading == dto->isReloading;
+			const Skill* casted = static_cast<const Skill*>(other);
+			return m_SkillId == casted->m_SkillId &&
+				m_Level == casted->m_Level &&
+				m_IsActive == casted->m_IsActive &&
+				m_Cost == casted->m_Cost &&
+				m_Range == casted->m_Range &&
+				m_Name == casted->m_Name &&
+				m_Description == casted->m_Description &&
+				m_IconName == casted->m_IconName &&
+				m_IsToggled == casted->m_IsToggled &&
+				m_IsCasting == casted->m_IsCasting &&
+				m_IsReloading == casted->m_IsReloading;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -154,11 +160,26 @@ namespace L2Bot::Domain::ValueObjects
 			
 		}
 
+		Skill(const Skill* other) :
+			m_SkillId(other->m_SkillId),
+			m_Level(other->m_Level),
+			m_IsActive(other->m_IsActive),
+			m_Cost(other->m_Cost),
+			m_Range(other->m_Range),
+			m_Name(other->m_Name),
+			m_Description(other->m_Description),
+			m_IconName(other->m_IconName),
+			m_IsToggled(other->m_IsToggled),
+			m_IsCasting(other->m_IsCasting),
+			m_IsReloading(other->m_IsReloading)
+		{
+		}
+
 		Skill() = default;
 		virtual ~Skill() = default;
 
 	private:
-		struct State
+		struct GetState
 		{
 			uint8_t cost = 0;
 			int16_t range = 0;
@@ -183,6 +204,6 @@ namespace L2Bot::Domain::ValueObjects
 		bool m_IsToggled = false;
 		bool m_IsCasting = false;
 		bool m_IsReloading = false;
-		State m_PrevState = State();
+		GetState m_PrevState = GetState();
 	};
 }

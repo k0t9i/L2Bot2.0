@@ -1,16 +1,11 @@
-#pragma once
+                       #pragma once
 #include <cstdint>
 #include <thread>
 #include <Windows.h>
-#include "Domain/Services/DropService.h"
-#include "Domain/Services/HeroService.h"
-#include "Domain/Services/NPCService.h"
-#include "Domain/Services/PlayerService.h"
-#include "Domain/Services/SkillService.h"
+#include "Domain/Services/EntityService.h"
 #include "Domain/Serializers/SerializableStateContainer.h"
 #include "Domain/Serializers/SerializerInterface.h"
-#include "Domain/Repositories/DropRepositoryInterface.h"
-#include "Domain/Repositories/SkillRepositoryInterface.h"
+#include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "Domain/Transports/TransportInterface.h"
 
 using namespace L2Bot::Domain;
@@ -19,19 +14,19 @@ class WorldHandler
 {
 public:
 	WorldHandler(
-		Repositories::HeroRepositoryInterface& heroRepository,
-		Repositories::DropRepositoryInterface& dropRepository,
-		Repositories::NPCRepositoryInterface& npcRepository,
-		Repositories::PlayerRepositoryInterface& playerRepository,
-		Repositories::SkillRepositoryInterface& skillRepository,
+		Repositories::EntityRepositoryInterface& heroRepository,
+		Repositories::EntityRepositoryInterface& dropRepository,
+		Repositories::EntityRepositoryInterface& npcRepository,
+		Repositories::EntityRepositoryInterface& playerRepository,
+		Repositories::EntityRepositoryInterface& skillRepository,
 		const Serializers::SerializerInterface& serializer,
 		Transports::TransportInterface& transport
 	) :
-		m_DropService(Services::DropService(dropRepository)),
-		m_HeroService(Services::HeroService(heroRepository)),
-		m_NPCService(Services::NPCService(npcRepository)),
-		m_PlayerService(Services::PlayerService(playerRepository)),
-		m_SkillService(Services::SkillService(skillRepository)),
+		m_HeroService(Services::EntityService(heroRepository)),
+		m_DropService(Services::EntityService(dropRepository)),
+		m_NPCService(Services::EntityService(npcRepository)),
+		m_PlayerService(Services::EntityService(playerRepository)),
+		m_SkillService(Services::EntityService(skillRepository)),
 		m_Serializer(serializer),
 		m_Transport(transport)
 	{
@@ -120,11 +115,11 @@ private:
 	{
 		std::vector<Serializers::Serializable*> items
 		{
-			new Serializers::SerializableStateContainer<Entities::Hero>(m_HeroService.GetObjects(), "hero"),
-			new Serializers::SerializableStateContainer<Entities::Drop>(m_DropService.GetObjects(), "drop"),
-			new Serializers::SerializableStateContainer<Entities::NPC>(m_NPCService.GetObjects(), "npc"),
-			new Serializers::SerializableStateContainer<Entities::Player>(m_PlayerService.GetObjects(), "player"),
-			new Serializers::SerializableStateContainer<ValueObjects::Skill>(m_SkillService.GetObjects(), "skill")
+			new Serializers::SerializableStateContainer(m_HeroService.GetEntities(), "hero"),
+			new Serializers::SerializableStateContainer(m_DropService.GetEntities(), "drop"),
+			new Serializers::SerializableStateContainer(m_NPCService.GetEntities(), "npc"),
+			new Serializers::SerializableStateContainer(m_PlayerService.GetEntities(), "player"),
+			new Serializers::SerializableStateContainer(m_SkillService.GetEntities(), "skill"),
 		};
 
 		std::vector<Serializers::Node> result;
@@ -146,19 +141,19 @@ private:
 
 	void Invalidate()
 	{
-		m_HeroService.Invalidate();
 		m_DropService.Invalidate();
+		m_HeroService.Invalidate();
 		m_NPCService.Invalidate();
 		m_PlayerService.Invalidate();
 		m_SkillService.Invalidate();
 	}
 
 private:
-	Services::DropService m_DropService;
-	Services::HeroService m_HeroService;
-	Services::NPCService m_NPCService;
-	Services::PlayerService m_PlayerService;
-	Services::SkillService m_SkillService;
+	Services::EntityService m_DropService;
+	Services::EntityService m_HeroService;
+	Services::EntityService m_NPCService;
+	Services::EntityService m_PlayerService;
+	Services::EntityService m_SkillService;
 	const Serializers::SerializerInterface& m_Serializer;
 	Transports::TransportInterface& m_Transport;
 	bool m_Stopped = false;

@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Domain/Repositories/HeroRepositoryInterface.h"
-#include "Domain/Repositories/DropRepositoryInterface.h"
-#include "Domain/Repositories/NPCRepositoryInterface.h"
-#include "Domain/Repositories/PlayerRepositoryInterface.h"
-#include "Domain/Repositories/SkillRepositoryInterface.h"
+#include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "GameStructs/NetworkHandlerInterface.h"
 #include "GameStructs/GameEngineInterface.h"
 #include "GameStructs/L2GameDataInterface.h"
@@ -20,11 +16,11 @@ public:
 		interlude
 	};
 
-	virtual Repositories::HeroRepositoryInterface& GetHeroRepository() const = 0;
-	virtual Repositories::DropRepositoryInterface& GetDropRepository() const = 0;
-	virtual Repositories::NPCRepositoryInterface& GetNPCRepository() const = 0;
-	virtual Repositories::PlayerRepositoryInterface& GetPlayerRepository() const = 0;
-	virtual Repositories::SkillRepositoryInterface& GetSkillRepository() const = 0;
+	virtual Repositories::EntityRepositoryInterface& GetHeroRepository() const = 0;
+	virtual Repositories::EntityRepositoryInterface& GetDropRepository() const = 0;
+	virtual Repositories::EntityRepositoryInterface& GetNPCRepository() const = 0;
+	virtual Repositories::EntityRepositoryInterface& GetPlayerRepository() const = 0;
+	virtual Repositories::EntityRepositoryInterface& GetSkillRepository() const = 0;
 	virtual NetworkHandlerInterface& GetNetworkHandler() const = 0;
 	virtual GameEngineInterface& GetGameEngine() const = 0;
 	virtual L2GameDataInterface& GetL2GameData() const = 0;

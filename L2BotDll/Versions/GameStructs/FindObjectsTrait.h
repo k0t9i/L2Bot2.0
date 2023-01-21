@@ -9,7 +9,7 @@ class FindObjectsTrait
 {
 public:
 	template <typename T>
-	std::map<uint32_t, T> GetAllObjects(float_t radius, std::function<const T(float_t, int32_t)> getNextObject) const
+	std::map<uint32_t, T> FindAllObjects(float_t radius, std::function<const T(float_t, int32_t)> getNextObject) const
 	{
 		std::map<uint32_t, T> result;
 

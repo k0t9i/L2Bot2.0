@@ -2,44 +2,61 @@
 
 #include <map>
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "Domain/Repositories/NPCRepositoryInterface.h"
+#include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/NPCFactory.h"
 #include "../../../Events/EventDispatcher.h"
 #include "../../../Events/SpoiledEvent.h"
 #include "../../../Events/CreatureDiedEvent.h"
 #include "../../GameStructs/FindObjectsTrait.h"
+#include "../../../Services/EntityHandler.h"
 
 using namespace L2Bot::Domain;
 
 namespace Interlude
 {
-	class NPCRepository : public Repositories::NPCRepositoryInterface, public FindObjectsTrait
+	class NPCRepository : public Repositories::EntityRepositoryInterface, public FindObjectsTrait
 	{
 	public:
-		const std::map<uint32_t, DTO::NPC> GetObjects() override
+		const std::vector<DTO::EntityState*> GetEntities() override
 		{
-			const auto creatures = GetAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
+			const auto creatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextCreature(radius, prevId);
 			});
 
-			std::map<uint32_t, DTO::NPC> map;
-
+			std::map<uint32_t, User*> items;
 			for (const auto& kvp : creatures)
 			{
 				const auto creature = kvp.second;
 				if (creature->userType == L2::UserType::NPC) {
-					const auto spoilState = m_Spoiled.find(creature->objectId) == m_Spoiled.end() ? Enums::SpoilStateEnum::none : m_Spoiled.at(creature->objectId);
-					map.emplace(creature->objectId, m_Factory.Create(creature, spoilState));
+					items.emplace(creature->objectId, creature);
 				}
 			}
 
-			return map;
+			const auto objects = m_EntityHandler.GetEntities<User*>(items, [this](User* item) {
+				const auto spoilState = m_Spoiled.find(item->objectId) == m_Spoiled.end() ? Enums::SpoilStateEnum::none : m_Spoiled.at(item->objectId);
+				return m_Factory.Create(item, spoilState);
+			});
+
+			auto result = std::vector<DTO::EntityState*>();
+
+			for (const auto kvp : objects)
+			{
+				result.push_back(kvp.second);
+			}
+
+			return result;
 		}
 
-		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, const uint16_t radius) :
+		void Reset() override
+		{
+			m_EntityHandler.Reset();
+		}
+
+		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, EntityHandler& handler, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_Radius(radius)
+			m_Radius(radius),
+			m_EntityHandler(handler)
 		{
 			EventDispatcher::GetInstance().Subscribe(SpoiledEvent::name, [this](const Event& evt) {
 				OnSpoiled(evt);
@@ -93,5 +110,6 @@ namespace Interlude
 		std::map<uint32_t, Enums::SpoilStateEnum> m_Spoiled;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const uint16_t m_Radius = 0;
+		EntityHandler& m_EntityHandler;
 	};
 }

@@ -1,38 +1,49 @@
 #pragma once
 
 #include <map>
-#include "Domain/Repositories/DropRepositoryInterface.h"
+#include "Domain/Repositories/EntityRepositoryInterface.h"
+#include "Domain/DTO/EntityState.h"
 #include "../Factories/DropFactory.h"
 #include "../../GameStructs/FindObjectsTrait.h"
+#include "../GameStructs/NetworkHandlerWrapper.h"
+#include "../../../Services/EntityHandler.h"
 
 using namespace L2Bot::Domain;
 
 namespace Interlude
 {
-	class DropRepository : public Repositories::DropRepositoryInterface, public FindObjectsTrait
+	class DropRepository : public Repositories::EntityRepositoryInterface, public FindObjectsTrait
 	{
 	public:
-		const std::map<uint32_t, DTO::Drop> GetObjects() override
+		const std::vector<DTO::EntityState*> GetEntities() override
 		{
-			const auto items = GetAllObjects<Item*>(m_Radius, [this](float_t radius, int32_t prevId) {
+			const std::map<uint32_t, Item*> items = FindAllObjects<Item*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextItem(radius, prevId);
 			});
+			const auto objects = m_Container.GetEntities<Item*>(items, [this](Item* item) {
+				return m_Factory.Create(item);
+			});
 
-			std::map<uint32_t, DTO::Drop> map;
+			auto result = std::vector<DTO::EntityState*>();
 
-			for (const auto& kvp : items)
+			for (const auto kvp : objects)
 			{
-				const auto item = kvp.second;
-				map.emplace(item->objectId, m_Factory.Create(item));
+				result.push_back(kvp.second);
 			}
 
-			return map;
+			return result;
 		}
 
-		DropRepository(const NetworkHandlerWrapper& networkHandler, const DropFactory& factory, const uint16_t radius) :
+		void Reset() override
+		{
+			m_Container.Reset();
+		}
+
+		DropRepository(const NetworkHandlerWrapper& networkHandler, const DropFactory& factory, EntityHandler& handler, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_Radius(radius)
+			m_Radius(radius),
+			m_Container(handler)
 		{
 
 		}
@@ -44,5 +55,6 @@ namespace Interlude
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const DropFactory& m_Factory;
 		const uint16_t m_Radius;
+		EntityHandler& m_Container;
 	};
 }

@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../VersionAbstractFactory.h"
-#include "Factories/HeroFactory.h"
 #include "Factories/DropFactory.h"
+#include "Factories/HeroFactory.h"
 #include "Factories/NPCFactory.h"
 #include "Factories/PlayerFactory.h"
 #include "Factories/SkillFactory.h"
-#include "Repositories/HeroRepository.h"
 #include "Repositories/DropRepository.h"
+#include "Repositories/HeroRepository.h"
 #include "Repositories/NPCRepository.h"
 #include "Repositories/PlayerRepository.h"
 #include "Repositories/SkillRepository.h"
@@ -15,6 +15,7 @@
 #include "GameStructs/GameEngineWrapper.h"
 #include "GameStructs/L2GameDataWrapper.h"
 #include "GameStructs/FName.h"
+#include "../../Services/EntityHandler.h"
 
 namespace Interlude
 {
@@ -32,18 +33,22 @@ namespace Interlude
 		HeroRepository& GetHeroRepository() const override
 		{
 			static auto factory = HeroFactory();
+			static EntityHandler handler;
 			static auto result = HeroRepository(
 				GetNetworkHandler(),
-				factory
+				factory,
+				handler
 			);
 			return result;
 		}
 		DropRepository& GetDropRepository() const override
 		{
 			static auto factory = DropFactory(GetL2GameData(), GetFName());
+			static EntityHandler handler;
 			static auto result = DropRepository(
 				GetNetworkHandler(),
 				factory,
+				handler,
 				m_Radius
 			);
 			return result;
@@ -51,19 +56,36 @@ namespace Interlude
 		NPCRepository& GetNPCRepository() const override
 		{
 			static auto factory = NPCFactory();
-			static auto result = NPCRepository(GetNetworkHandler(), factory, m_Radius);
+			static EntityHandler handler;
+			static auto result = NPCRepository(
+				GetNetworkHandler(),
+				factory,
+				handler,
+				m_Radius
+			);
 			return result;
 		}
 		PlayerRepository& GetPlayerRepository() const override
 		{
 			static auto factory = PlayerFactory();
-			static auto result = PlayerRepository(GetNetworkHandler(), factory, m_Radius);
+			static EntityHandler handler;
+			static auto result = PlayerRepository(
+				GetNetworkHandler(),
+				factory,
+				handler,
+				m_Radius
+			);
 			return result;
 		}
 		SkillRepository& GetSkillRepository() const override
 		{
 			static auto factory = SkillFactory(GetL2GameData(), GetFName());
-			static auto result = SkillRepository(GetNetworkHandler(), factory);
+			static EntityHandler handler;
+			static auto result = SkillRepository(
+				GetNetworkHandler(),
+				factory,
+				handler
+			);
 			return result;
 		}
 		NetworkHandlerWrapper& GetNetworkHandler() const override

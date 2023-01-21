@@ -2,7 +2,9 @@
 
 #include "../GameStructs/L2GameDataWrapper.h"
 #include "../GameStructs/FName.h"
+#include "../GameStructs/GameStructs.h"
 #include "../../../Common/Common.h"
+#include "Domain/Entities/Drop.h"
 
 namespace Interlude
 {
@@ -18,13 +20,13 @@ namespace Interlude
 		DropFactory() = delete;
 		virtual ~DropFactory() = default;
 
-		const DTO::Drop Create(const Item* item) const
+		Entities::EntityInterface* Create(const Item* item) const
 		{
 			const auto itemData = m_L2GameData.GetItemData(item->itemId);
 			const auto nameEntry = itemData ? m_FName.GetEntry(itemData->nameIndex) : nullptr;
 			const auto iconEntry = itemData ? m_FName.GetEntry(itemData->iconNameIndex) : nullptr;
 
-			return DTO::Drop{
+			return new Entities::Drop{
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

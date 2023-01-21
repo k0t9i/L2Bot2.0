@@ -3,32 +3,47 @@
 #include <map>
 #include <chrono>
 #include <shared_mutex>
-#include "Domain/Repositories/SkillRepositoryInterface.h"
+#include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/SkillFactory.h"
 #include "../../../Events/SkillCreatedEvent.h"
 #include "../../../Events/SkillUsedEvent.h"
 #include "../../../Events/SkillCancelledEvent.h"
 #include "../../../Events/AbnormalEffectChangedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
+#include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../../../Common/TimerMap.h"
+#include "../../../Services/EntityHandler.h"
 
 using namespace L2Bot::Domain;
 
 namespace Interlude
 {
-	class SkillRepository : public Repositories::SkillRepositoryInterface
+	class SkillRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::map<uint32_t, DTO::Skill> GetObjects() override
+		const std::vector<DTO::EntityState*> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
-			return m_Skills;
+
+			const auto objects = m_EntityHandler.GetEntities<Entities::Skill*>(m_Skills, [this](Entities::Skill* item) {
+				return new Entities::Skill(item);
+			});
+
+			auto result = std::vector<DTO::EntityState*>();
+
+			for (const auto kvp : objects)
+			{
+				result.push_back(kvp.second);
+			}
+
+			return result;
 		}
 
-		SkillRepository(const NetworkHandlerWrapper& networkHandler, const SkillFactory& factory) :
+		SkillRepository(const NetworkHandlerWrapper& networkHandler, const SkillFactory& factory, EntityHandler& handler) :
 			m_NetworkHandler(networkHandler),
-			m_Factory(factory)
+			m_Factory(factory),
+			m_EntityHandler(handler)
 		{
 			EventDispatcher::GetInstance().Subscribe(SkillCreatedEvent::name, [this](const Event& evt) {
 				OnSkillCreated(evt);
@@ -45,17 +60,31 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
 				OnHeroDeleted(evt);
 			});
+			// TODO delete outdated skills: on hero change subclass?
 		}
 
 		SkillRepository() = delete;
-		virtual ~SkillRepository() = default;
+		virtual ~SkillRepository()
+		{
+			Reset();
+		}
+
+		void Reset() override
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			for (const auto kvp : m_Skills)
+			{
+				delete kvp.second;
+			}
+			m_Skills.clear();
+		}
 
 		void OnHeroDeleted(const Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			if (evt.GetName() == HeroDeletedEvent::name)
 			{
-				m_Skills.clear();
+				Reset();
 				m_CastingTimers.StopAll();
 				m_ReloadingTimers.StopAll();
 			}
@@ -69,16 +98,20 @@ namespace Interlude
 				const auto skillInfo = casted.GetSkillInfo();
 				const auto skillId = skillInfo[2];
 
-				const auto alreadyExists = m_Skills.find(skillId) != m_Skills.end();
+				if (m_Skills.find(skillId) == m_Skills.end())
+				{
+					auto skill = m_Factory.Create(
+						skillInfo[2],
+						skillInfo[1],
+						skillInfo[0]
+					);
 
-				auto skill = m_Factory.Create(
-					alreadyExists ? m_Skills[skillId] : DTO::Skill(),
-					skillInfo[2],
-					skillInfo[1],
-					skillInfo[0]
-				);
-
-				UpdateSkill(skill);
+					m_Skills.emplace(skill->GetId(), skill);
+				}
+				else
+				{
+					m_Skills[skillId]->UpdateLevel(skillInfo[1]);
+				}
 			}
 		}
 		void OnSkillUsed(const Event& evt)
@@ -96,32 +129,19 @@ namespace Interlude
 					return;
 				}
 
-				auto skill = m_Factory.UpdateReloadingState(
-					m_Factory.UpdateCastingState(
-						m_Skills[skillId],
-						true
-					),
-					true
-				);
+				auto skill = m_Skills[skillId];
+				skill->UpdateReloadingState(true);
+				skill->UpdateCastingState(true);
 
-				UpdateSkill(skill);
-				m_UsedSkillId = skill.skillId;
+				m_UsedSkillId = skill->GetId();
 
-				m_ReloadingTimers.StartTimer(skill.skillId, skillInfo[3], [this] (uint32_t skillId) {
+				m_ReloadingTimers.StartTimer(skill->GetId(), skillInfo[3], [this] (uint32_t skillId) {
 					std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-					auto skill = m_Factory.UpdateReloadingState(
-						m_Skills[skillId],
-						false
-					);
-					UpdateSkill(skill);
+					m_Skills[skillId]->UpdateReloadingState(false);
 				});
-				m_CastingTimers.StartTimer(skill.skillId, skillInfo[2], [this] (uint32_t skillId) {
+				m_CastingTimers.StartTimer(skill->GetId(), skillInfo[2], [this] (uint32_t skillId) {
 					std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-					auto skill = m_Factory.UpdateCastingState(
-						m_Skills[m_UsedSkillId],
-						false
-					);
-					UpdateSkill(skill);
+					m_Skills[skillId]->UpdateCastingState(false);
 				});
 			}
 		}
@@ -141,16 +161,12 @@ namespace Interlude
 						//todo exception?
 						return;
 					}
+					auto skill = m_Skills[m_UsedSkillId];
+					skill->UpdateCastingState(false);
 
-					auto skill = m_Factory.UpdateCastingState(
-						m_Skills[m_UsedSkillId],
-						false
-					);
-
-					UpdateSkill(skill);
 					m_UsedSkillId = 0;
 
-					m_CastingTimers.StopTimer(skill.skillId);
+					m_CastingTimers.StopTimer(skill->GetId());
 				}
 			}
 		}
@@ -171,21 +187,19 @@ namespace Interlude
 
 				for (auto it = m_Skills.begin(); it != m_Skills.end();)
 				{
-					const auto needToToggle = ids.find(it->second.skillId) != ids.end();
-					// buff time less than zero means this is a aura
-					const auto isAura = needToToggle ? ids[it->second.skillId] < 0 : false;
+					auto skill = it->second;
 
-					if (it->second.isToggled && !needToToggle)
+					const auto needToToggle = ids.find(skill->GetId()) != ids.end();
+					// buff time less than zero means this is a aura
+					const auto isAura = needToToggle ? ids[skill->GetId()] < 0 : false;
+
+					if (skill->IsToggled() && !needToToggle)
 					{
-						auto skill = m_Factory.UpdateToggle(it->second, false);
-						it = m_Skills.erase(it);
-						m_Skills.emplace(skill.skillId, skill);
+						skill->UpdateToggle(false);
 					}
-					else if (!it->second.isToggled && needToToggle && isAura)
+					else if (!skill->IsToggled() && needToToggle && isAura)
 					{
-						auto skill = m_Factory.UpdateToggle(it->second, true);
-						it = m_Skills.erase(it);
-						m_Skills.emplace(skill.skillId, skill);
+						skill->UpdateToggle(true);
 					}
 					else
 					{
@@ -196,19 +210,13 @@ namespace Interlude
 		}
 
 	private:
-		void UpdateSkill(const DTO::Skill skill)
-		{
-			m_Skills.erase(skill.skillId);
-			m_Skills.emplace(skill.skillId, skill);
-		}
-
-	private:
 		const SkillFactory& m_Factory;
-		std::map<uint32_t, DTO::Skill> m_Skills;
+		std::map<uint32_t, Entities::Skill*> m_Skills;
 		uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		TimerMap m_ReloadingTimers;
 		TimerMap m_CastingTimers;
 		std::shared_timed_mutex m_Mutex;
+		EntityHandler& m_EntityHandler;
 	};
 }

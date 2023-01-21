@@ -1,7 +1,7 @@
 #pragma once
 
-
 #include "../../../Common/Common.h"
+#include "Domain/Entities/NPC.h"
 
 namespace Interlude
 {
@@ -11,9 +11,9 @@ namespace Interlude
 		NPCFactory() = default;
 		virtual ~NPCFactory() = default;
 
-		const DTO::NPC Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
+		Entities::EntityInterface* Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
 		{
-			return DTO::NPC{
+			return new Entities::NPC{
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

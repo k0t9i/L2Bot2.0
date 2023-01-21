@@ -1,6 +1,5 @@
 #pragma once
 #include "WorldObject.h"
-#include "../DTO/Hero.h"
 #include "../ValueObjects/FullName.h"
 #include "../ValueObjects/VitalStats.h"
 #include "../ValueObjects/Phenotype.h"
@@ -16,60 +15,20 @@ namespace L2Bot::Domain::Entities
 	class Hero : public WorldObject
 	{
 	public:
-		const ValueObjects::FullName& GetFullName() const
+		void Update(const EntityInterface* other) override
 		{
-			return m_FullName;
-		}
-		const ValueObjects::VitalStats& GetVitalStats() const
-		{
-			return m_VitalStats;
-		}
-		const ValueObjects::Phenotype& GetPhenotype() const
-		{
-			return m_Phenotype;
-		}
-		const ValueObjects::ExperienceInfo& GetExperienceInfo() const
-		{
-			return m_ExperienceInfo;
-		}
-		const ValueObjects::PermanentStats& GetPermanentStats() const
-		{
-			return m_PermanentStats;
-		}
-		const ValueObjects::VariableStats& GetVariableStats() const
-		{
-			return m_VariableStats;
-		}
-		const ValueObjects::Reputation& GetReputation() const
-		{
-			return m_Reputation;
-		}
-		const ValueObjects::InventoryInfo& GetInventoryInfo() const
-		{
-			return m_InventoryInfo;
-		}
-		const uint32_t GetTargetId() const
-		{
-			return m_TargetId;
-		}
-		const bool IsStanding() const
-		{
-			return m_IsStanding;
-		}
-		void UpdateFromDTO(const DTO::WorldObject* dto) override
-		{
-			const DTO::Hero* castedDto = static_cast<const DTO::Hero*>(dto);
-			WorldObject::UpdateFromDTO(dto);
-			m_FullName = castedDto->fullName;
-			m_VitalStats = castedDto->vitalStats;
-			m_Phenotype = castedDto->phenotype;
-			m_ExperienceInfo = castedDto->experienceInfo;
-			m_PermanentStats = castedDto->permanentStats;
-			m_VariableStats = castedDto->variableStats;
-			m_Reputation = castedDto->reputation;
-			m_InventoryInfo = castedDto->inventoryInfo;
-			m_TargetId = castedDto->targetId;
-			m_IsStanding = castedDto->isStanding;
+			const Hero* casted = static_cast<const Hero*>(other);
+			WorldObject::Update(other);
+			m_FullName = casted->m_FullName;
+			m_VitalStats = casted->m_VitalStats;
+			m_Phenotype = casted->m_Phenotype;
+			m_ExperienceInfo = casted->m_ExperienceInfo;
+			m_PermanentStats = casted->m_PermanentStats;
+			m_VariableStats = casted->m_VariableStats;
+			m_Reputation = casted->m_Reputation;
+			m_InventoryInfo = casted->m_InventoryInfo;
+			m_TargetId = casted->m_TargetId;
+			m_IsStanding = casted->m_IsStanding;
 		}
 		void SaveState() override
 		{
@@ -89,37 +48,20 @@ namespace L2Bot::Domain::Entities
 				false
 			};
 		}
-		const static Hero CreateFromDTO(const DTO::Hero& dto)
+		const bool IsEqual(const EntityInterface* other) const override
 		{
-			return Hero(
-				dto.id,
-				dto.transform,
-				dto.fullName,
-				dto.vitalStats,
-				dto.phenotype,
-				dto.experienceInfo,
-				dto.permanentStats,
-				dto.variableStats,
-				dto.reputation,
-				dto.inventoryInfo,
-				dto.targetId,
-				dto.isStanding
-			);
-		}
-		const bool IsEqual(const DTO::WorldObject* dto) const override
-		{
-			const DTO::Hero* castedDto = static_cast<const DTO::Hero*>(dto);
-			return WorldObject::IsEqual(dto) &&
-				m_FullName.IsEqual(&castedDto->fullName) &&
-				m_VitalStats.IsEqual(&castedDto->vitalStats) &&
-				m_Phenotype.IsEqual(&castedDto->phenotype) &&
-				m_ExperienceInfo.IsEqual(&castedDto->experienceInfo) &&
-				m_PermanentStats.IsEqual(&castedDto->permanentStats) &&
-				m_VariableStats.IsEqual(&castedDto->variableStats) &&
-				m_Reputation.IsEqual(&castedDto->reputation) &&
-				m_InventoryInfo.IsEqual(&castedDto->inventoryInfo) &&
-				m_TargetId == castedDto->targetId &&
-				m_IsStanding == castedDto->isStanding;
+			const Hero* casted = static_cast<const Hero*>(other);
+			return WorldObject::IsEqual(other) &&
+				m_FullName.IsEqual(&casted->m_FullName) &&
+				m_VitalStats.IsEqual(&casted->m_VitalStats) &&
+				m_Phenotype.IsEqual(&casted->m_Phenotype) &&
+				m_ExperienceInfo.IsEqual(&casted->m_ExperienceInfo) &&
+				m_PermanentStats.IsEqual(&casted->m_PermanentStats) &&
+				m_VariableStats.IsEqual(&casted->m_VariableStats) &&
+				m_Reputation.IsEqual(&casted->m_Reputation) &&
+				m_InventoryInfo.IsEqual(&casted->m_InventoryInfo) &&
+				m_TargetId == casted->m_TargetId &&
+				m_IsStanding == casted->m_IsStanding;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -203,7 +145,7 @@ namespace L2Bot::Domain::Entities
 		virtual ~Hero() = default;
 
 	private:
-		struct State
+		struct GetState
 		{
 			ValueObjects::FullName fullName = ValueObjects::FullName();
 			ValueObjects::VitalStats vitalStats = ValueObjects::VitalStats();
@@ -230,6 +172,6 @@ namespace L2Bot::Domain::Entities
 		ValueObjects::InventoryInfo m_InventoryInfo = ValueObjects::InventoryInfo();
 		uint32_t m_TargetId = 0;
 		bool m_IsStanding = true;
-		State m_PrevState = State();
+		GetState m_PrevState = GetState();
 	};
 }

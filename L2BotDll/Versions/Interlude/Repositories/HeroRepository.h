@@ -1,26 +1,24 @@
 #pragma once
 
-#include "Domain/Repositories/HeroRepositoryInterface.h"
+#include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/HeroFactory.h"
 #include "../../../Events/EventDispatcher.h"
 #include "../../../Events/HeroCreatedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
+#include "../GameStructs/NetworkHandlerWrapper.h"
+#include "../../../Services/EntityHandler.h"
 
 using namespace L2Bot::Domain;
 
 namespace Interlude
 {
-	class HeroRepository : public Repositories::HeroRepositoryInterface
+	class HeroRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::map<uint32_t, DTO::Hero> GetObjects() override
+		const std::vector<DTO::EntityState*> GetEntities() override
 		{
-			std::map<uint32_t, DTO::Hero> map;
-			const auto hero = m_NetworkHandler.GetHero();
-			if (hero)
-			{
-				map.emplace(hero->objectId, m_Factory.Create(hero));
-			}
+
+			auto hero = m_NetworkHandler.GetHero();
 
 			if (hero != nullptr && m_PrevHero == nullptr)
 			{
@@ -30,15 +28,38 @@ namespace Interlude
 			{
 				EventDispatcher::GetInstance().Dispatch(HeroDeletedEvent{});
 			}
-
 			m_PrevHero = hero;
 
-			return map;
+			std::map<uint32_t, User*> items;
+			
+			if (hero)
+			{
+				items.emplace(hero->objectId, hero);
+			}
+
+			const auto objects = m_EntityHandler.GetEntities<User*>(items, [this](User* item) {
+				return m_Factory.Create(item);
+			});
+
+			auto result = std::vector<DTO::EntityState*>();
+
+			for (const auto kvp : objects)
+			{
+				result.push_back(kvp.second);
+			}
+
+			return result;
 		}
 
-		HeroRepository(const NetworkHandlerWrapper& networkHandler, const HeroFactory& factory) :
+		void Reset() override
+		{
+			m_EntityHandler.Reset();
+		}
+
+		HeroRepository(const NetworkHandlerWrapper& networkHandler, const HeroFactory& factory, EntityHandler& handler) :
 			m_NetworkHandler(networkHandler),
-			m_Factory(factory)
+			m_Factory(factory),
+			m_EntityHandler(handler)
 		{
 
 		}
@@ -50,5 +71,6 @@ namespace Interlude
 		const HeroFactory& m_Factory;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		User* m_PrevHero = nullptr;
+		EntityHandler& m_EntityHandler;
 	};
 }

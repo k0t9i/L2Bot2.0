@@ -2,7 +2,7 @@
 
 namespace L2Bot::Domain::Enums
 {
-	enum class ObjectStateEnum
+	enum class EntityStateEnum
 	{
 		none,
 		created,

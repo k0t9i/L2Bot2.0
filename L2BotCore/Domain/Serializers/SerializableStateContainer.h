@@ -1,11 +1,10 @@
 #pragma once
 #include <vector>
-#include "../DTO/ObjectState.h"
+#include "../DTO/EntityState.h"
 #include "Serializable.h"
 
 namespace L2Bot::Domain::Serializers
 {
-	template <typename T>
 	class SerializableStateContainer : public Serializers::Serializable
 	{
 	public:
@@ -16,15 +15,15 @@ namespace L2Bot::Domain::Serializers
 			for (const auto& kvp : m_Objects)
 			{
 				std::string operationName = "";
-				switch (kvp.state)
+				switch (kvp->GetState())
 				{
-				case Enums::ObjectStateEnum::created:
+				case Enums::EntityStateEnum::created:
 					operationName = "created";
 					break;
-				case Enums::ObjectStateEnum::updated:
+				case Enums::EntityStateEnum::updated:
 					operationName = "updated";
 					break;
-				case Enums::ObjectStateEnum::deleted:
+				case Enums::EntityStateEnum::deleted:
 					operationName = "deleted";
 					break;
 				}
@@ -34,7 +33,7 @@ namespace L2Bot::Domain::Serializers
 					result.push_back(
 						{ 
 							m_ContainerName,
-							std::vector<Serializers::Node>{ { operationName, kvp.object.BuildSerializationNodes() } }
+							std::vector<Serializers::Node>{ { operationName, kvp->GetEntity()->BuildSerializationNodes() } }
 						}
 					);
 				}
@@ -43,7 +42,7 @@ namespace L2Bot::Domain::Serializers
 			return result;
 		}
 
-		SerializableStateContainer(const std::vector<DTO::ObjectState<T>> objects, const std::string containerName) :
+		SerializableStateContainer(const std::vector<DTO::EntityState*> objects, const std::string containerName) :
 			m_Objects(objects), m_ContainerName(containerName)
 		{
 
@@ -51,7 +50,7 @@ namespace L2Bot::Domain::Serializers
 		SerializableStateContainer() = delete;
 		virtual ~SerializableStateContainer() = default;
 	private:
-		const std::vector<DTO::ObjectState<T>> m_Objects;
+		const std::vector<DTO::EntityState*> m_Objects;
 		const std::string m_ContainerName;
 	};
 }

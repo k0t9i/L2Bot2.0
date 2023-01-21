@@ -2,55 +2,34 @@
 #include <cstdint>
 #include <string>
 #include "WorldObject.h"
-#include "../DTO/Drop.h"
 
 namespace L2Bot::Domain::Entities
 {
 	class Drop : public WorldObject
 	{
 	public:
-		const uint32_t GetItemId() const
+		void Update(const EntityInterface* other) override
 		{
-			return m_ItemId;
-		}
-		const uint32_t GetAmount() const
-		{
-			return m_Amount;
-		}
-		const std::string GetName() const
-		{
-			return m_Name;
-		}
-		const std::string GetIconName() const
-		{
-			return m_IconName;
-		}
-		void UpdateFromDTO(const DTO::WorldObject* dto) override
-		{
-			const DTO::Drop* castedDto = static_cast<const DTO::Drop*>(dto);
-			WorldObject::UpdateFromDTO(dto);
-			m_ItemId = castedDto->itemId;
-			m_Amount = castedDto->amount;
-			m_Name = castedDto->name;
-			m_IconName = castedDto->iconName;
+			const Drop* casted = static_cast<const Drop*>(other);
+			WorldObject::Update(other);
+			m_ItemId = casted->m_ItemId;
+			m_Amount = casted->m_Amount;
+			m_Name = casted->m_Name;
+			m_IconName = casted->m_IconName;
 		}
 		void SaveState() override
 		{
 			WorldObject::SaveState();
 			m_IsNewState = false;
 		}
-		const static Drop CreateFromDTO(const DTO::Drop& dto)
+		const bool IsEqual(const EntityInterface* other) const override
 		{
-			return Drop(dto.id, dto.transform, dto.itemId, dto.amount, dto.name, dto.iconName);
-		}
-		const bool IsEqual(const DTO::WorldObject* dto) const override
-		{
-			const DTO::Drop* castedDto = static_cast<const DTO::Drop*>(dto);
-			return WorldObject::IsEqual(dto) &&
-				m_ItemId == castedDto->itemId &&
-				m_Amount == castedDto->amount &&
-				m_Name == castedDto->name &&
-				m_IconName == castedDto->iconName;
+			const Drop* casted = static_cast<const Drop*>(other);
+			return WorldObject::IsEqual(other) &&
+				m_ItemId == casted->m_ItemId &&
+				m_Amount == casted->m_Amount &&
+				m_Name == casted->m_Name &&
+				m_IconName == casted->m_IconName;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

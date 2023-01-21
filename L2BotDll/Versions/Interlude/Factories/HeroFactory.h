@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../GameStructs/NetworkHandlerWrapper.h"
+#include "../GameStructs/GameStructs.h"
 #include "../../../Common/Common.h"
+#include "Domain/Entities/Hero.h"
 
 namespace Interlude
 {
@@ -11,11 +12,11 @@ namespace Interlude
 		HeroFactory() = default;
 		virtual ~HeroFactory() = default;
 
-		const DTO::Hero Create(const User* item) const
+		Entities::EntityInterface* Create(const User* item) const
 		{
 			const auto playerController = item->pawn ? item->pawn->lineagePlayerController : nullptr;
 
-			return DTO::Hero{
+			return new Entities::Hero{
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

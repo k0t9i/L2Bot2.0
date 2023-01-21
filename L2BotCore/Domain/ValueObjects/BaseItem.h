@@ -15,19 +15,19 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_ItemId;
 		}
-		void UpdateFromDTO(const DTO::BaseItem* dto)
+		void Update(const BaseItem* other)
 		{
 			SaveState();
 
-			m_ItemId = dto->itemId;
-			m_Amount = dto->amount;
-			m_IsEquipped = dto->isEquipped;
-			m_EnchantLevel = dto->enchantLevel;
-			m_Mana = dto->mana;
-			m_Name = dto->name;
-			m_IconName = dto->iconName;
-			m_Description = dto->description;
-			m_Weight = dto->weight;
+			m_ItemId = other->m_ItemId;
+			m_Amount = other->m_Amount;
+			m_IsEquipped = other->m_IsEquipped;
+			m_EnchantLevel = other->m_EnchantLevel;
+			m_Mana = other->m_Mana;
+			m_Name = other->m_Name;
+			m_IconName = other->m_IconName;
+			m_Description = other->m_Description;
+			m_Weight = other->m_Weight;
 		}
 		void SaveState()
 		{
@@ -41,31 +41,17 @@ namespace L2Bot::Domain::ValueObjects
 				false
 			};
 		}
-		const static BaseItem CreateFromDTO(const DTO::BaseItem& dto)
+		const bool IsEqual(const BaseItem* other) const
 		{
-			return BaseItem(
-				dto.itemId,
-				dto.amount,
-				dto.isEquipped,
-				dto.enchantLevel,
-				dto.mana,
-				dto.name,
-				dto.iconName,
-				dto.description,
-				dto.weight
-			);
-		}
-		const bool IsEqual(const DTO::BaseItem* dto) const
-		{
-			return m_ItemId == dto->itemId &&
-				m_Amount == dto->amount &&
-				m_IsEquipped == dto->isEquipped &&
-				m_EnchantLevel == dto->enchantLevel &&
-				m_Mana == dto->mana &&
-				m_Name == dto->name &&
-				m_IconName == dto->iconName &&
-				m_Description == dto->description &&
-				m_Weight == dto->weight;
+			return m_ItemId == other->m_ItemId &&
+				m_Amount == other->m_Amount &&
+				m_IsEquipped == other->m_IsEquipped &&
+				m_EnchantLevel == other->m_EnchantLevel &&
+				m_Mana == other->m_Mana &&
+				m_Name == other->m_Name &&
+				m_IconName == other->m_IconName &&
+				m_Description == other->m_Description &&
+				m_Weight == other->m_Weight;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -132,7 +118,7 @@ namespace L2Bot::Domain::ValueObjects
 		virtual ~BaseItem() = default;
 
 	private:
-		struct State
+		struct GetState
 		{
 			uint32_t amount = 0;
 			bool isEquipped = 0;
@@ -153,6 +139,6 @@ namespace L2Bot::Domain::ValueObjects
 		std::string m_IconName = "";
 		std::string m_Description = "";
 		uint16_t m_Weight = 0;
-		State m_PrevState = State();
+		GetState m_PrevState = GetState();
 	};
 }

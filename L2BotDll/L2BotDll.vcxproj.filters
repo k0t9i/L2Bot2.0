@@ -30,19 +30,10 @@
     <ClInclude Include="Versions\Interlude\GameStructs\NetworkHandlerWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Versions\Interlude\Repositories\HeroRepository.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Versions\Interlude\Repositories\NPCRepository.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\Interlude\Repositories\DropRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Transports\DebugViewTransport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Versions\Interlude\Repositories\PlayerRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Transports\NamedPipeTransport.h">
@@ -64,15 +55,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\Factories\DropFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Versions\Interlude\Factories\NPCFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Versions\Interlude\Factories\PlayerFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\AbstractFactory.h">
@@ -111,12 +93,6 @@
     <ClInclude Include="Services\WorldHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Versions\Interlude\Factories\SkillFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Versions\Interlude\Repositories\SkillRepository.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -148,6 +124,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Serializers\JsonSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\EntityHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Repositories\HeroRepository.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Factories\NPCFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Repositories\NPCRepository.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Factories\PlayerFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Repositories\PlayerRepository.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Factories\SkillFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Repositories\SkillRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

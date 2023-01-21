@@ -24,12 +24,6 @@
     <ClInclude Include="Domain\ValueObjects\Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\DTO\Drop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\DTO\WorldObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Domain\Entities\Drop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -49,12 +43,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Enums\RaceEnum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\DropRepositoryInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\DropService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\ValueObjects\ExperienceInfo.h">
@@ -84,43 +72,13 @@
     <ClInclude Include="Domain\ValueObjects\VitalStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\DTO\Hero.h">
+    <ClInclude Include="Domain\Services\EntityService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\DTO\NPC.h">
+    <ClInclude Include="Domain\Repositories\EntityRepositoryInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\DTO\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\ObjectService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\ObjectRepositoryInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\NPCService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\NPCRepositoryInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\PlayerRepositoryInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\PlayerService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\HeroRepositoryInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\HeroService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Enums\ObjectStateEnum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\DTO\ObjectState.h">
+    <ClInclude Include="Domain\Enums\EntityStateEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Serializers\Serializable.h">
@@ -141,34 +99,16 @@
     <ClInclude Include="Domain\Enums\SpoilStateEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\DTO\Skill.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\ValueObjects\Skill.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\SkillRepositoryInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\SkillService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\DTO\BaseItem.h">
+    <ClInclude Include="Domain\Entities\Skill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\ValueObjects\BaseItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Repositories\ItemRepositoryInterface.h">
+    <ClInclude Include="Domain\DTO\EntityState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Services\ItemService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Serializers\SerializableStateContainerPtr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\ObjectServicePtr.h">
+    <ClInclude Include="Domain\Entities\EntityInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -176,11 +176,14 @@
     <ClInclude Include="Events\SpoiledEvent.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Serializers\JsonSerializer.h" />
-    <ClInclude Include="Versions\Interlude\Repositories\SkillRepository.h" />
     <ClInclude Include="Services\WorldHandler.h" />
+    <ClInclude Include="Services\EntityHandler.h" />
     <ClInclude Include="Versions\GameStructs\FNameInterface.h" />
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h" />
     <ClInclude Include="Versions\GameStructs\L2GameDataInterface.h" />
+    <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h" />
+    <ClInclude Include="Versions\Interlude\Factories\NPCFactory.h" />
+    <ClInclude Include="Versions\Interlude\Factories\PlayerFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\SkillFactory.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\GameEngineWrapper.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\L2GameDataWrapper.h" />
@@ -192,19 +195,17 @@
     <ClInclude Include="Versions\GameStructs\GameStructs.h" />
     <ClInclude Include="Transports\NamedPipe.h" />
     <ClInclude Include="Transports\NamedPipeTransport.h" />
-    <ClInclude Include="Versions\Interlude\Repositories\NPCRepository.h" />
-    <ClInclude Include="Versions\Interlude\Repositories\HeroRepository.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Versions\Interlude\Repositories\PlayerRepository.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\GameStructs.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\L2ParamStack.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\NetworkHandlerWrapper.h" />
     <ClInclude Include="Versions\GameStructs\NetworkHandlerInterface.h" />
     <ClInclude Include="Versions\Interlude\Factories\DropFactory.h" />
-    <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h" />
     <ClInclude Include="Versions\Interlude\AbstractFactory.h" />
-    <ClInclude Include="Versions\Interlude\Factories\NPCFactory.h" />
-    <ClInclude Include="Versions\Interlude\Factories\PlayerFactory.h" />
+    <ClInclude Include="Versions\Interlude\Repositories\HeroRepository.h" />
+    <ClInclude Include="Versions\Interlude\Repositories\NPCRepository.h" />
+    <ClInclude Include="Versions\Interlude\Repositories\PlayerRepository.h" />
+    <ClInclude Include="Versions\Interlude\Repositories\SkillRepository.h" />
     <ClInclude Include="Versions\VersionAbstractFactory.h" />
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,9 @@
 #include "../GameStructs/L2GameDataWrapper.h"
 #include "../GameStructs/FName.h"
 #include "../../../Common/Common.h"
+#include "Domain/Entities/Skill.h"
+
+using namespace L2Bot::Domain;
 
 namespace Interlude
 {
@@ -20,7 +23,7 @@ namespace Interlude
 		SkillFactory() = delete;
 		virtual ~SkillFactory() = default;
 
-		const DTO::Skill Create(const DTO::Skill source, const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
+		Entities::Skill* Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
@@ -30,7 +33,7 @@ namespace Interlude
 			const auto description = data ? data->description : L"";
 			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
 
-			return DTO::Skill
+			return new Entities::Skill
 			{
 				skillId,
 				static_cast<uint8_t>(level),
@@ -40,63 +43,9 @@ namespace Interlude
 				ConvertFromWideChar(name),
 				ConvertFromWideChar(description),
 				iconEntry ? ConvertFromWideChar(iconEntry->value) : "",
-				source.isToggled,
-				source.isCasting,
-				source.isReloading
-			};
-		}
-
-		const DTO::Skill UpdateToggle(const DTO::Skill source, const bool isToggled) const
-		{
-			return DTO::Skill
-			{
-				source.skillId,
-				source.level,
-				source.isActive,
-				source.cost,
-				source.range,
-				source.name,
-				source.description,
-				source.iconName,
-				isToggled,
-				source.isCasting,
-				source.isReloading
-			};
-		}
-
-		const DTO::Skill UpdateCastingState(const DTO::Skill source, const bool isCasting) const
-		{
-			return DTO::Skill
-			{
-				source.skillId,
-				source.level,
-				source.isActive,
-				source.cost,
-				source.range,
-				source.name,
-				source.description,
-				source.iconName,
-				source.isToggled,
-				isCasting,
-				source.isReloading
-			};
-		}
-
-		const DTO::Skill UpdateReloadingState(const DTO::Skill source, const bool isReloading) const
-		{
-			return DTO::Skill
-			{
-				source.skillId,
-				source.level,
-				source.isActive,
-				source.cost,
-				source.range,
-				source.name,
-				source.description,
-				source.iconName,
-				source.isToggled,
-				source.isCasting,
-				isReloading
+				false,
+				false,
+				false
 			};
 		}
 

@@ -1,54 +1,43 @@
 #pragma once
 #include <cstdint>
 #include "../ValueObjects/Transform.h"
-#include "../DTO/WorldObject.h"
-#include "../Serializers/Serializable.h"
+#include "EntityInterface.h"
 
 namespace L2Bot::Domain::Entities
 {
-	class WorldObject : public Serializers::Serializable
+	class WorldObject : public EntityInterface
 	{
 	public:
-		const uint32_t GetId() const
+		virtual const uint32_t GetId() const override
 		{
 			return m_Id;
 		}
-		const ValueObjects::Transform& GetTransform() const
-		{
-			return m_Transform;
-		}
-		virtual void UpdateFromDTO(const DTO::WorldObject* dto)
+		virtual void Update(const EntityInterface* other) override
 		{
 			SaveState();
 
-			m_Id = dto->id;
-			m_Transform = dto->transform;
+			const WorldObject* casted = static_cast<const WorldObject*>(other);
+			m_Id = casted->m_Id;
+			m_Transform = casted->m_Transform;
 		}
-		virtual void SaveState()
+		virtual void SaveState() override
 		{
 			m_PrevState = { m_Transform, false };
 		}
-		virtual const bool IsEqual(const DTO::WorldObject* dto) const
+		virtual const bool IsEqual(const EntityInterface* other) const override
 		{
-			return m_Id == dto->id && m_Transform.IsEqual(&dto->transform);
-		}
-		const float_t GetSqrDistance(const WorldObject& other) const
-		{
-			return m_Transform.GetSqrDistance(other.m_Transform);
-		}
-		const float_t GetHorizontalSqrDistance(const WorldObject& other) const
-		{
-			return m_Transform.GetHorizontalSqrDistance(other.m_Transform);
+			const WorldObject* casted = static_cast<const WorldObject*>(other);
+			return m_Id == casted->m_Id && m_Transform.IsEqual(&casted->m_Transform);
 		}
 
-		const std::vector<Serializers::Node> BuildSerializationNodes() const override
+		virtual const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
 			std::vector<Serializers::Node> result;
 
 			result.push_back({ "id", std::to_string(GetId()) });
-			if (m_PrevState.isNewState || !GetTransform().IsEqual(&m_PrevState.transform))
+			if (m_PrevState.isNewState || !m_Transform.IsEqual(&m_PrevState.transform))
 			{
-				result.push_back({ "transform", GetTransform().BuildSerializationNodes() });
+				result.push_back({ "transform", m_Transform.BuildSerializationNodes() });
 			}
 
 			return result;
@@ -64,7 +53,7 @@ namespace L2Bot::Domain::Entities
 		virtual ~WorldObject() = default;
 	private:
 	private:
-		struct State
+		struct GetState
 		{
 			ValueObjects::Transform transform = ValueObjects::Transform();
 
@@ -74,6 +63,6 @@ namespace L2Bot::Domain::Entities
 	private:
 		uint32_t m_Id = 0;
 		ValueObjects::Transform m_Transform = ValueObjects::Transform();
-		State m_PrevState = State();
+		GetState m_PrevState = GetState();
 	};
 }
