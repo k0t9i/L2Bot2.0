@@ -12,7 +12,7 @@ class EntityHandler
 {
 public:
 	template<typename T>
-	const std::map<uint32_t, DTO::EntityState*> GetEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
+	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>> GetEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
 	{
 		RemoveOutdatedStates();
 
@@ -36,7 +36,7 @@ public:
 				const auto objectId = newObject->GetId();
 				m_Objects.emplace(
 					objectId,
-					new DTO::EntityState{ std::move(newObject), Enums::EntityStateEnum::created }
+					std::make_shared<DTO::EntityState>(std::move(newObject), Enums::EntityStateEnum::created)
 				);
 			}
 		}
@@ -55,10 +55,6 @@ public:
 
 	void Reset()
 	{
-		for (const auto& object : m_Objects)
-		{
-			delete object.second;
-		}
 		m_Objects.clear();
 	}
 
@@ -75,7 +71,6 @@ private:
 		{
 			if (it->second->GetState() == Enums::EntityStateEnum::deleted)
 			{
-				delete it->second;
 				m_Objects.erase(it++);
 			}
 			else
@@ -86,5 +81,5 @@ private:
 	}
 
 private:
-	std::map<uint32_t, DTO::EntityState*> m_Objects;
+	std::map<uint32_t, std::shared_ptr<DTO::EntityState>> m_Objects;
 };

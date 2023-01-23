@@ -15,7 +15,7 @@ namespace Interlude
 	class HeroRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::vector<DTO::EntityState*> GetEntities() override
+		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
 		{
 
 			auto hero = m_NetworkHandler.GetHero();
@@ -41,7 +41,7 @@ namespace Interlude
 				return m_Factory.Create(item);
 			});
 
-			auto result = std::vector<DTO::EntityState*>();
+			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
 
 			for (const auto kvp : objects)
 			{

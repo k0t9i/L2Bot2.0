@@ -22,7 +22,7 @@ namespace Interlude
 	class SkillRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::vector<DTO::EntityState*> GetEntities() override
+		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
@@ -36,7 +36,7 @@ namespace Interlude
 				return std::make_unique<Entities::Skill>(item);
 			});
 
-			auto result = std::vector<DTO::EntityState*>();
+			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
 
 			for (const auto kvp : objects)
 			{

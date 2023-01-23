@@ -19,7 +19,7 @@ namespace L2Bot::Domain::Services
 		EntityService() = delete;
 		virtual ~EntityService() = default;
 
-		virtual const std::vector<DTO::EntityState*> GetEntities()
+		virtual const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities()
 		{
 			return m_Repository.GetEntities();
 		}

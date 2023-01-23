@@ -13,7 +13,7 @@ namespace Interlude
 	class PlayerRepository : public Repositories::EntityRepositoryInterface, public FindObjectsTrait
 	{
 	public:
-		const std::vector<DTO::EntityState*> GetEntities() override
+		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
 		{
 			const auto creatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextCreature(radius, prevId);
@@ -32,7 +32,7 @@ namespace Interlude
 				return m_Factory.Create(item);
 			});
 
-			auto result = std::vector<DTO::EntityState*>();
+			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
 
 			for (const auto kvp : objects)
 			{
