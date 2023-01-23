@@ -18,8 +18,14 @@ public:
 		return m_CreatureId;
 	}
 
-	CreatureDiedEvent(uint32_t creatureId) :
-		m_CreatureId(creatureId)
+	const std::vector<int32_t>& GetCreatureInfo() const
+	{
+		return m_CreatureInfo;
+	}
+
+	CreatureDiedEvent(uint32_t creatureId, const std::vector<int32_t>& creatureInfo) :
+		m_CreatureId(creatureId),
+		m_CreatureInfo(creatureInfo)
 	{
 
 	}
@@ -29,4 +35,5 @@ public:
 
 private:
 	const uint32_t m_CreatureId;
+	const std::vector<int32_t> m_CreatureInfo;
 };

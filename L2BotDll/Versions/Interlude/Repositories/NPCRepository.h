@@ -93,7 +93,8 @@ namespace Interlude
 				const auto casted = static_cast<const CreatureDiedEvent&>(evt);
 				if (m_Spoiled.find(casted.GetCreatureId()) != m_Spoiled.end())
 				{
-					if (m_Spoiled[casted.GetCreatureId()] == Enums::SpoilStateEnum::spoiled)
+					const auto isSweepable = casted.GetCreatureInfo()[4] != 0;
+					if (m_Spoiled[casted.GetCreatureId()] == Enums::SpoilStateEnum::spoiled && isSweepable)
 					{
 						m_Spoiled[casted.GetCreatureId()] = Enums::SpoilStateEnum::sweepable;
 					}

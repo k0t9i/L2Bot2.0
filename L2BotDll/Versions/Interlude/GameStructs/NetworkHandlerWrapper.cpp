@@ -119,7 +119,7 @@ namespace Interlude
 
 	int __fastcall NetworkHandlerWrapper::__OnDie_hook(NetworkHandler* This, int, User* creature, L2ParamStack& stack)
 	{
-		EventDispatcher::GetInstance().Dispatch(CreatureDiedEvent{ creature->objectId });
+		EventDispatcher::GetInstance().Dispatch(CreatureDiedEvent{ creature->objectId, stack.GetBufferAsVector<int32_t>()});
 
 		return (*__OnDie)(This, creature, stack);
 	}
