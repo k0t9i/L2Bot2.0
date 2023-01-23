@@ -14,7 +14,7 @@ public:
 		return std::string(name);
 	}
 
-	const std::vector<int32_t> GetSkillInfo() const
+	const std::vector<int32_t>& GetSkillInfo() const
 	{
 		return m_SkillInfo;
 	}

@@ -12,7 +12,7 @@ class EntityHandler
 {
 public:
 	template<typename T>
-	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>> GetEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
+	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>>& GetEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
 	{
 		RemoveOutdatedStates();
 
