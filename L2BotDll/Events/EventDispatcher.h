@@ -31,7 +31,7 @@ public:
 		}
 	}
 
-	void Subscribe(std::string eventName, Delegate handler)
+	void Subscribe(const std::string& eventName, const Delegate handler)
 	{
 		m_Handlers[eventName].push_back(handler);
 	}

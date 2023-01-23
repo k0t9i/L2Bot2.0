@@ -42,7 +42,7 @@ namespace L2Bot::Domain::Serializers
 			return result;
 		}
 
-		SerializableStateContainer(const std::vector<std::shared_ptr<DTO::EntityState>> objects, const std::string containerName) :
+		SerializableStateContainer(const std::vector<std::shared_ptr<DTO::EntityState>> objects, const std::string& containerName) :
 			m_Objects(objects), m_ContainerName(containerName)
 		{
 

@@ -30,8 +30,8 @@ namespace L2Bot::Domain::ValueObjects
 		}
 
 		FullName(
-			const std::string nickname,
-			const std::string title
+			const std::string& nickname,
+			const std::string& title
 		) :
 			m_Nickname(nickname),
 			m_Title(title)

@@ -97,9 +97,9 @@ namespace L2Bot::Domain::ValueObjects
 			const bool isEquipped,
 			const uint16_t enchantLevel,
 			const int32_t mana,
-			const std::string name,
-			const std::string iconName,
-			const std::string description,
+			const std::string& name,
+			const std::string& iconName,
+			const std::string& description,
 			const uint16_t weight
 		) :
 			m_ItemId(itemId),

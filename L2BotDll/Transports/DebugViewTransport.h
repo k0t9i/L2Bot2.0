@@ -18,7 +18,7 @@ public:
 		return true;
 	}
 
-	const void Send(std::string data) override
+	const void Send(const std::string& data) override
 	{
 		OutputDebugStringA(data.c_str());
 	}

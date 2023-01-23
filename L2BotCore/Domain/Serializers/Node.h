@@ -14,11 +14,11 @@ namespace L2Bot::Domain::Serializers
 		const bool isContainer = false;
 
 		Node() = delete;
-		Node(const std::string name, const std::string value) :
+		Node(const std::string& name, const std::string& value) :
 			name(name), value(value)
 		{
 		}
-		Node(const std::string name, const std::vector<Node> children, const bool isArray = false) :
+		Node(const std::string& name, const std::vector<Node> children, const bool isArray = false) :
 			name(name), children(children), isArray(isArray), isContainer(true)
 		{
 		}

@@ -52,8 +52,8 @@ namespace L2Bot::Domain::Entities
 			const ValueObjects::Transform transform,
 			const uint32_t itemId,
 			const uint32_t amount,
-			const std::string name,
-			const std::string iconName
+			const std::string& name,
+			const std::string& iconName
 		) :
 			WorldObject(id, transform),
 			m_ItemId(itemId),
