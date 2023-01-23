@@ -22,7 +22,8 @@ namespace L2Bot::Domain::Entities
 			m_PrevState =
 			{
 				m_FullName,
-				m_Phenotype
+				m_Phenotype,
+				false
 			};
 		}
 		const bool IsEqual(const EntityInterface* other) const override
