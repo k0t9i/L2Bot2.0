@@ -1,6 +1,8 @@
-                       #pragma once
+#pragma once
+
 #include <cstdint>
 #include <thread>
+#include <memory>
 #include <Windows.h>
 #include "Domain/Services/EntityService.h"
 #include "Domain/Serializers/SerializableStateContainer.h"
@@ -113,27 +115,22 @@ private:
 
 	const std::vector<Serializers::Node> GetData()
 	{
-		std::vector<Serializers::Serializable*> items
+		std::vector<Serializers::SerializableStateContainer> items
 		{
-			new Serializers::SerializableStateContainer(m_HeroService.GetEntities(), "hero"),
-			new Serializers::SerializableStateContainer(m_DropService.GetEntities(), "drop"),
-			new Serializers::SerializableStateContainer(m_NPCService.GetEntities(), "npc"),
-			new Serializers::SerializableStateContainer(m_PlayerService.GetEntities(), "player"),
-			new Serializers::SerializableStateContainer(m_SkillService.GetEntities(), "skill"),
+			Serializers::SerializableStateContainer{m_HeroService.GetEntities(), "hero"},
+			Serializers::SerializableStateContainer{m_DropService.GetEntities(), "drop"},
+			Serializers::SerializableStateContainer{m_NPCService.GetEntities(), "npc"},
+			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), "player"},
+			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), "skill"},
 		};
 
 		std::vector<Serializers::Node> result;
 		for (const auto& item : items)
 		{
-			for (const auto node : item->BuildSerializationNodes())
+			for (const auto node : item.BuildSerializationNodes())
 			{
 				result.push_back(node);
 			}
-		}
-
-		for (const auto& item : items)
-		{
-			delete item;
 		}
 
 		return result;

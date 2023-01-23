@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <string>
+#include <memory>
 #include <cstdint>
 
 #define BUFFER_SIZE 16384
@@ -95,8 +96,8 @@ public:
 		}
 
 		DWORD dwRead;
-		char* buffer = new char[BUFFER_SIZE];
-		const auto result = ReadFile(m_Pipe, buffer, BUFFER_SIZE * sizeof(char), &dwRead, &m_ReadingOverlapped);
+		std::unique_ptr<char[]> buffer = std::make_unique<char[]>(BUFFER_SIZE);
+		const auto result = ReadFile(m_Pipe, buffer.get(), BUFFER_SIZE * sizeof(char), &dwRead, &m_ReadingOverlapped);
 
 		const auto lastError = GetLastError();
 		if (!result)
@@ -108,21 +109,18 @@ public:
 				const auto overlappedResult = GetOverlappedResult(m_Pipe, &m_ReadingOverlapped, &ret, false);
 				if (!overlappedResult)
 				{
-					delete[] buffer;
 					m_Connected = false;
 					return "";
 				}
 			}
 			else
 			{
-				delete[] buffer;
 				m_Connected = false;
 				return "";
 			}
 		}
 
-		std::string message = std::string(buffer);
-		delete[] buffer;
+		std::string message = std::string(buffer.get());
 
 		return message;
 	}
