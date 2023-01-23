@@ -24,6 +24,7 @@ public:
 			m_AbstractFactory.GetNPCRepository(),
 			m_AbstractFactory.GetPlayerRepository(),
 			m_AbstractFactory.GetSkillRepository(),
+			m_AbstractFactory.GetItemRepository(),
 			m_Serializer,
 			m_Transport
 		)

@@ -24,12 +24,17 @@ namespace Interlude
 		static int(__thiscall* __OnReceiveMagicSkillUse)(GameEngine*, User*, User*, L2ParamStack&);
 		static void(__thiscall* __OnReceiveMagicSkillCanceled)(GameEngine*, User*);
 		static void(__thiscall* __AddAbnormalStatus)(GameEngine*, L2ParamStack&);
+		static void(__thiscall* __AddInventoryItem)(GameEngine*, ItemInfo&);
+		static void(__thiscall* __OnReceiveUpdateItemList)(GameEngine*, UpdateItemListActionType, ItemInfo&);
 
 		static void __fastcall __Init_hook(GameEngine* This, uint32_t /*edx*/, float_t unk);
 		static void __fastcall __OnSkillListPacket_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
 		static int __fastcall __OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t /*edx*/, User* u1, User* u2, L2ParamStack& stack);
 		static void __fastcall __OnReceiveMagicSkillCanceled_hook(GameEngine* This, uint32_t /*edx*/, User* user);
 		static void __fastcall __AddAbnormalStatus_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
+		static void __fastcall __AddInventoryItem_hook(GameEngine* This, int /*edx*/, ItemInfo& itemInfo);
+		static void __fastcall __OnReceiveUpdateItemList_hook(GameEngine* This, int /*edx*/, UpdateItemListActionType actionType, ItemInfo& itemInfo);
+		
 	private:
 		static void* originalInitAddress;
 		static GameEngine* _target;

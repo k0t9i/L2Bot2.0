@@ -102,7 +102,7 @@
     <ClInclude Include="Domain\Entities\Skill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\ValueObjects\BaseItem.h">
+    <ClInclude Include="Domain\Entities\BaseItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\DTO\EntityState.h">

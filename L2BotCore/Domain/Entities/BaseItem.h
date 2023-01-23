@@ -2,34 +2,33 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include "../DTO/BaseItem.h"
-#include "../Serializers/Serializable.h"
-#include "../Serializers/Node.h"
+#include "EntityInterface.h"
 
-namespace L2Bot::Domain::ValueObjects
+namespace L2Bot::Domain::Entities
 {
-	class BaseItem : public Serializers::Serializable
+	class BaseItem : public EntityInterface
 	{
 	public:
 		const uint32_t GetId() const
 		{
 			return m_ItemId;
 		}
-		void Update(const BaseItem* other)
+		void Update(const EntityInterface* other) override
 		{
+			const BaseItem* casted = static_cast<const BaseItem*>(other);
 			SaveState();
 
-			m_ItemId = other->m_ItemId;
-			m_Amount = other->m_Amount;
-			m_IsEquipped = other->m_IsEquipped;
-			m_EnchantLevel = other->m_EnchantLevel;
-			m_Mana = other->m_Mana;
-			m_Name = other->m_Name;
-			m_IconName = other->m_IconName;
-			m_Description = other->m_Description;
-			m_Weight = other->m_Weight;
+			m_ItemId = casted->m_ItemId;
+			m_Amount = casted->m_Amount;
+			m_IsEquipped = casted->m_IsEquipped;
+			m_EnchantLevel = casted->m_EnchantLevel;
+			m_Mana = casted->m_Mana;
+			m_Name = casted->m_Name;
+			m_IconName = casted->m_IconName;
+			m_Description = casted->m_Description;
+			m_Weight = casted->m_Weight;
 		}
-		void SaveState()
+		void SaveState() override
 		{
 			m_PrevState =
 			{
@@ -41,17 +40,18 @@ namespace L2Bot::Domain::ValueObjects
 				false
 			};
 		}
-		const bool IsEqual(const BaseItem* other) const
+		const bool IsEqual(const EntityInterface* other) const override
 		{
-			return m_ItemId == other->m_ItemId &&
-				m_Amount == other->m_Amount &&
-				m_IsEquipped == other->m_IsEquipped &&
-				m_EnchantLevel == other->m_EnchantLevel &&
-				m_Mana == other->m_Mana &&
-				m_Name == other->m_Name &&
-				m_IconName == other->m_IconName &&
-				m_Description == other->m_Description &&
-				m_Weight == other->m_Weight;
+			const BaseItem* casted = static_cast<const BaseItem*>(other);
+			return m_ItemId == casted->m_ItemId &&
+				m_Amount == casted->m_Amount &&
+				m_IsEquipped == casted->m_IsEquipped &&
+				m_EnchantLevel == casted->m_EnchantLevel &&
+				m_Mana == casted->m_Mana &&
+				m_Name == casted->m_Name &&
+				m_IconName == casted->m_IconName &&
+				m_Description == casted->m_Description &&
+				m_Weight == casted->m_Weight;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -111,6 +111,19 @@ namespace L2Bot::Domain::ValueObjects
 			m_IconName(iconName),
 			m_Description(description),
 			m_Weight(weight)
+		{
+		}
+
+		BaseItem(const BaseItem* other) :
+			m_ItemId(other->m_ItemId),
+			m_Amount(other->m_Amount),
+			m_IsEquipped(other->m_IsEquipped),
+			m_EnchantLevel(other->m_EnchantLevel),
+			m_Mana(other->m_Mana),
+			m_Name(other->m_Name),
+			m_IconName(other->m_IconName),
+			m_Description(other->m_Description),
+			m_Weight(other->m_Weight)
 		{
 		}
 

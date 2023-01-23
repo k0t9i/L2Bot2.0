@@ -21,6 +21,7 @@ public:
 		Repositories::EntityRepositoryInterface& npcRepository,
 		Repositories::EntityRepositoryInterface& playerRepository,
 		Repositories::EntityRepositoryInterface& skillRepository,
+		Repositories::EntityRepositoryInterface& itemRepository,
 		const Serializers::SerializerInterface& serializer,
 		Transports::TransportInterface& transport
 	) :
@@ -29,6 +30,7 @@ public:
 		m_NPCService(Services::EntityService(npcRepository)),
 		m_PlayerService(Services::EntityService(playerRepository)),
 		m_SkillService(Services::EntityService(skillRepository)),
+		m_ItemService(Services::EntityService(itemRepository)),
 		m_Serializer(serializer),
 		m_Transport(transport)
 	{
@@ -117,11 +119,12 @@ private:
 	{
 		std::vector<Serializers::SerializableStateContainer> items
 		{
-			Serializers::SerializableStateContainer{m_HeroService.GetEntities(), "hero"},
+			/*Serializers::SerializableStateContainer{m_HeroService.GetEntities(), "hero"},
 			Serializers::SerializableStateContainer{m_DropService.GetEntities(), "drop"},
 			Serializers::SerializableStateContainer{m_NPCService.GetEntities(), "npc"},
 			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), "player"},
-			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), "skill"},
+			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), "skill"},*/
+			Serializers::SerializableStateContainer{m_ItemService.GetEntities(), "item"},
 		};
 
 		std::vector<Serializers::Node> result;
@@ -143,6 +146,7 @@ private:
 		m_NPCService.Invalidate();
 		m_PlayerService.Invalidate();
 		m_SkillService.Invalidate();
+		m_ItemService.Invalidate();
 	}
 
 private:
@@ -151,6 +155,7 @@ private:
 	Services::EntityService m_NPCService;
 	Services::EntityService m_PlayerService;
 	Services::EntityService m_SkillService;
+	Services::EntityService m_ItemService;
 	const Serializers::SerializerInterface& m_Serializer;
 	Transports::TransportInterface& m_Transport;
 	bool m_Stopped = false;

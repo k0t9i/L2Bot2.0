@@ -6,11 +6,13 @@
 #include "Factories/NPCFactory.h"
 #include "Factories/PlayerFactory.h"
 #include "Factories/SkillFactory.h"
+#include "Factories/ItemFactory.h"
 #include "Repositories/DropRepository.h"
 #include "Repositories/HeroRepository.h"
 #include "Repositories/NPCRepository.h"
 #include "Repositories/PlayerRepository.h"
 #include "Repositories/SkillRepository.h"
+#include "Repositories/ItemRepository.h"
 #include "GameStructs/NetworkHandlerWrapper.h"
 #include "GameStructs/GameEngineWrapper.h"
 #include "GameStructs/L2GameDataWrapper.h"
@@ -82,6 +84,17 @@ namespace Interlude
 			static auto factory = SkillFactory(GetL2GameData(), GetFName());
 			static EntityHandler handler;
 			static auto result = SkillRepository(
+				GetNetworkHandler(),
+				factory,
+				handler
+			);
+			return result;
+		}
+		ItemRepository& GetItemRepository() const override
+		{
+			static auto factory = ItemFactory(GetL2GameData(), GetFName());
+			static EntityHandler handler;
+			static auto result = ItemRepository(
 				GetNetworkHandler(),
 				factory,
 				handler

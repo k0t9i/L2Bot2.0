@@ -255,4 +255,11 @@ namespace Interlude
 		int32_t iconNameIndex; //0x0048
 		char pad_004C[52]; //0x004C
 	}; //Size: 0x0080
+
+	enum class UpdateItemListActionType : uint32_t
+	{
+		created = 1,
+		updated,
+		deleted
+	};
 };

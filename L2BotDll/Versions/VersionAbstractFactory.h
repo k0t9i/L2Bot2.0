@@ -21,6 +21,7 @@ public:
 	virtual Repositories::EntityRepositoryInterface& GetNPCRepository() const = 0;
 	virtual Repositories::EntityRepositoryInterface& GetPlayerRepository() const = 0;
 	virtual Repositories::EntityRepositoryInterface& GetSkillRepository() const = 0;
+	virtual Repositories::EntityRepositoryInterface& GetItemRepository() const = 0;
 	virtual NetworkHandlerInterface& GetNetworkHandler() const = 0;
 	virtual GameEngineInterface& GetGameEngine() const = 0;
 	virtual L2GameDataInterface& GetL2GameData() const = 0;

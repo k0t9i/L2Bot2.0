@@ -30,8 +30,8 @@ namespace Interlude
 
 			const auto cost = data ? data->mpCost : 0;
 			const auto range = data ? data->range : 0;
-			const auto name = data ? data->name : L"";
-			const auto description = data ? data->description : L"";
+			const auto name = data && data->name ? data->name : L"";
+			const auto description = data && data->description ? data->description : L"";
 			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
 
 			return std::make_unique<Entities::Skill>(

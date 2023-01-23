@@ -7,6 +7,10 @@
 #include "../../../Events/SkillCancelledEvent.h"
 #include "../../../Events/AbnormalEffectChangedEvent.h"
 #include "../../../Events/EventDispatcher.h"
+#include "../../../Events/ItemCreatedEvent.h"
+#include "../../../Events/ItemUpdatedEvent.h"
+#include "../../../Events/ItemDeletedEvent.h"
+#include "../../../DTO/ItemData.h"
 
 namespace Interlude
 {
@@ -18,6 +22,8 @@ namespace Interlude
 	int(__thiscall* GameEngineWrapper::__OnReceiveMagicSkillUse)(GameEngine*, User*, User*, L2ParamStack&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnReceiveMagicSkillCanceled)(GameEngine*, User*) = 0;
 	void(__thiscall* GameEngineWrapper::__AddAbnormalStatus)(GameEngine*, L2ParamStack&) = 0;
+	void(__thiscall* GameEngineWrapper::__AddInventoryItem)(GameEngine*, ItemInfo&) = 0;
+	void(__thiscall* GameEngineWrapper::__OnReceiveUpdateItemList)(GameEngine*, UpdateItemListActionType, ItemInfo&) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
@@ -38,6 +44,12 @@ namespace Interlude
 		(FARPROC&)__AddAbnormalStatus = (FARPROC)splice(
 			GetProcAddress(hModule, "?AddAbnormalStatus@UGameEngine@@UAEXAAVL2ParamStack@@@Z"), __AddAbnormalStatus_hook
 		);
+		(FARPROC&)__AddInventoryItem = (FARPROC)splice(
+			GetProcAddress(hModule, "?AddInventoryItem@UGameEngine@@UAEXAAUItemInfo@@@Z"), __AddInventoryItem_hook
+		);
+		(FARPROC&)__OnReceiveUpdateItemList = (FARPROC)splice(
+			GetProcAddress(hModule, "?OnReceiveUpdateItemList@UGameEngine@@UAEXHAAUItemInfo@@@Z"), __OnReceiveUpdateItemList_hook
+		);
 	}
 
 	void GameEngineWrapper::Restore()
@@ -47,6 +59,8 @@ namespace Interlude
 		restore((void*&)__OnReceiveMagicSkillUse);
 		restore((void*&)__OnReceiveMagicSkillCanceled);
 		restore((void*&)__AddAbnormalStatus);
+		restore((void*&)__AddInventoryItem);
+		restore((void*&)__OnReceiveUpdateItemList);
 	}
 
 	void __fastcall GameEngineWrapper::__Init_hook(GameEngine* This, uint32_t /*edx*/, float_t unk)
@@ -84,5 +98,49 @@ namespace Interlude
 	{
 		EventDispatcher::GetInstance().Dispatch(AbnormalEffectChangedEvent{ stack.GetBufferAsVector<int32_t>(3) });
 		(*__AddAbnormalStatus)(This, stack);
+	}
+
+	void __fastcall GameEngineWrapper::__AddInventoryItem_hook(GameEngine* This, int, ItemInfo& itemInfo)
+	{
+		EventDispatcher::GetInstance().Dispatch(
+			ItemCreatedEvent
+			{
+				ItemData
+				{
+					itemInfo.itemId,
+					itemInfo.amount,
+					itemInfo.isEquipped,
+					itemInfo.enchantLevel,
+					itemInfo.mana,
+				}
+			}
+		);
+		(*__AddInventoryItem)(This, itemInfo);
+	}
+
+	void __fastcall GameEngineWrapper::__OnReceiveUpdateItemList_hook(GameEngine* This, int, UpdateItemListActionType actionType, ItemInfo& itemInfo)
+	{
+		const ItemData itemData
+		{
+			itemInfo.itemId,
+			itemInfo.amount,
+			itemInfo.isEquipped,
+			itemInfo.enchantLevel,
+			itemInfo.mana,
+		};
+
+		switch (actionType)
+		{
+		case UpdateItemListActionType::created:
+			EventDispatcher::GetInstance().Dispatch(ItemCreatedEvent{ itemData });
+			break;
+		case UpdateItemListActionType::updated:
+			EventDispatcher::GetInstance().Dispatch(ItemUpdatedEvent{ itemData });
+			break;
+		case UpdateItemListActionType::deleted:
+			EventDispatcher::GetInstance().Dispatch(ItemDeletedEvent{ itemInfo.itemId });
+			break;
+		}
+		(*__OnReceiveUpdateItemList)(This, actionType, itemInfo);
 	}
 }

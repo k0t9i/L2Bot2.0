@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include "WorldObject.h"
+#include "EntityInterface.h"
 
 namespace L2Bot::Domain::Entities
 {
