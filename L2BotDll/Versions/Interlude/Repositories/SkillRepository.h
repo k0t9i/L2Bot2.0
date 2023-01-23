@@ -26,7 +26,13 @@ namespace Interlude
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			const auto objects = m_EntityHandler.GetEntities<Entities::Skill*>(m_Skills, [this](Entities::Skill* item) {
+			std::map<uint32_t, Entities::Skill*> skillPtrs;
+			for (const auto& kvp : m_Skills)
+			{
+				skillPtrs[kvp.first] = kvp.second.get();
+			}
+
+			const auto objects = m_EntityHandler.GetEntities<Entities::Skill*>(skillPtrs, [this](Entities::Skill* item) {
 				return std::make_unique<Entities::Skill>(item);
 			});
 
@@ -72,10 +78,6 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			for (const auto kvp : m_Skills)
-			{
-				delete kvp.second;
-			}
 			m_Skills.clear();
 		}
 
@@ -106,8 +108,7 @@ namespace Interlude
 						skillInfo[0]
 					);
 
-					auto test = static_cast<Entities::Skill*>(skill.get());
-					m_Skills.emplace(skill->GetId(), test);
+					m_Skills.emplace(skill->GetId(), std::move(skill));
 				}
 				else
 				{
@@ -130,7 +131,8 @@ namespace Interlude
 					return;
 				}
 
-				auto skill = m_Skills[skillId];
+				const auto& skill = m_Skills[skillId];
+
 				skill->UpdateReloadingState(true);
 				skill->UpdateCastingState(true);
 
@@ -162,12 +164,13 @@ namespace Interlude
 						//todo exception?
 						return;
 					}
-					auto skill = m_Skills[m_UsedSkillId];
+
+					const auto& skill = m_Skills[m_UsedSkillId];
+
 					skill->UpdateCastingState(false);
+					m_CastingTimers.StopTimer(skill->GetId());
 
 					m_UsedSkillId = 0;
-
-					m_CastingTimers.StopTimer(skill->GetId());
 				}
 			}
 		}
@@ -188,7 +191,7 @@ namespace Interlude
 
 				for (auto it = m_Skills.begin(); it != m_Skills.end();)
 				{
-					auto skill = it->second;
+					const auto& skill = it->second;
 
 					const auto needToToggle = ids.find(skill->GetId()) != ids.end();
 					// buff time less than zero means this is a aura
@@ -212,7 +215,7 @@ namespace Interlude
 
 	private:
 		const SkillFactory& m_Factory;
-		std::map<uint32_t, Entities::Skill*> m_Skills;
+		std::map<uint32_t, std::unique_ptr<Entities::Skill>> m_Skills;
 		uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		TimerMap m_ReloadingTimers;

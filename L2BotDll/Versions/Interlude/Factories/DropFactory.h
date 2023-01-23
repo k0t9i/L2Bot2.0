@@ -21,7 +21,7 @@ namespace Interlude
 		DropFactory() = delete;
 		virtual ~DropFactory() = default;
 
-		std::unique_ptr<Entities::EntityInterface> Create(const Item* item) const
+		std::unique_ptr<Entities::Drop> Create(const Item* item) const
 		{
 			const auto itemData = m_L2GameData.GetItemData(item->itemId);
 			const auto nameEntry = itemData ? m_FName.GetEntry(itemData->nameIndex) : nullptr;

@@ -13,7 +13,7 @@ namespace Interlude
 		HeroFactory() = default;
 		virtual ~HeroFactory() = default;
 
-		std::unique_ptr<Entities::EntityInterface> Create(const User* item) const
+		std::unique_ptr<Entities::Hero> Create(const User* item) const
 		{
 			const auto playerController = item->pawn ? item->pawn->lineagePlayerController : nullptr;
 

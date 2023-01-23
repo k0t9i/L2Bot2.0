@@ -12,7 +12,7 @@ namespace Interlude
 		NPCFactory() = default;
 		virtual ~NPCFactory() = default;
 
-		std::unique_ptr<Entities::EntityInterface> Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
+		std::unique_ptr<Entities::NPC> Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
 		{
 			return std::make_unique<Entities::NPC>(
 				item->objectId,

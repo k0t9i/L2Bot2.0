@@ -33,7 +33,7 @@ namespace L2Bot::Domain::Serializers
 					result.push_back(
 						{ 
 							m_ContainerName,
-							std::vector<Serializers::Node>{ { operationName, kvp->BuildSerializationNodes() } }
+							std::vector<Serializers::Node>{ { operationName, kvp->GetEntity()->BuildSerializationNodes() } }
 						}
 					);
 				}

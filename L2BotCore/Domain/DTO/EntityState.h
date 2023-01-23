@@ -10,27 +10,10 @@ namespace L2Bot::Domain::DTO
 	class EntityState
 	{
 	public:
-		const uint32_t GetId() const
+		const std::unique_ptr<Entities::EntityInterface>& GetEntity() const
 		{
-			return m_Entity->GetId();
+			return m_Entity;
 		}
-		const std::vector<Serializers::Node> BuildSerializationNodes() const
-		{
-			return m_Entity->BuildSerializationNodes();
-		}
-		void SaveEntityState()
-		{
-			m_Entity->SaveState();
-		}
-		const bool IsEntityEqual(const Entities::EntityInterface* other) const
-		{
-			return m_Entity->IsEqual(other);
-		}
-		void UpdateEntity(const Entities::EntityInterface* other)
-		{
-			m_Entity->Update(other);
-		}
-
 		const Enums::EntityStateEnum GetState() const
 		{
 			return m_State;

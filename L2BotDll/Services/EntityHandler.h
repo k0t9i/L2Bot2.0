@@ -22,20 +22,20 @@ public:
 			auto newObject = callback(item);
 			if (m_Objects.contains(newObject->GetId()))
 			{
-				if (!m_Objects[kvp.first]->IsEntityEqual(newObject.get())) {
-					m_Objects[kvp.first]->UpdateEntity(newObject.get());
+				if (!m_Objects[kvp.first]->GetEntity()->IsEqual(newObject.get())) {
+					m_Objects[kvp.first]->GetEntity()->Update(newObject.get());
 					m_Objects[kvp.first]->UpdateState(Enums::EntityStateEnum::updated);
 				}
 				else
 				{
 					m_Objects[kvp.first]->UpdateState(Enums::EntityStateEnum::none);
 				}
-				//delete newObject;
 			}
 			else
 			{
+				const auto objectId = newObject->GetId();
 				m_Objects.emplace(
-					newObject->GetId(),
+					objectId,
 					new DTO::EntityState{ std::move(newObject), Enums::EntityStateEnum::created }
 				);
 			}
@@ -43,9 +43,9 @@ public:
 
 		for (auto& kvp : m_Objects)
 		{
-			if (!items.contains(kvp.second->GetId()))
+			if (!items.contains(kvp.second->GetEntity()->GetId()))
 			{
-				m_Objects[kvp.first]->SaveEntityState();
+				m_Objects[kvp.first]->GetEntity()->SaveState();
 				kvp.second->UpdateState(Enums::EntityStateEnum::deleted);
 			}
 		}

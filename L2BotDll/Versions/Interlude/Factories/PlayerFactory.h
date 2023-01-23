@@ -12,7 +12,7 @@ namespace Interlude
 		PlayerFactory() = default;
 		virtual ~PlayerFactory() = default;
 
-		std::unique_ptr<Entities::EntityInterface> Create(const User* item) const
+		std::unique_ptr<Entities::Player> Create(const User* item) const
 		{
 			return std::make_unique<Entities::Player>(
 				item->objectId,

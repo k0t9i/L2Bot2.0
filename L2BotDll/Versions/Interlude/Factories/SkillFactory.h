@@ -24,7 +24,7 @@ namespace Interlude
 		SkillFactory() = delete;
 		virtual ~SkillFactory() = default;
 
-		std::unique_ptr<Entities::EntityInterface> Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
+		std::unique_ptr<Entities::Skill> Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
