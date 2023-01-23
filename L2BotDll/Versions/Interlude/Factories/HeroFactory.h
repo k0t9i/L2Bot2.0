@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "../GameStructs/GameStructs.h"
 #include "../../../Common/Common.h"
 #include "Domain/Entities/Hero.h"
@@ -12,11 +13,11 @@ namespace Interlude
 		HeroFactory() = default;
 		virtual ~HeroFactory() = default;
 
-		Entities::EntityInterface* Create(const User* item) const
+		std::unique_ptr<Entities::EntityInterface> Create(const User* item) const
 		{
 			const auto playerController = item->pawn ? item->pawn->lineagePlayerController : nullptr;
 
-			return new Entities::Hero{
+			return std::make_unique<Entities::Hero>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -81,7 +82,7 @@ namespace Interlude
 				),
 				playerController ? playerController->targetObjectId : 0,
 				playerController ? playerController->isStanding == 1 : true
-			};
+			);
 		}
 	};
 }

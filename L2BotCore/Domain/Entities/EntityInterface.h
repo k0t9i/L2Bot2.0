@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include "../Serializers/Serializable.h"
 
 namespace L2Bot::Domain::Entities

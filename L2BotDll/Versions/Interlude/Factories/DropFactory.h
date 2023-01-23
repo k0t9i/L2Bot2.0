@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "../GameStructs/L2GameDataWrapper.h"
 #include "../GameStructs/FName.h"
 #include "../GameStructs/GameStructs.h"
@@ -20,13 +21,13 @@ namespace Interlude
 		DropFactory() = delete;
 		virtual ~DropFactory() = default;
 
-		Entities::EntityInterface* Create(const Item* item) const
+		std::unique_ptr<Entities::EntityInterface> Create(const Item* item) const
 		{
 			const auto itemData = m_L2GameData.GetItemData(item->itemId);
 			const auto nameEntry = itemData ? m_FName.GetEntry(itemData->nameIndex) : nullptr;
 			const auto iconEntry = itemData ? m_FName.GetEntry(itemData->iconNameIndex) : nullptr;
 
-			return new Entities::Drop{
+			return std::make_unique<Entities::Drop>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -42,7 +43,7 @@ namespace Interlude
 				item->amount,
 				nameEntry ? ConvertFromWideChar(nameEntry->value) : "",
 				iconEntry ? ConvertFromWideChar(iconEntry->value) : ""
-			};
+			);
 		}
 
 	private:

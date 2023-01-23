@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
 #include "../Entities/EntityInterface.h"
 #include "../Enums/EntityStateEnum.h"
 
@@ -8,10 +10,27 @@ namespace L2Bot::Domain::DTO
 	class EntityState
 	{
 	public:
-		Entities::EntityInterface* GetEntity() const
+		const uint32_t GetId() const
 		{
-			return m_Entity;
+			return m_Entity->GetId();
 		}
+		const std::vector<Serializers::Node> BuildSerializationNodes() const
+		{
+			return m_Entity->BuildSerializationNodes();
+		}
+		void SaveEntityState()
+		{
+			m_Entity->SaveState();
+		}
+		const bool IsEntityEqual(const Entities::EntityInterface* other) const
+		{
+			return m_Entity->IsEqual(other);
+		}
+		void UpdateEntity(const Entities::EntityInterface* other)
+		{
+			m_Entity->Update(other);
+		}
+
 		const Enums::EntityStateEnum GetState() const
 		{
 			return m_State;
@@ -21,23 +40,17 @@ namespace L2Bot::Domain::DTO
 			m_State = state;
 		}
 
-		EntityState(Entities::EntityInterface* object, Enums::EntityStateEnum state) :
-			m_Entity(object),
+		EntityState(std::unique_ptr<Entities::EntityInterface> object, Enums::EntityStateEnum state) :
+			m_Entity(std::move(object)),
 			m_State(state)
 		{
 
 		}
 
 		EntityState() = default;
-		virtual ~EntityState()
-		{
-			if (m_Entity != nullptr)
-			{
-				delete m_Entity;
-			}
-		}
+		virtual ~EntityState() = default;
 	private:
-		Entities::EntityInterface* m_Entity = nullptr;
+		std::unique_ptr<Entities::EntityInterface> m_Entity = nullptr;
 		Enums::EntityStateEnum m_State = Enums::EntityStateEnum::none;
 	};
 }

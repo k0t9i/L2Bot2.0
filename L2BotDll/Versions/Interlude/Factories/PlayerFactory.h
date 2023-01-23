@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "../../../Common/Common.h"
 #include "Domain/Entities/Player.h"
 
@@ -11,9 +12,9 @@ namespace Interlude
 		PlayerFactory() = default;
 		virtual ~PlayerFactory() = default;
 
-		Entities::EntityInterface* Create(const User* item) const
+		std::unique_ptr<Entities::EntityInterface> Create(const User* item) const
 		{
-			return new Entities::Player{
+			return std::make_unique<Entities::Player>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -34,8 +35,8 @@ namespace Interlude
 					item->gender == L2::Gender::MALE,
 					(Enums::ClassEnum)item->classId,
 					(Enums::ClassEnum)item->activeClassId
-				),
-			};
+				)
+			);
 		}
 	};
 }

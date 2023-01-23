@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "../../../Common/Common.h"
 #include "Domain/Entities/NPC.h"
 
@@ -11,9 +12,9 @@ namespace Interlude
 		NPCFactory() = default;
 		virtual ~NPCFactory() = default;
 
-		Entities::EntityInterface* Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
+		std::unique_ptr<Entities::EntityInterface> Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
 		{
-			return new Entities::NPC{
+			return std::make_unique<Entities::NPC>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -37,7 +38,7 @@ namespace Interlude
 					item->maxMp, item->mp,
 					item->maxCp, item->cp
 				)
-			};
+			);
 		}
 	};
 }

@@ -27,7 +27,7 @@ namespace Interlude
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
 			const auto objects = m_EntityHandler.GetEntities<Entities::Skill*>(m_Skills, [this](Entities::Skill* item) {
-				return new Entities::Skill(item);
+				return std::make_unique<Entities::Skill>(item);
 			});
 
 			auto result = std::vector<DTO::EntityState*>();
@@ -106,7 +106,8 @@ namespace Interlude
 						skillInfo[0]
 					);
 
-					m_Skills.emplace(skill->GetId(), skill);
+					auto test = static_cast<Entities::Skill*>(skill.get());
+					m_Skills.emplace(skill->GetId(), test);
 				}
 				else
 				{
