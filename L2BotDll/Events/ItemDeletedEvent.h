@@ -15,13 +15,13 @@ public:
 		return std::string(name);
 	}
 
-	const uint32_t GetItemId() const
+	const uint32_t GetObjectId() const
 	{
-		return m_Id;
+		return m_ObjectId;
 	}
 
-	ItemDeletedEvent(const uint32_t id) :
-		m_Id(id)
+	ItemDeletedEvent(const uint32_t objectId) :
+		m_ObjectId(objectId)
 	{
 
 	}
@@ -30,5 +30,5 @@ public:
 	virtual ~ItemDeletedEvent() = default;
 
 private:
-	const uint32_t m_Id;
+	const uint32_t m_ObjectId;
 };

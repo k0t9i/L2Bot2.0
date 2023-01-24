@@ -9,44 +9,37 @@ namespace L2Bot::Domain::Entities
 	class BaseItem : public EntityInterface
 	{
 	public:
-		const uint32_t GetId() const
+		const uint32_t GetId() const override
 		{
-			return m_ItemId;
+			return m_ObjectId;
 		}
-		void Update(const EntityInterface* other) override
+		virtual void Update(const EntityInterface* other) override
 		{
 			const BaseItem* casted = static_cast<const BaseItem*>(other);
 			SaveState();
 
+			m_ObjectId = casted->m_ObjectId;
 			m_ItemId = casted->m_ItemId;
-			m_Amount = casted->m_Amount;
-			m_IsEquipped = casted->m_IsEquipped;
-			m_EnchantLevel = casted->m_EnchantLevel;
 			m_Mana = casted->m_Mana;
 			m_Name = casted->m_Name;
 			m_IconName = casted->m_IconName;
 			m_Description = casted->m_Description;
 			m_Weight = casted->m_Weight;
 		}
-		void SaveState() override
+		virtual void SaveState() override
 		{
 			m_PrevState =
 			{
-				m_Amount,
-				m_IsEquipped,
-				m_EnchantLevel,
 				m_Mana,
 				m_Weight,
 				false
 			};
 		}
-		const bool IsEqual(const EntityInterface* other) const override
+		virtual const bool IsEqual(const EntityInterface* other) const override
 		{
 			const BaseItem* casted = static_cast<const BaseItem*>(other);
-			return m_ItemId == casted->m_ItemId &&
-				m_Amount == casted->m_Amount &&
-				m_IsEquipped == casted->m_IsEquipped &&
-				m_EnchantLevel == casted->m_EnchantLevel &&
+			return m_ObjectId == casted->m_ObjectId &&
+			    m_ItemId == casted->m_ItemId &&
 				m_Mana == casted->m_Mana &&
 				m_Name == casted->m_Name &&
 				m_IconName == casted->m_IconName &&
@@ -54,10 +47,11 @@ namespace L2Bot::Domain::Entities
 				m_Weight == casted->m_Weight;
 		}
 
-		const std::vector<Serializers::Node> BuildSerializationNodes() const override
+		virtual const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
 			std::vector<Serializers::Node> result;
 
+			result.push_back({ "objectId", std::to_string(m_ObjectId) });
 			result.push_back({ "itemId", std::to_string(m_ItemId) });
 
 			if (m_PrevState.isNewState)
@@ -67,18 +61,6 @@ namespace L2Bot::Domain::Entities
 				result.push_back({ "description", m_Description });
 			}
 
-			if (m_PrevState.isNewState || m_Amount != m_PrevState.amount)
-			{
-				result.push_back({ "amount", std::to_string(m_Amount) });
-			}
-			if (m_PrevState.isNewState || m_IsEquipped != m_PrevState.isEquipped)
-			{
-				result.push_back({ "isEquipped", std::to_string(m_IsEquipped) });
-			}
-			if (m_PrevState.isNewState || m_EnchantLevel != m_PrevState.enchantLevel)
-			{
-				result.push_back({ "enchantLevel", std::to_string(m_EnchantLevel) });
-			}
 			if (m_PrevState.isNewState || m_Mana != m_PrevState.mana)
 			{
 				result.push_back({ "mana", std::to_string(m_Mana) });
@@ -92,20 +74,16 @@ namespace L2Bot::Domain::Entities
 		}
 
 		BaseItem(
+			const uint32_t objectId,
 			const uint32_t itemId,
-			const uint32_t amount,
-			const bool isEquipped,
-			const uint16_t enchantLevel,
 			const int32_t mana,
 			const std::string& name,
 			const std::string& iconName,
 			const std::string& description,
 			const uint16_t weight
 		) :
+			m_ObjectId(objectId),
 			m_ItemId(itemId),
-			m_Amount(amount),
-			m_IsEquipped(isEquipped),
-			m_EnchantLevel(enchantLevel),
 			m_Mana(mana),
 			m_Name(name),
 			m_IconName(iconName),
@@ -115,10 +93,8 @@ namespace L2Bot::Domain::Entities
 		}
 
 		BaseItem(const BaseItem* other) :
+			m_ObjectId(other->m_ObjectId),
 			m_ItemId(other->m_ItemId),
-			m_Amount(other->m_Amount),
-			m_IsEquipped(other->m_IsEquipped),
-			m_EnchantLevel(other->m_EnchantLevel),
 			m_Mana(other->m_Mana),
 			m_Name(other->m_Name),
 			m_IconName(other->m_IconName),
@@ -133,9 +109,6 @@ namespace L2Bot::Domain::Entities
 	private:
 		struct GetState
 		{
-			uint32_t amount = 0;
-			bool isEquipped = 0;
-			uint16_t enchantLevel = 0;
 			int32_t mana = -1;
 			uint16_t weight = 0;
 
@@ -143,10 +116,8 @@ namespace L2Bot::Domain::Entities
 		};
 
 	private:
+		uint32_t m_ObjectId = 0;
 		uint32_t m_ItemId = 0;
-		uint32_t m_Amount = 0;
-		bool m_IsEquipped = 0;
-		uint16_t m_EnchantLevel = 0;
 		int32_t m_Mana = -1;
 		std::string m_Name = "";
 		std::string m_IconName = "";

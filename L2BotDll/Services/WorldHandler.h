@@ -119,8 +119,8 @@ private:
 	{
 		std::vector<Serializers::SerializableStateContainer> items
 		{
-			/*Serializers::SerializableStateContainer{m_HeroService.GetEntities(), "hero"},
-			Serializers::SerializableStateContainer{m_DropService.GetEntities(), "drop"},
+			Serializers::SerializableStateContainer{m_HeroService.GetEntities(), "hero"},
+			/*Serializers::SerializableStateContainer{m_DropService.GetEntities(), "drop"},
 			Serializers::SerializableStateContainer{m_NPCService.GetEntities(), "npc"},
 			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), "player"},
 			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), "skill"},*/

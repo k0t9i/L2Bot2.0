@@ -107,11 +107,13 @@ namespace Interlude
 			{
 				ItemData
 				{
+					itemInfo.objectId,
 					itemInfo.itemId,
 					itemInfo.amount,
 					itemInfo.isEquipped,
 					itemInfo.enchantLevel,
 					itemInfo.mana,
+					itemInfo.type2 == L2::ItemType2::QUEST
 				}
 			}
 		);
@@ -122,11 +124,13 @@ namespace Interlude
 	{
 		const ItemData itemData
 		{
+			itemInfo.objectId,
 			itemInfo.itemId,
 			itemInfo.amount,
 			itemInfo.isEquipped,
 			itemInfo.enchantLevel,
 			itemInfo.mana,
+			itemInfo.type2 == L2::ItemType2::QUEST
 		};
 
 		switch (actionType)
@@ -138,7 +142,7 @@ namespace Interlude
 			EventDispatcher::GetInstance().Dispatch(ItemUpdatedEvent{ itemData });
 			break;
 		case UpdateItemListActionType::deleted:
-			EventDispatcher::GetInstance().Dispatch(ItemDeletedEvent{ itemInfo.itemId });
+			EventDispatcher::GetInstance().Dispatch(ItemDeletedEvent{ itemInfo.objectId });
 			break;
 		}
 		(*__OnReceiveUpdateItemList)(This, actionType, itemInfo);

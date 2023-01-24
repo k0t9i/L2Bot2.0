@@ -20,7 +20,7 @@ public:
 		return m_ItemData;
 	}
 
-	ItemUpdatedEvent(const ItemData& itemData) :
+	ItemUpdatedEvent(const ItemData itemData) :
 		m_ItemData(itemData)
 	{
 

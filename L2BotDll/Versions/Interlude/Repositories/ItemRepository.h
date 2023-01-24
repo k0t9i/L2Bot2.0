@@ -10,6 +10,7 @@
 #include "../../../Events/ItemCreatedEvent.h"
 #include "../../../Events/ItemUpdatedEvent.h"
 #include "../../../Events/ItemDeletedEvent.h"
+#include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/EventDispatcher.h"
 
 using namespace L2Bot::Domain;
@@ -30,7 +31,7 @@ namespace Interlude
 			}
 
 			const auto objects = m_EntityHandler.GetEntities<Entities::BaseItem*>(itemPtrs, [this](Entities::BaseItem* item) {
-				return std::make_unique<Entities::BaseItem>(item);
+				return m_Factory.CreateFromPointer(item);
 			});
 
 			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
@@ -57,6 +58,18 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(ItemDeletedEvent::name, [this](const Event& evt) {
 				OnItemDeleted(evt);
 			});
+			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+				OnHeroDeleted(evt);
+			});
+		}
+
+		void OnHeroDeleted(const Event& evt)
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			if (evt.GetName() == HeroDeletedEvent::name)
+			{
+				Reset();
+			}
 		}
 
 		void OnItemCreated(const Event& evt)
@@ -68,14 +81,14 @@ namespace Interlude
 				const auto& data = casted.GetItemData();
 
 				auto item = m_Factory.Create(data);
-				if (m_Items.find(data.itemId) == m_Items.end())
+				if (m_Items.find(data.objectId) == m_Items.end())
 				{
-					m_Items.emplace(data.itemId, std::move(item));
+					m_Items.emplace(data.objectId, std::move(item));
 				}
 				else
 				{
 					// When equip/unequip accessories
-					m_Items[data.itemId]->Update(item.get());
+					m_Items[data.objectId]->Update(item.get());
 				}
 			}
 		}
@@ -89,16 +102,17 @@ namespace Interlude
 				const auto& data = casted.GetItemData();
 
 				//todo exception?
-				if (m_Items.find(data.itemId) == m_Items.end())
+				if (m_Items.find(data.objectId) == m_Items.end())
 				{
 					return;
 				}
 
 				auto item = m_Factory.Create(data);
-				m_Items[data.itemId]->Update(item.get());
+				m_Items[data.objectId]->Update(item.get());
 			}
 		}
 
+		//todo deleted ehchant scroll
 		void OnItemDeleted(const Event& evt)
 		{
 			//fixme may be a race condition
@@ -107,7 +121,7 @@ namespace Interlude
 			{
 				const auto casted = static_cast<const ItemDeletedEvent&>(evt);
 
-				m_Items.erase(casted.GetItemId());
+				m_Items.erase(casted.GetObjectId());
 			}
 		}
 

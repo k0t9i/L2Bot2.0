@@ -160,9 +160,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Domain\DTO\EntityState.h" />
+    <ClInclude Include="Domain\Entities\ArmorItem.h" />
     <ClInclude Include="Domain\Entities\EntityInterface.h" />
     <ClInclude Include="Domain\Entities\BaseItem.h" />
+    <ClInclude Include="Domain\Entities\EtcItem.h" />
     <ClInclude Include="Domain\Entities\Skill.h" />
+    <ClInclude Include="Domain\Enums\ArmorType.h" />
+    <ClInclude Include="Domain\Enums\CrystalType.h" />
     <ClInclude Include="Domain\ValueObjects\Vector3.h" />
     <ClInclude Include="Domain\Enums\SpoilStateEnum.h" />
     <ClInclude Include="Domain\Transports\TransportInterface.h" />
