@@ -186,8 +186,8 @@ namespace Interlude
 		L2::ArmorType armorType; //0x05E4
 		L2::CrystalType crystalType; //0x05E8
 		char pad_05EC[4]; //0x05EC
-		int32_t pDef; //0x05F0
-		int32_t mDef; //0x05F4
+		int32_t pDefense; //0x05F0
+		int32_t mDefense; //0x05F4
 		char pad_05F8[8]; //0x05F8
 	};
 
@@ -208,8 +208,8 @@ namespace Interlude
 		int32_t wtfNameIndex9; //0x011C
 		char pad_0120[4]; //0x0120
 		int32_t rndDamage; //0x0124
-		int32_t pAtk; //0x0128
-		int32_t mAtk; //0x012C
+		int32_t pAttack; //0x0128
+		int32_t mAttack; //0x012C
 		L2::WeaponType weaponType; //0x0130
 		L2::CrystalType crystalType; //0x0134
 		int32_t critical; //0x0138

@@ -21,8 +21,8 @@ namespace L2Bot::Domain::Entities
 			m_EnchantLevel = casted->m_EnchantLevel;
 			m_ArmorType = casted->m_ArmorType;
 			m_CrystalType = casted->m_CrystalType;
-			m_PDef = casted->m_PDef;
-			m_MDef = casted->m_MDef;
+			m_PDefense = casted->m_PDefense;
+			m_MDefense = casted->m_MDefense;
 			m_SetEffect = casted->m_SetEffect;
 			m_AddSetEffect = casted->m_AddSetEffect;
 			m_EnchantEffect = casted->m_EnchantEffect;
@@ -34,8 +34,8 @@ namespace L2Bot::Domain::Entities
 			{
 				m_IsEquipped,
 				m_EnchantLevel,
-				m_PDef,
-				m_MDef,
+				m_PDefense,
+				m_MDefense,
 				false
 			};
 		}
@@ -47,8 +47,8 @@ namespace L2Bot::Domain::Entities
 				m_EnchantLevel == casted->m_EnchantLevel &&
 				m_ArmorType == casted->m_ArmorType &&
 				m_CrystalType == casted->m_CrystalType &&
-				m_PDef == casted->m_PDef &&
-				m_MDef == casted->m_MDef &&
+				m_PDefense == casted->m_PDefense &&
+				m_MDefense == casted->m_MDefense &&
 				m_SetEffect == casted->m_SetEffect &&
 				m_AddSetEffect == casted->m_AddSetEffect &&
 				m_EnchantEffect == casted->m_EnchantEffect;
@@ -75,13 +75,13 @@ namespace L2Bot::Domain::Entities
 			{
 				result.push_back({ "enchantLevel", std::to_string(m_EnchantLevel) });
 			}
-			if (m_PrevState.isNewState || m_PDef != m_PrevState.pDef)
+			if (m_PrevState.isNewState || m_PDefense != m_PrevState.pDefense)
 			{
-				result.push_back({ "pDef", std::to_string(m_PDef) });
+				result.push_back({ "pDefense", std::to_string(m_PDefense) });
 			}
-			if (m_PrevState.isNewState || m_MDef != m_PrevState.mDef)
+			if (m_PrevState.isNewState || m_MDefense != m_PrevState.mDefense)
 			{
-				result.push_back({ "mDef", std::to_string(m_MDef) });
+				result.push_back({ "mDefense", std::to_string(m_MDefense) });
 			}
 
 			return result;
@@ -99,8 +99,8 @@ namespace L2Bot::Domain::Entities
 			const uint16_t enchantLevel,
 			const Enums::ArmorType armorType,
 			const Enums::CrystalType crystalType,
-			const uint32_t pDef,
-			const uint32_t mDef,
+			const uint32_t pDefense,
+			const uint32_t mDefense,
 			const std::string& setEffect,
 			const std::string& addSetEffect,
 			const std::string& enchantEffect
@@ -120,8 +120,8 @@ namespace L2Bot::Domain::Entities
 			m_EnchantLevel(enchantLevel),
 			m_ArmorType(armorType),
 			m_CrystalType(crystalType),
-			m_PDef(pDef),
-			m_MDef(mDef),
+			m_PDefense(pDefense),
+			m_MDefense(mDefense),
 			m_SetEffect(setEffect),
 			m_AddSetEffect(addSetEffect),
 			m_EnchantEffect(enchantEffect)
@@ -134,8 +134,8 @@ namespace L2Bot::Domain::Entities
 			m_EnchantLevel(other->m_EnchantLevel),
 			m_ArmorType(other->m_ArmorType),
 			m_CrystalType(other->m_CrystalType),
-			m_PDef(other->m_PDef),
-			m_MDef(other->m_MDef),
+			m_PDefense(other->m_PDefense),
+			m_MDefense(other->m_MDefense),
 			m_SetEffect(other->m_SetEffect),
 			m_AddSetEffect(other->m_AddSetEffect),
 			m_EnchantEffect(other->m_EnchantEffect)
@@ -150,8 +150,8 @@ namespace L2Bot::Domain::Entities
 		{
 			bool isEquipped = 0;
 			uint16_t enchantLevel = 0;
-			uint32_t pDef = 0;
-			uint32_t mDef = 0;
+			uint32_t pDefense = 0;
+			uint32_t mDefense = 0;
 
 			bool isNewState = true;
 		};
@@ -161,8 +161,8 @@ namespace L2Bot::Domain::Entities
 		uint16_t m_EnchantLevel = 0;
 		Enums::ArmorType m_ArmorType = Enums::ArmorType::none;
 		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
-		uint32_t m_PDef = 0;
-		uint32_t m_MDef = 0;
+		uint32_t m_PDefense = 0;
+		uint32_t m_MDefense = 0;
 		std::string m_SetEffect = "";
 		std::string m_AddSetEffect = "";
 		std::string m_EnchantEffect = "";

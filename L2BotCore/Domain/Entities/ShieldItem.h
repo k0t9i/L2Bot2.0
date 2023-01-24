@@ -20,7 +20,7 @@ namespace L2Bot::Domain::Entities
 			m_EnchantLevel = casted->m_EnchantLevel;
 			m_CrystalType = casted->m_CrystalType;
 			m_Evasion = casted->m_Evasion;
-			m_PDef = casted->m_PDef;
+			m_PDefense = casted->m_PDefense;
 			m_DefRate = casted->m_DefRate;
 		}
 		void SaveState() override
@@ -30,7 +30,7 @@ namespace L2Bot::Domain::Entities
 			{
 				m_IsEquipped,
 				m_EnchantLevel,
-				m_PDef,
+				m_PDefense,
 				false
 			};
 		}
@@ -42,7 +42,7 @@ namespace L2Bot::Domain::Entities
 				m_EnchantLevel == casted->m_EnchantLevel &&
 				m_CrystalType == casted->m_CrystalType &&
 				m_Evasion == casted->m_Evasion &&
-				m_PDef == casted->m_PDef &&
+				m_PDefense == casted->m_PDefense &&
 				m_DefRate == casted->m_DefRate;
 		}
 
@@ -65,9 +65,9 @@ namespace L2Bot::Domain::Entities
 			{
 				result.push_back({ "enchantLevel", std::to_string(m_EnchantLevel) });
 			}
-			if (m_PrevState.isNewState || m_PDef != m_PrevState.pDef)
+			if (m_PrevState.isNewState || m_PDefense != m_PrevState.pDefense)
 			{
-				result.push_back({ "pDef", std::to_string(m_PDef) });
+				result.push_back({ "pDefense", std::to_string(m_PDefense) });
 			}
 
 			return result;
@@ -85,7 +85,7 @@ namespace L2Bot::Domain::Entities
 			const uint16_t enchantLevel,
 			const Enums::CrystalType crystalType,
 			const int16_t evasion,
-			const uint32_t pDef,
+			const uint32_t pDefense,
 			const uint16_t defRate
 		) :
 		BaseItem
@@ -103,7 +103,7 @@ namespace L2Bot::Domain::Entities
 			m_EnchantLevel(enchantLevel),
 			m_CrystalType(crystalType),
 			m_Evasion(evasion),
-			m_PDef(pDef),
+			m_PDefense(pDefense),
 			m_DefRate(defRate)
 		{
 		}
@@ -114,7 +114,7 @@ namespace L2Bot::Domain::Entities
 			m_EnchantLevel(other->m_EnchantLevel),
 			m_CrystalType(other->m_CrystalType),
 			m_Evasion(other->m_Evasion),
-			m_PDef(other->m_PDef),
+			m_PDefense(other->m_PDefense),
 			m_DefRate(other->m_DefRate)
 
 		{
@@ -128,7 +128,7 @@ namespace L2Bot::Domain::Entities
 		{
 			bool isEquipped = 0;
 			uint16_t enchantLevel = 0;
-			uint32_t pDef = 0;
+			uint32_t pDefense = 0;
 
 			bool isNewState = true;
 		};
@@ -138,7 +138,7 @@ namespace L2Bot::Domain::Entities
 		uint16_t m_EnchantLevel = 0;
 		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
 		int16_t m_Evasion = 0;
-		uint32_t m_PDef = 0;
+		uint32_t m_PDefense = 0;
 		uint16_t m_DefRate = 0;
 
 		GetState m_PrevState = GetState();
