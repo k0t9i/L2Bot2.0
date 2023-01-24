@@ -22,6 +22,7 @@ public:
 		Repositories::EntityRepositoryInterface& playerRepository,
 		Repositories::EntityRepositoryInterface& skillRepository,
 		Repositories::EntityRepositoryInterface& itemRepository,
+		Repositories::EntityRepositoryInterface& abnormalEffectService,
 		const Serializers::SerializerInterface& serializer,
 		Transports::TransportInterface& transport
 	) :
@@ -31,6 +32,7 @@ public:
 		m_PlayerService(Services::EntityService(playerRepository)),
 		m_SkillService(Services::EntityService(skillRepository)),
 		m_ItemService(Services::EntityService(itemRepository)),
+		m_AbnormalEffectService(Services::EntityService(abnormalEffectService)),
 		m_Serializer(serializer),
 		m_Transport(transport)
 	{
@@ -125,6 +127,7 @@ private:
 			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), "player"},
 			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), "skill"},
 			Serializers::SerializableStateContainer{m_ItemService.GetEntities(), "item"},
+			Serializers::SerializableStateContainer{m_AbnormalEffectService.GetEntities(), "abnormalEffect"},
 		};
 
 		std::vector<Serializers::Node> result;
@@ -147,6 +150,7 @@ private:
 		m_PlayerService.Invalidate();
 		m_SkillService.Invalidate();
 		m_ItemService.Invalidate();
+		m_AbnormalEffectService.Invalidate();
 	}
 
 private:
@@ -156,6 +160,7 @@ private:
 	Services::EntityService m_PlayerService;
 	Services::EntityService m_SkillService;
 	Services::EntityService m_ItemService;
+	Services::EntityService m_AbnormalEffectService;
 	const Serializers::SerializerInterface& m_Serializer;
 	Transports::TransportInterface& m_Transport;
 	bool m_Stopped = false;

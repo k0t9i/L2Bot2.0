@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Domain\DTO\EntityState.h" />
+    <ClInclude Include="Domain\Entities\AbnormalEffect.h" />
     <ClInclude Include="Domain\Entities\ArmorItem.h" />
     <ClInclude Include="Domain\Entities\EntityInterface.h" />
     <ClInclude Include="Domain\Entities\BaseItem.h" />

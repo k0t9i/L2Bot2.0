@@ -186,6 +186,7 @@
     <ClInclude Include="Versions\GameStructs\FNameInterface.h" />
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h" />
     <ClInclude Include="Versions\GameStructs\L2GameDataInterface.h" />
+    <ClInclude Include="Versions\Interlude\Factories\AbnormalEffectFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\ItemFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\NPCFactory.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Versions\Interlude\GameStructs\L2GameDataWrapper.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\FName.h" />
     <ClInclude Include="Transports\DebugViewTransport.h" />
+    <ClInclude Include="Versions\Interlude\Repositories\AbnormalEffectRepository.h" />
     <ClInclude Include="Versions\Interlude\Repositories\DropRepository.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Versions\GameStructs\FindObjectsTrait.h" />

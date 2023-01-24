@@ -7,12 +7,14 @@
 #include "Factories/PlayerFactory.h"
 #include "Factories/SkillFactory.h"
 #include "Factories/ItemFactory.h"
+#include "Factories/AbnormalEffectFactory.h"
 #include "Repositories/DropRepository.h"
 #include "Repositories/HeroRepository.h"
 #include "Repositories/NPCRepository.h"
 #include "Repositories/PlayerRepository.h"
 #include "Repositories/SkillRepository.h"
 #include "Repositories/ItemRepository.h"
+#include "Repositories/AbnormalEffectRepository.h"
 #include "GameStructs/NetworkHandlerWrapper.h"
 #include "GameStructs/GameEngineWrapper.h"
 #include "GameStructs/L2GameDataWrapper.h"
@@ -96,6 +98,16 @@ namespace Interlude
 			static EntityHandler handler;
 			static auto result = ItemRepository(
 				GetNetworkHandler(),
+				factory,
+				handler
+			);
+			return result;
+		}
+		AbnormalEffectRepository& GetAbnormalEffectRepository() const override
+		{
+			static auto factory = AbnormalEffectFactory(GetL2GameData(), GetFName());
+			static EntityHandler handler;
+			static auto result = AbnormalEffectRepository(
 				factory,
 				handler
 			);

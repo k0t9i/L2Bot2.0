@@ -190,9 +190,9 @@ namespace Interlude
 					ids[skillInfo[i]] = skillInfo[i + 2];
 				}
 
-				for (auto it = m_Skills.begin(); it != m_Skills.end();)
+				for (const auto& kvp : m_Skills)
 				{
-					const auto& skill = it->second;
+					const auto& skill = kvp.second;
 
 					const auto needToToggle = ids.find(skill->GetId()) != ids.end();
 					// buff time less than zero means this is a aura
@@ -205,10 +205,6 @@ namespace Interlude
 					else if (!skill->IsToggled() && needToToggle && isAura)
 					{
 						skill->UpdateToggle(true);
-					}
-					else
-					{
-						++it;
 					}
 				}
 			}

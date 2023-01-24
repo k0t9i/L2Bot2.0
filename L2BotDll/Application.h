@@ -25,6 +25,7 @@ public:
 			m_AbstractFactory.GetPlayerRepository(),
 			m_AbstractFactory.GetSkillRepository(),
 			m_AbstractFactory.GetItemRepository(),
+			m_AbstractFactory.GetAbnormalEffectRepository(),
 			m_Serializer,
 			m_Transport
 		)
