@@ -15,7 +15,7 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_CritRate;
 		}
-		const uint16_t GetPAttack() const
+		const uint32_t GetPAttack() const
 		{
 			return m_PAttack;
 		}
@@ -23,7 +23,7 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_AttackSpeed;
 		}
-		const uint16_t GetPDefense() const
+		const uint32_t GetPDefense() const
 		{
 			return m_PDefense;
 		}
@@ -31,11 +31,11 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Evasion;
 		}
-		const uint16_t GetMAttack() const
+		const uint32_t GetMAttack() const
 		{
 			return m_MAttack;
 		}
-		const uint16_t GetMDefense() const
+		const uint32_t GetMDefense() const
 		{
 			return m_MDefense;
 		}
@@ -101,12 +101,12 @@ namespace L2Bot::Domain::ValueObjects
 	private:
 		uint16_t m_Accuracy = 0;
 		uint16_t m_CritRate = 0;
-		uint16_t m_PAttack = 0;
+		uint32_t m_PAttack = 0;
 		uint16_t m_AttackSpeed = 0;
-		uint16_t m_PDefense = 0;
+		uint32_t m_PDefense = 0;
 		uint16_t m_Evasion = 0;
-		uint16_t m_MAttack = 0;
-		uint16_t m_MDefense = 0;
+		uint32_t m_MAttack = 0;
+		uint32_t m_MDefense = 0;
 		uint16_t m_CastingSpeed = 0;
 	};
 }
