@@ -99,8 +99,8 @@ namespace L2Bot::Domain::Entities
 			const uint16_t enchantLevel,
 			const Enums::ArmorType armorType,
 			const Enums::CrystalType crystalType,
-			const uint16_t pDef,
-			const uint16_t mDef,
+			const uint32_t pDef,
+			const uint32_t mDef,
 			const std::string& setEffect,
 			const std::string& addSetEffect,
 			const std::string& enchantEffect
@@ -150,8 +150,8 @@ namespace L2Bot::Domain::Entities
 		{
 			bool isEquipped = 0;
 			uint16_t enchantLevel = 0;
-			uint16_t pDef = 0;
-			uint16_t mDef = 0;
+			uint32_t pDef = 0;
+			uint32_t mDef = 0;
 
 			bool isNewState = true;
 		};
@@ -161,8 +161,8 @@ namespace L2Bot::Domain::Entities
 		uint16_t m_EnchantLevel = 0;
 		Enums::ArmorType m_ArmorType = Enums::ArmorType::none;
 		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
-		uint16_t m_PDef = 0;
-		uint16_t m_MDef = 0;
+		uint32_t m_PDef = 0;
+		uint32_t m_MDef = 0;
 		std::string m_SetEffect = "";
 		std::string m_AddSetEffect = "";
 		std::string m_EnchantEffect = "";

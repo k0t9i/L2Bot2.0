@@ -134,8 +134,8 @@ namespace Interlude
 				itemInfo.enchantLevel,
 				casted ? static_cast<Enums::ArmorType>(casted->armorType) : Enums::ArmorType::none,
 				casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
-				casted ? casted->pDef : 0,
-				casted ? casted->mDef : 0,
+				GetEnchantValue(casted ? casted->pDef : 0, itemInfo.enchantLevel, 1, 3),
+				GetEnchantValue(casted ? casted->mDef : 0, itemInfo.enchantLevel, 1, 3),
 				setEffect,
 				addSetEffect,
 				enchantEffect
@@ -167,8 +167,8 @@ namespace Interlude
 					casted ? static_cast<Enums::WeaponType>(casted->weaponType) : Enums::WeaponType::none,
 					casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
 					casted ? casted->rndDamage : 0,
-					casted ? casted->pAtk : 0,
-					casted ? casted->mAtk : 0,
+					GetEnchantValue(casted ? casted->pAtk : 0, itemInfo.enchantLevel, 3, 6),
+					GetEnchantValue(casted ? casted->mAtk : 0, itemInfo.enchantLevel, 3, 6),
 					casted ? casted->critical : 0,
 					casted ? casted->hitModify : 0,
 					casted ? casted->atkSpd : 0,
@@ -190,7 +190,7 @@ namespace Interlude
 				itemInfo.enchantLevel,
 				casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
 				casted ? casted->shieldEvasion : 0,
-				casted ? casted->shieldPdef : 0,
+				GetEnchantValue(casted ? casted->shieldPdef : 0, itemInfo.enchantLevel, 1, 3),
 				casted ? casted->shieldDefRate : 0
 			);
 		}

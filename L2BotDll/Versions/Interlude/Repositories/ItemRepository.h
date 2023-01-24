@@ -72,6 +72,7 @@ namespace Interlude
 			}
 		}
 
+		//todo need to delete items if they are not exists in create "queue"
 		void OnItemCreated(const Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
@@ -112,7 +113,6 @@ namespace Interlude
 			}
 		}
 
-		//todo deleted ehchant scroll
 		void OnItemDeleted(const Event& evt)
 		{
 			//fixme may be a race condition

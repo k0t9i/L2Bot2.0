@@ -1,5 +1,7 @@
 #include "pch.h"
+
 #include "Common.h"
+#include <cmath>
 #include <Rpc.h>
 #pragma comment(lib, "Rpcrt4.lib")
 
@@ -31,4 +33,14 @@ std::string GenerateUUID()
     wszUuid = NULL;
 
     return std::string(ws.begin(), ws.end());
+}
+
+std::uint32_t GetEnchantValue(const std::uint16_t baseValue, const std::uint16_t enchantLevel, const uint8_t lowEnchantDelta, const uint8_t highEnchantDelta)
+{
+    if (baseValue == 0)
+    {
+        return 0;
+    }
+
+    return baseValue + enchantLevel * lowEnchantDelta + max(enchantLevel - 3, 0) * (highEnchantDelta - lowEnchantDelta);
 }

@@ -66,7 +66,6 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
 				OnHeroDeleted(evt);
 			});
-			// TODO delete outdated skills: on hero change subclass?
 		}
 
 		SkillRepository() = delete;
@@ -91,6 +90,8 @@ namespace Interlude
 				m_ReloadingTimers.StopAll();
 			}
 		}
+
+		//todo need to delete skills if they are not exists in create "queue"
 		void OnSkillCreated(const Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);

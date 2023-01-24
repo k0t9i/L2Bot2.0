@@ -85,7 +85,7 @@ namespace L2Bot::Domain::Entities
 			const uint16_t enchantLevel,
 			const Enums::CrystalType crystalType,
 			const int16_t evasion,
-			const uint16_t pDef,
+			const uint32_t pDef,
 			const uint16_t defRate
 		) :
 		BaseItem
@@ -128,7 +128,7 @@ namespace L2Bot::Domain::Entities
 		{
 			bool isEquipped = 0;
 			uint16_t enchantLevel = 0;
-			uint16_t pDef = 0;
+			uint32_t pDef = 0;
 
 			bool isNewState = true;
 		};
@@ -138,7 +138,7 @@ namespace L2Bot::Domain::Entities
 		uint16_t m_EnchantLevel = 0;
 		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
 		int16_t m_Evasion = 0;
-		uint16_t m_PDef = 0;
+		uint32_t m_PDef = 0;
 		uint16_t m_DefRate = 0;
 
 		GetState m_PrevState = GetState();

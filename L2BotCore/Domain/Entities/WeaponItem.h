@@ -112,8 +112,8 @@ namespace L2Bot::Domain::Entities
 			const Enums::WeaponType weaponType,
 			const Enums::CrystalType crystalType,
 			const uint8_t rndDamage,
-			const uint16_t pAtk,
-			const uint16_t mAtk,
+			const uint32_t pAtk,
+			const uint32_t mAtk,
 			const uint16_t critical,
 			const int8_t hitModify,
 			const uint16_t atkSpd,
@@ -175,8 +175,8 @@ namespace L2Bot::Domain::Entities
 		{
 			bool isEquipped = 0;
 			uint16_t enchantLevel = 0;
-			uint16_t pAtk = 0;
-			uint16_t mAtk = 0;
+			uint32_t pAtk = 0;
+			uint32_t mAtk = 0;
 
 			bool isNewState = true;
 		};
@@ -187,8 +187,8 @@ namespace L2Bot::Domain::Entities
 		Enums::WeaponType m_WeaponType = Enums::WeaponType::none;
 		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
 		uint8_t m_RndDamage = 0;
-		uint16_t m_PAtk = 0;
-		uint16_t m_MAtk = 0;
+		uint32_t m_PAtk = 0;
+		uint32_t m_MAtk = 0;
 		uint16_t m_Critical = 0;
 		int8_t m_HitModify = 0;
 		uint16_t m_AtkSpd = 0;
