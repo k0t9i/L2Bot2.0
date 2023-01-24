@@ -8,6 +8,8 @@
 #include "../../../Common/Common.h"
 #include "Domain/Entities/EtcItem.h"
 #include "Domain/Entities/ArmorItem.h"
+#include "Domain/Entities/WeaponItem.h"
+#include "Domain/Entities/ShieldItem.h"
 #include "../../../DTO/ItemData.h"
 
 using namespace L2Bot::Domain;
@@ -43,7 +45,7 @@ namespace Interlude
 				case L2::ItemDataType::ARMOR:
 					return CreateArmor(itemInfo, data, name, icon, description);
 				case L2::ItemDataType::WEAPON:
-					return CreateEtc(itemInfo, data, name, icon, description);
+					return CreateWeaponOrShield(itemInfo, data, name, icon, description);
 				}
 			}
 
@@ -64,6 +66,20 @@ namespace Interlude
 				if (object)
 				{
 					return std::make_unique<Entities::ArmorItem>(object);
+				}
+			}
+			{
+				const auto object = dynamic_cast<const Entities::WeaponItem*>(other);
+				if (object)
+				{
+					return std::make_unique<Entities::WeaponItem>(object);
+				}
+			}
+			{
+				const auto object = dynamic_cast<const Entities::ShieldItem*>(other);
+				if (object)
+				{
+					return std::make_unique<Entities::ShieldItem>(object);
 				}
 			}
 
@@ -123,6 +139,59 @@ namespace Interlude
 				setEffect,
 				addSetEffect,
 				enchantEffect
+			);
+		}
+
+		std::unique_ptr<Entities::BaseItem> CreateWeaponOrShield(
+			const ItemData& itemInfo,
+			const FL2ItemDataBase* itemData,
+			const std::string& name,
+			const std::string& icon,
+			const std::string& description
+		) const
+		{
+			const auto casted = static_cast<const FL2WeaponItemData*>(itemData);
+
+			if (casted->weaponType != L2::WeaponType::SHIELD)
+			{
+				return std::make_unique<Entities::WeaponItem>(
+					itemInfo.objectId,
+					itemInfo.itemId,
+					itemInfo.mana,
+					name,
+					icon,
+					description,
+					itemData ? itemData->weight : 0,
+					itemInfo.isEquipped > 0,
+					itemInfo.enchantLevel,
+					casted ? static_cast<Enums::WeaponType>(casted->weaponType) : Enums::WeaponType::none,
+					casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
+					casted ? casted->rndDamage : 0,
+					casted ? casted->pAtk : 0,
+					casted ? casted->mAtk : 0,
+					casted ? casted->critical : 0,
+					casted ? casted->hitModify : 0,
+					casted ? casted->atkSpd : 0,
+					casted ? casted->mpConsume : 0,
+					casted ? casted->soulshotCount : 0,
+					casted ? casted->spiritshotCount : 0
+				);
+			}
+
+			return std::make_unique<Entities::ShieldItem>(
+				itemInfo.objectId,
+				itemInfo.itemId,
+				itemInfo.mana,
+				name,
+				icon,
+				description,
+				itemData ? itemData->weight : 0,
+				itemInfo.isEquipped > 0,
+				itemInfo.enchantLevel,
+				casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
+				casted ? casted->shieldEvasion : 0,
+				casted ? casted->shieldPdef : 0,
+				casted ? casted->shieldDefRate : 0
 			);
 		}
 

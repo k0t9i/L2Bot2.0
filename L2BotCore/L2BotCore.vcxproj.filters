@@ -123,6 +123,18 @@
     <ClInclude Include="Domain\Enums\CrystalType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Domain\Enums\WeaponType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Entities\WeaponItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Entities\ShieldItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Enums\ItemType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

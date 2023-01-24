@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "EntityInterface.h"
+#include "../Enums/ItemType.h"
 
 namespace L2Bot::Domain::Entities
 {
@@ -25,6 +26,7 @@ namespace L2Bot::Domain::Entities
 			m_IconName = casted->m_IconName;
 			m_Description = casted->m_Description;
 			m_Weight = casted->m_Weight;
+			m_Type = casted->m_Type;
 		}
 		virtual void SaveState() override
 		{
@@ -44,7 +46,8 @@ namespace L2Bot::Domain::Entities
 				m_Name == casted->m_Name &&
 				m_IconName == casted->m_IconName &&
 				m_Description == casted->m_Description &&
-				m_Weight == casted->m_Weight;
+				m_Weight == casted->m_Weight &&
+				m_Type == casted->m_Type;
 		}
 
 		virtual const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -56,6 +59,7 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState)
 			{
+				result.push_back({ "type", std::to_string(static_cast<int8_t>(m_Type))});
 				result.push_back({ "name", m_Name });
 				result.push_back({ "iconName", m_IconName });
 				result.push_back({ "description", m_Description });
@@ -80,7 +84,8 @@ namespace L2Bot::Domain::Entities
 			const std::string& name,
 			const std::string& iconName,
 			const std::string& description,
-			const uint16_t weight
+			const uint16_t weight,
+			const Enums::ItemType type
 		) :
 			m_ObjectId(objectId),
 			m_ItemId(itemId),
@@ -88,7 +93,8 @@ namespace L2Bot::Domain::Entities
 			m_Name(name),
 			m_IconName(iconName),
 			m_Description(description),
-			m_Weight(weight)
+			m_Weight(weight),
+			m_Type(type)
 		{
 		}
 
@@ -99,7 +105,8 @@ namespace L2Bot::Domain::Entities
 			m_Name(other->m_Name),
 			m_IconName(other->m_IconName),
 			m_Description(other->m_Description),
-			m_Weight(other->m_Weight)
+			m_Weight(other->m_Weight),
+			m_Type(other->m_Type)
 		{
 		}
 
@@ -123,6 +130,7 @@ namespace L2Bot::Domain::Entities
 		std::string m_IconName = "";
 		std::string m_Description = "";
 		uint16_t m_Weight = 0;
+		Enums::ItemType m_Type = Enums::ItemType::none;
 		GetState m_PrevState = GetState();
 	};
 }

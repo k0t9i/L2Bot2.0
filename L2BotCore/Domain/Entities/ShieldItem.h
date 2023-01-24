@@ -3,29 +3,25 @@
 #include <string>
 #include <vector>
 #include "BaseItem.h"
-#include "../Enums/ArmorType.h"
 #include "../Enums/CrystalType.h"
 
 namespace L2Bot::Domain::Entities
 {
-	class ArmorItem : public BaseItem
+	class ShieldItem : public BaseItem
 	{
 	public:
 		void Update(const EntityInterface* other) override
 		{
-			const ArmorItem* casted = static_cast<const ArmorItem*>(other);
+			const ShieldItem* casted = static_cast<const ShieldItem*>(other);
 
 			BaseItem::Update(other);
 
 			m_IsEquipped = casted->m_IsEquipped;
 			m_EnchantLevel = casted->m_EnchantLevel;
-			m_ArmorType = casted->m_ArmorType;
 			m_CrystalType = casted->m_CrystalType;
+			m_Evasion = casted->m_Evasion;
 			m_PDef = casted->m_PDef;
-			m_MDef = casted->m_MDef;
-			m_SetEffect = casted->m_SetEffect;
-			m_AddSetEffect = casted->m_AddSetEffect;
-			m_EnchantEffect = casted->m_EnchantEffect;
+			m_DefRate = casted->m_DefRate;
 		}
 		void SaveState() override
 		{
@@ -35,23 +31,19 @@ namespace L2Bot::Domain::Entities
 				m_IsEquipped,
 				m_EnchantLevel,
 				m_PDef,
-				m_MDef,
 				false
 			};
 		}
 		const bool IsEqual(const EntityInterface* other) const override
 		{
-			const ArmorItem* casted = static_cast<const ArmorItem*>(other);
+			const ShieldItem* casted = static_cast<const ShieldItem*>(other);
 			return BaseItem::IsEqual(other) &&
 				m_IsEquipped == casted->m_IsEquipped &&
 				m_EnchantLevel == casted->m_EnchantLevel &&
-				m_ArmorType == casted->m_ArmorType &&
 				m_CrystalType == casted->m_CrystalType &&
+				m_Evasion == casted->m_Evasion &&
 				m_PDef == casted->m_PDef &&
-				m_MDef == casted->m_MDef &&
-				m_SetEffect == casted->m_SetEffect &&
-				m_AddSetEffect == casted->m_AddSetEffect &&
-				m_EnchantEffect == casted->m_EnchantEffect;
+				m_DefRate == casted->m_DefRate;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -60,11 +52,9 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "armorType", std::to_string(static_cast<uint8_t>(m_ArmorType)) });
 				result.push_back({ "crystalType", std::to_string(static_cast<int8_t>(m_CrystalType)) });
-				result.push_back({ "setEffect", m_SetEffect });
-				result.push_back({ "addSetEffect", m_AddSetEffect });
-				result.push_back({ "enchantEffect", m_EnchantEffect });
+				result.push_back({ "evasion", std::to_string(m_Evasion) });
+				result.push_back({ "defRate", std::to_string(m_DefRate) });
 			}
 
 			if (m_PrevState.isNewState || m_IsEquipped != m_PrevState.isEquipped)
@@ -79,15 +69,11 @@ namespace L2Bot::Domain::Entities
 			{
 				result.push_back({ "pDef", std::to_string(m_PDef) });
 			}
-			if (m_PrevState.isNewState || m_MDef != m_PrevState.mDef)
-			{
-				result.push_back({ "mDef", std::to_string(m_MDef) });
-			}
 
 			return result;
 		}
 
-		ArmorItem(
+		ShieldItem(
 			const uint32_t objectId,
 			const uint32_t itemId,
 			const int32_t mana,
@@ -97,53 +83,45 @@ namespace L2Bot::Domain::Entities
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,
-			const Enums::ArmorType armorType,
 			const Enums::CrystalType crystalType,
+			const int16_t evasion,
 			const uint16_t pDef,
-			const uint16_t mDef,
-			const std::string& setEffect,
-			const std::string& addSetEffect,
-			const std::string& enchantEffect
+			const uint16_t defRate
 		) :
-			BaseItem
-			(
-				objectId,
-				itemId,
-				mana,
-				name,
-				iconName,
-				description,
-				weight,
-				Enums::ItemType::armor
-			),
+		BaseItem
+		(
+			objectId,
+			itemId,
+			mana,
+			name,
+			iconName,
+			description,
+			weight,
+			Enums::ItemType::shield
+		),
 			m_IsEquipped(isEquipped),
 			m_EnchantLevel(enchantLevel),
-			m_ArmorType(armorType),
 			m_CrystalType(crystalType),
+			m_Evasion(evasion),
 			m_PDef(pDef),
-			m_MDef(mDef),
-			m_SetEffect(setEffect),
-			m_AddSetEffect(addSetEffect),
-			m_EnchantEffect(enchantEffect)
+			m_DefRate(defRate)
 		{
 		}
 
-		ArmorItem(const ArmorItem* other) :
+		ShieldItem(const ShieldItem* other) :
 			BaseItem(other),
 			m_IsEquipped(other->m_IsEquipped),
 			m_EnchantLevel(other->m_EnchantLevel),
-			m_ArmorType(other->m_ArmorType),
 			m_CrystalType(other->m_CrystalType),
+			m_Evasion(other->m_Evasion),
 			m_PDef(other->m_PDef),
-			m_MDef(other->m_MDef),
-			m_SetEffect(other->m_SetEffect),
-			m_AddSetEffect(other->m_AddSetEffect),
-			m_EnchantEffect(other->m_EnchantEffect)
+			m_DefRate(other->m_DefRate)
+
 		{
 		}
 
-		ArmorItem() = default;
-		virtual ~ArmorItem() = default;
+		ShieldItem() = default;
+		virtual ~ShieldItem() = default;
 
 	private:
 		struct GetState
@@ -151,7 +129,6 @@ namespace L2Bot::Domain::Entities
 			bool isEquipped = 0;
 			uint16_t enchantLevel = 0;
 			uint16_t pDef = 0;
-			uint16_t mDef = 0;
 
 			bool isNewState = true;
 		};
@@ -159,13 +136,11 @@ namespace L2Bot::Domain::Entities
 	private:
 		bool m_IsEquipped = 0;
 		uint16_t m_EnchantLevel = 0;
-		Enums::ArmorType m_ArmorType = Enums::ArmorType::none;
 		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
+		int16_t m_Evasion = 0;
 		uint16_t m_PDef = 0;
-		uint16_t m_MDef = 0;
-		std::string m_SetEffect = "";
-		std::string m_AddSetEffect = "";
-		std::string m_EnchantEffect = "";
+		uint16_t m_DefRate = 0;
+
 		GetState m_PrevState = GetState();
 	};
 }

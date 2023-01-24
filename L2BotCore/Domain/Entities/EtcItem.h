@@ -71,7 +71,8 @@ namespace L2Bot::Domain::Entities
 				name,
 				iconName,
 				description,
-				weight
+				weight,
+				Enums::ItemType::etc
 			),
 			m_Amount(amount),
 			m_IsQuest(isQuest)
