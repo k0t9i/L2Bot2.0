@@ -11,6 +11,7 @@
 #include "../../../Events/ItemUpdatedEvent.h"
 #include "../../../Events/ItemDeletedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
+#include "../../../Events/ItemAutousedEvent.h"
 #include "../../../Events/EventDispatcher.h"
 
 using namespace L2Bot::Domain;
@@ -61,6 +62,9 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
 				OnHeroDeleted(evt);
 			});
+			EventDispatcher::GetInstance().Subscribe(ItemAutousedEvent::name, [this](const Event& evt) {
+				OnItemAutoused(evt);
+			});
 		}
 
 		void OnHeroDeleted(const Event& evt)
@@ -69,6 +73,31 @@ namespace Interlude
 			if (evt.GetName() == HeroDeletedEvent::name)
 			{
 				Reset();
+			}
+		}
+		
+		void OnItemAutoused(const Event& evt)
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			if (evt.GetName() == ItemAutousedEvent::name)
+			{
+				const auto casted = static_cast<const ItemAutousedEvent&>(evt);
+				const auto& data = casted.GetAutouseInfo();
+
+				const auto itemId = data[0];
+				const bool isEnabled = data[1] > 0;
+
+				for (const auto& item : m_Items)
+				{
+					if (item.second->GetItemId() == itemId)
+					{
+						auto ptr = dynamic_cast<Entities::EtcItem*>(item.second.get());
+						if (ptr)
+						{
+							ptr->Autouse(isEnabled);
+						}
+					}
+				}
 			}
 		}
 

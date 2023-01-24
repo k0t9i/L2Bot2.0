@@ -170,6 +170,7 @@
     <ClInclude Include="Events\EventDispatcher.h" />
     <ClInclude Include="Events\HeroCreatedEvent.h" />
     <ClInclude Include="Events\HeroDeletedEvent.h" />
+    <ClInclude Include="Events\ItemAutousedEvent.h" />
     <ClInclude Include="Events\ItemCreatedEvent.h" />
     <ClInclude Include="Events\ItemDeletedEvent.h" />
     <ClInclude Include="Events\ItemUpdatedEvent.h" />

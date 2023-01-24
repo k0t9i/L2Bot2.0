@@ -26,6 +26,7 @@ namespace Interlude
 		static void(__thiscall* __AddAbnormalStatus)(GameEngine*, L2ParamStack&);
 		static void(__thiscall* __AddInventoryItem)(GameEngine*, ItemInfo&);
 		static void(__thiscall* __OnReceiveUpdateItemList)(GameEngine*, UpdateItemListActionType, ItemInfo&);
+		static void(__thiscall* __OnExAutoSoulShot)(GameEngine*, L2ParamStack&);
 
 		static void __fastcall __Init_hook(GameEngine* This, uint32_t /*edx*/, float_t unk);
 		static void __fastcall __OnSkillListPacket_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
@@ -34,6 +35,7 @@ namespace Interlude
 		static void __fastcall __AddAbnormalStatus_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
 		static void __fastcall __AddInventoryItem_hook(GameEngine* This, int /*edx*/, ItemInfo& itemInfo);
 		static void __fastcall __OnReceiveUpdateItemList_hook(GameEngine* This, int /*edx*/, UpdateItemListActionType actionType, ItemInfo& itemInfo);
+		static void __fastcall __OnExAutoSoulShot_hook(GameEngine* This, int /*edx*/, L2ParamStack& stack);
 		
 	private:
 		static void* originalInitAddress;

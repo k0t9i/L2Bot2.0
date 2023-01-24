@@ -14,6 +14,10 @@ namespace L2Bot::Domain::Entities
 		{
 			return m_ObjectId;
 		}
+		const uint32_t GetItemId() const
+		{
+			return m_ItemId;
+		}
 		virtual void Update(const EntityInterface* other) override
 		{
 			const BaseItem* casted = static_cast<const BaseItem*>(other);

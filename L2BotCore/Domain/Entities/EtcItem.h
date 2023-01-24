@@ -9,6 +9,11 @@ namespace L2Bot::Domain::Entities
 	class EtcItem : public BaseItem
 	{
 	public:
+		void Autouse(bool enabled)
+		{
+			m_IsAutoused = enabled;
+		}
+
 		void Update(const EntityInterface* other) override
 		{
 			const EtcItem* casted = static_cast<const EtcItem*>(other);
@@ -17,6 +22,7 @@ namespace L2Bot::Domain::Entities
 
 			m_Amount = casted->m_Amount;
 			m_IsQuest = casted->m_IsQuest;
+			m_IsAutoused = casted->m_IsAutoused;
 		}
 		void SaveState() override
 		{
@@ -24,6 +30,7 @@ namespace L2Bot::Domain::Entities
 			m_PrevState =
 			{
 				m_Amount,
+				m_IsAutoused,
 				false
 			};
 		}
@@ -32,7 +39,8 @@ namespace L2Bot::Domain::Entities
 			const EtcItem* casted = static_cast<const EtcItem*>(other);
 			return BaseItem::IsEqual(other) &&
 				m_IsQuest == casted->m_IsQuest &&
-				m_Amount == casted->m_Amount;
+				m_Amount == casted->m_Amount &&
+				m_IsAutoused == casted->m_IsAutoused;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -47,6 +55,10 @@ namespace L2Bot::Domain::Entities
 			if (m_PrevState.isNewState || m_Amount != m_PrevState.amount)
 			{
 				result.push_back({ "amount", std::to_string(m_Amount) });
+			}
+			if (m_PrevState.isNewState || m_IsAutoused != m_PrevState.isAutoused)
+			{
+				result.push_back({ "isAutoused", std::to_string(m_IsAutoused) });
 			}
 
 			return result;
@@ -82,7 +94,7 @@ namespace L2Bot::Domain::Entities
 		EtcItem(const EtcItem* other) :
 			BaseItem(other),
 			m_Amount(other->m_Amount),
-			m_IsQuest(other->m_IsQuest)
+			m_IsAutoused(other->m_IsAutoused)
 		{
 		}
 
@@ -93,6 +105,7 @@ namespace L2Bot::Domain::Entities
 		struct GetState
 		{
 			uint32_t amount = 0;
+			bool isAutoused = false;
 
 			bool isNewState = true;
 		};
@@ -100,6 +113,7 @@ namespace L2Bot::Domain::Entities
 	private:
 		uint32_t m_Amount = 0;
 		bool m_IsQuest = false;
+		bool m_IsAutoused = false;
 		GetState m_PrevState = GetState();
 	};
 }

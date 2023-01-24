@@ -171,6 +171,9 @@
     <ClInclude Include="Events\ItemDeletedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Events\ItemAutousedEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

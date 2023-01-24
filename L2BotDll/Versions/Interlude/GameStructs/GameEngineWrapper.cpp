@@ -10,6 +10,7 @@
 #include "../../../Events/ItemCreatedEvent.h"
 #include "../../../Events/ItemUpdatedEvent.h"
 #include "../../../Events/ItemDeletedEvent.h"
+#include "../../../Events/ItemAutousedEvent.h"
 #include "../../../DTO/ItemData.h"
 
 namespace Interlude
@@ -24,6 +25,7 @@ namespace Interlude
 	void(__thiscall* GameEngineWrapper::__AddAbnormalStatus)(GameEngine*, L2ParamStack&) = 0;
 	void(__thiscall* GameEngineWrapper::__AddInventoryItem)(GameEngine*, ItemInfo&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnReceiveUpdateItemList)(GameEngine*, UpdateItemListActionType, ItemInfo&) = 0;
+	void(__thiscall* GameEngineWrapper::__OnExAutoSoulShot)(GameEngine*, L2ParamStack&) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
@@ -50,6 +52,9 @@ namespace Interlude
 		(FARPROC&)__OnReceiveUpdateItemList = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnReceiveUpdateItemList@UGameEngine@@UAEXHAAUItemInfo@@@Z"), __OnReceiveUpdateItemList_hook
 		);
+		(FARPROC&)__OnExAutoSoulShot = (FARPROC)splice(
+			GetProcAddress(hModule, "?OnExAutoSoulShot@UGameEngine@@UAEXAAVL2ParamStack@@@Z"), __OnExAutoSoulShot_hook
+		);
 	}
 
 	void GameEngineWrapper::Restore()
@@ -61,6 +66,7 @@ namespace Interlude
 		restore((void*&)__AddAbnormalStatus);
 		restore((void*&)__AddInventoryItem);
 		restore((void*&)__OnReceiveUpdateItemList);
+		restore((void*&)__OnExAutoSoulShot);
 	}
 
 	void __fastcall GameEngineWrapper::__Init_hook(GameEngine* This, uint32_t /*edx*/, float_t unk)
@@ -146,5 +152,11 @@ namespace Interlude
 			break;
 		}
 		(*__OnReceiveUpdateItemList)(This, actionType, itemInfo);
+	}
+
+	void __fastcall GameEngineWrapper::__OnExAutoSoulShot_hook(GameEngine* This, int, L2ParamStack& stack)
+	{
+		EventDispatcher::GetInstance().Dispatch(ItemAutousedEvent{ stack.GetBufferAsVector<uint32_t>() });
+		(*__OnExAutoSoulShot)(This, stack);
 	}
 }
