@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 #include "BaseItem.h"
-#include "../Enums/WeaponType.h"
-#include "../Enums/CrystalType.h"
+#include "../Enums/WeaponTypeEnum.h"
+#include "../Enums/CrystalTypeEnum.h"
 
 namespace L2Bot::Domain::Entities
 {
@@ -109,8 +109,8 @@ namespace L2Bot::Domain::Entities
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,
-			const Enums::WeaponType weaponType,
-			const Enums::CrystalType crystalType,
+			const Enums::WeaponTypeEnum weaponType,
+			const Enums::CrystalTypeEnum crystalType,
 			const uint8_t rndDamage,
 			const uint32_t pAttack,
 			const uint32_t mAttack,
@@ -130,7 +130,7 @@ namespace L2Bot::Domain::Entities
 				iconName,
 				description,
 				weight,
-				Enums::ItemType::weapon
+				Enums::ItemTypeEnum::weapon
 			),
 			m_IsEquipped(isEquipped),
 			m_EnchantLevel(enchantLevel),
@@ -184,8 +184,8 @@ namespace L2Bot::Domain::Entities
 	private:
 		bool m_IsEquipped = 0;
 		uint16_t m_EnchantLevel = 0;
-		Enums::WeaponType m_WeaponType = Enums::WeaponType::none;
-		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
+		Enums::WeaponTypeEnum m_WeaponType = Enums::WeaponTypeEnum::none;
+		Enums::CrystalTypeEnum m_CrystalType = Enums::CrystalTypeEnum::none;
 		uint8_t m_RndDamage = 0;
 		uint32_t m_PAttack = 0;
 		uint32_t m_MAttack = 0;

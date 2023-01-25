@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "EntityInterface.h"
-#include "../Enums/ItemType.h"
+#include "../Enums/ItemTypeEnum.h"
 
 namespace L2Bot::Domain::Entities
 {
@@ -89,7 +89,7 @@ namespace L2Bot::Domain::Entities
 			const std::string& iconName,
 			const std::string& description,
 			const uint16_t weight,
-			const Enums::ItemType type
+			const Enums::ItemTypeEnum type
 		) :
 			m_ObjectId(objectId),
 			m_ItemId(itemId),
@@ -134,7 +134,7 @@ namespace L2Bot::Domain::Entities
 		std::string m_IconName = "";
 		std::string m_Description = "";
 		uint16_t m_Weight = 0;
-		Enums::ItemType m_Type = Enums::ItemType::none;
+		Enums::ItemTypeEnum m_Type = Enums::ItemTypeEnum::none;
 		GetState m_PrevState = GetState();
 	};
 }

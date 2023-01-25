@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "BaseItem.h"
-#include "../Enums/CrystalType.h"
+#include "../Enums/CrystalTypeEnum.h"
 
 namespace L2Bot::Domain::Entities
 {
@@ -83,7 +83,7 @@ namespace L2Bot::Domain::Entities
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,
-			const Enums::CrystalType crystalType,
+			const Enums::CrystalTypeEnum crystalType,
 			const int16_t evasion,
 			const uint32_t pDefense,
 			const uint16_t defRate
@@ -97,7 +97,7 @@ namespace L2Bot::Domain::Entities
 			iconName,
 			description,
 			weight,
-			Enums::ItemType::shield
+			Enums::ItemTypeEnum::shield
 		),
 			m_IsEquipped(isEquipped),
 			m_EnchantLevel(enchantLevel),
@@ -136,7 +136,7 @@ namespace L2Bot::Domain::Entities
 	private:
 		bool m_IsEquipped = 0;
 		uint16_t m_EnchantLevel = 0;
-		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
+		Enums::CrystalTypeEnum m_CrystalType = Enums::CrystalTypeEnum::none;
 		int16_t m_Evasion = 0;
 		uint32_t m_PDefense = 0;
 		uint16_t m_DefRate = 0;

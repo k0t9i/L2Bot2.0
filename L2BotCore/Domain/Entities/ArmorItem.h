@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 #include "BaseItem.h"
-#include "../Enums/ArmorType.h"
-#include "../Enums/CrystalType.h"
+#include "../Enums/ArmorTypeEnum.h"
+#include "../Enums/CrystalTypeEnum.h"
 
 namespace L2Bot::Domain::Entities
 {
@@ -97,8 +97,8 @@ namespace L2Bot::Domain::Entities
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,
-			const Enums::ArmorType armorType,
-			const Enums::CrystalType crystalType,
+			const Enums::ArmorTypeEnum armorType,
+			const Enums::CrystalTypeEnum crystalType,
 			const uint32_t pDefense,
 			const uint32_t mDefense,
 			const std::string& setEffect,
@@ -114,7 +114,7 @@ namespace L2Bot::Domain::Entities
 				iconName,
 				description,
 				weight,
-				Enums::ItemType::armor
+				Enums::ItemTypeEnum::armor
 			),
 			m_IsEquipped(isEquipped),
 			m_EnchantLevel(enchantLevel),
@@ -159,8 +159,8 @@ namespace L2Bot::Domain::Entities
 	private:
 		bool m_IsEquipped = 0;
 		uint16_t m_EnchantLevel = 0;
-		Enums::ArmorType m_ArmorType = Enums::ArmorType::none;
-		Enums::CrystalType m_CrystalType = Enums::CrystalType::none;
+		Enums::ArmorTypeEnum m_ArmorType = Enums::ArmorTypeEnum::none;
+		Enums::CrystalTypeEnum m_CrystalType = Enums::CrystalTypeEnum::none;
 		uint32_t m_PDefense = 0;
 		uint32_t m_MDefense = 0;
 		std::string m_SetEffect = "";

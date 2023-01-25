@@ -117,13 +117,13 @@
     <ClInclude Include="Domain\Entities\ArmorItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Enums\ArmorType.h">
+    <ClInclude Include="Domain\Enums\ArmorTypeEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Enums\CrystalType.h">
+    <ClInclude Include="Domain\Enums\CrystalTypeEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Enums\WeaponType.h">
+    <ClInclude Include="Domain\Enums\WeaponTypeEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Entities\WeaponItem.h">
@@ -132,10 +132,13 @@
     <ClInclude Include="Domain\Entities\ShieldItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Enums\ItemType.h">
+    <ClInclude Include="Domain\Enums\ItemTypeEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Entities\AbnormalEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Enums\ChatChannelEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,12 +4,14 @@
 
 namespace L2Bot::Domain::Enums
 {
-	enum class ItemType : int8_t
+	enum class CrystalTypeEnum : int8_t
 	{
 		none = -1,
-		etc,
-		armor,
-		weapon,
-		shield
+		ng,
+		d,
+		c,
+		b,
+		a,
+		s
 	};
 }

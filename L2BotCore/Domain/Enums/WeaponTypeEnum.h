@@ -4,7 +4,7 @@
 
 namespace L2Bot::Domain::Enums
 {
-	enum class WeaponType : uint8_t
+	enum class WeaponTypeEnum : uint8_t
 	{
 		none = 0,
 		sword,
