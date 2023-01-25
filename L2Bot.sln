@@ -5,11 +5,6 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "L2BotCore", "L2BotCore\L2BotCore.vcxproj", "{504A5403-BA08-46DF-AA8A-B79993B56BCA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.vcxproj", "{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{504A5403-BA08-46DF-AA8A-B79993B56BCA} = {504A5403-BA08-46DF-AA8A-B79993B56BCA}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "L2BotDll", "L2BotDll\L2BotDll.vcxproj", "{F077B130-780F-4C72-AF56-E98B104A2A7D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{54FBE631-3F9B-458C-9DB2-43A868CDB806} = {54FBE631-3F9B-458C-9DB2-43A868CDB806}
@@ -17,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "L2BotDll", "L2BotDll\L2BotD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectionLibrary", "InjectionLibrary\InjectionLibrary.vcxproj", "{54FBE631-3F9B-458C-9DB2-43A868CDB806}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{D3E7234A-C1B0-4CA8-B9D2-04BF9DD991D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "TestClient\TestClient.csproj", "{D3E7234A-C1B0-4CA8-B9D2-04BF9DD991D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,18 +36,6 @@ Global
 		{504A5403-BA08-46DF-AA8A-B79993B56BCA}.Release|x64.Build.0 = Release|x64
 		{504A5403-BA08-46DF-AA8A-B79993B56BCA}.Release|x86.ActiveCfg = Release|Win32
 		{504A5403-BA08-46DF-AA8A-B79993B56BCA}.Release|x86.Build.0 = Release|Win32
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Debug|Any CPU.Build.0 = Debug|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Debug|x64.ActiveCfg = Debug|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Debug|x64.Build.0 = Debug|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Debug|x86.ActiveCfg = Debug|Win32
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Debug|x86.Build.0 = Debug|Win32
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Release|Any CPU.ActiveCfg = Release|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Release|Any CPU.Build.0 = Release|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Release|x64.ActiveCfg = Release|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Release|x64.Build.0 = Release|x64
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Release|x86.ActiveCfg = Release|Win32
-		{28B1B2BC-BB6C-483E-B18D-E532A29ED8EA}.Release|x86.Build.0 = Release|Win32
 		{F077B130-780F-4C72-AF56-E98B104A2A7D}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{F077B130-780F-4C72-AF56-E98B104A2A7D}.Debug|Any CPU.Build.0 = Debug|x64
 		{F077B130-780F-4C72-AF56-E98B104A2A7D}.Debug|x64.ActiveCfg = Debug|x64
