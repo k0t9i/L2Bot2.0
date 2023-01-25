@@ -38,10 +38,10 @@ namespace L2Bot::Domain::Entities
 
 			if (m_IsNewState)
 			{
-				result.push_back({ "itemId", std::to_string(m_ItemId) });
-				result.push_back({ "amount", std::to_string(m_Amount) });
-				result.push_back({ "name", m_Name });
-				result.push_back({ "iconName", m_IconName });
+				result.push_back({ L"itemId", std::to_wstring(m_ItemId) });
+				result.push_back({ L"amount", std::to_wstring(m_Amount) });
+				result.push_back({ L"name", m_Name });
+				result.push_back({ L"iconName", m_IconName });
 			}
 
 			return result;
@@ -52,8 +52,8 @@ namespace L2Bot::Domain::Entities
 			const ValueObjects::Transform transform,
 			const uint32_t itemId,
 			const uint32_t amount,
-			const std::string& name,
-			const std::string& iconName
+			const std::wstring& name,
+			const std::wstring& iconName
 		) :
 			WorldObject(id, transform),
 			m_ItemId(itemId),
@@ -69,8 +69,8 @@ namespace L2Bot::Domain::Entities
 	private:
 		uint32_t m_ItemId = 0;
 		uint32_t m_Amount = 0;
-		std::string m_Name = "";
-		std::string m_IconName = "";
+		std::wstring m_Name = L"";
+		std::wstring m_IconName = L"";
 		bool m_IsNewState = true;
 	};
 }

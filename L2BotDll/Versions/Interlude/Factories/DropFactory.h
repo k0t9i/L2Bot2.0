@@ -41,8 +41,8 @@ namespace Interlude
 				),
 				item->itemId,
 				item->amount,
-				nameEntry ? ConvertFromWideChar(nameEntry->value) : "",
-				iconEntry ? ConvertFromWideChar(iconEntry->value) : ""
+				nameEntry ? std::wstring(nameEntry->value) : L"",
+				iconEntry ? std::wstring(iconEntry->value) : L""
 			);
 		}
 

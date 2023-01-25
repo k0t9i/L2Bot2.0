@@ -42,9 +42,9 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "x", std::to_string(m_X) },
-				{ "y", std::to_string(m_Y) },
-				{ "z", std::to_string(m_Z) }
+				{ L"x", std::to_wstring(m_X) },
+				{ L"y", std::to_wstring(m_Y) },
+				{ L"z", std::to_wstring(m_Z) }
 			};
 		}
 

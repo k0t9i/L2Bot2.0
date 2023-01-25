@@ -60,15 +60,15 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "accuracy", std::to_string(m_Accuracy) },
-				{ "critRate", std::to_string(m_CritRate) },
-				{ "pAttack", std::to_string(m_PAttack) },
-				{ "attackSpeed", std::to_string(m_AttackSpeed) },
-				{ "pDefense", std::to_string(m_PDefense) },
-				{ "evasion", std::to_string(m_Evasion) },
-				{ "mAttack", std::to_string(m_MAttack) },
-				{ "mDefense", std::to_string(m_MDefense) },
-				{ "castingSpeed", std::to_string(m_CastingSpeed) }
+				{ L"accuracy", std::to_wstring(m_Accuracy) },
+				{ L"critRate", std::to_wstring(m_CritRate) },
+				{ L"pAttack", std::to_wstring(m_PAttack) },
+				{ L"attackSpeed", std::to_wstring(m_AttackSpeed) },
+				{ L"pDefense", std::to_wstring(m_PDefense) },
+				{ L"evasion", std::to_wstring(m_Evasion) },
+				{ L"mAttack", std::to_wstring(m_MAttack) },
+				{ L"mDefense", std::to_wstring(m_MDefense) },
+				{ L"castingSpeed", std::to_wstring(m_CastingSpeed) }
 			};
 		}
 

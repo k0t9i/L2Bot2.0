@@ -49,16 +49,16 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "isQuest", std::to_string(m_IsQuest) });
+				result.push_back({ L"isQuest", std::to_wstring(m_IsQuest) });
 			}
 
 			if (m_PrevState.isNewState || m_Amount != m_PrevState.amount)
 			{
-				result.push_back({ "amount", std::to_string(m_Amount) });
+				result.push_back({ L"amount", std::to_wstring(m_Amount) });
 			}
 			if (m_PrevState.isNewState || m_IsAutoused != m_PrevState.isAutoused)
 			{
-				result.push_back({ "isAutoused", std::to_string(m_IsAutoused) });
+				result.push_back({ L"isAutoused", std::to_wstring(m_IsAutoused) });
 			}
 
 			return result;
@@ -68,9 +68,9 @@ namespace L2Bot::Domain::Entities
 			const uint32_t objectId,
 			const uint32_t itemId,
 			const int32_t mana,
-			const std::string& name,
-			const std::string& iconName,
-			const std::string& description,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
 			const uint16_t weight,
 			const uint32_t amount,
 			const bool isQuest

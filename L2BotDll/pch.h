@@ -30,6 +30,4 @@
 #include <ctime>
 #include <iomanip>
 
-std::string ConvertFromWideChar(const wchar_t* str);
-
 #endif //PCH_H

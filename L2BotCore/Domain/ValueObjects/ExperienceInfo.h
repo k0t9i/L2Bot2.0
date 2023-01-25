@@ -28,9 +28,9 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "level", std::to_string(m_Level) },
-				{ "exp", std::to_string(m_Exp) },
-				{ "sp", std::to_string(m_Sp) }
+				{ L"level", std::to_wstring(m_Level) },
+				{ L"exp", std::to_wstring(m_Exp) },
+				{ L"sp", std::to_wstring(m_Sp) }
 			};
 		}
 

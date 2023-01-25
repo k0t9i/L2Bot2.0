@@ -40,10 +40,10 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "race", std::to_string(static_cast<uint8_t>(m_Race)) },
-				{ "isMale", std::to_string(m_IsMale) },
-				{ "class", std::to_string(static_cast<uint8_t>(m_Class)) },
-				{ "activeClass", std::to_string(static_cast<uint8_t>(m_ActiveClass)) }
+				{ L"race", std::to_wstring(static_cast<uint8_t>(m_Race)) },
+				{ L"isMale", std::to_wstring(m_IsMale) },
+				{ L"class", std::to_wstring(static_cast<uint8_t>(m_Class)) },
+				{ L"activeClass", std::to_wstring(static_cast<uint8_t>(m_ActiveClass)) }
 			};
 		}
 

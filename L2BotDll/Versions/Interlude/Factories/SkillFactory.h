@@ -40,9 +40,9 @@ namespace Interlude
 				isActive != 1,
 				static_cast<uint8_t>(cost),
 				static_cast<int16_t>(range),
-				ConvertFromWideChar(name),
-				ConvertFromWideChar(description),
-				iconEntry ? ConvertFromWideChar(iconEntry->value) : "",
+				std::wstring(name),
+				std::wstring(description),
+				iconEntry ? std::wstring(iconEntry->value) : L"",
 				false,
 				false,
 				false

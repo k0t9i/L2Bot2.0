@@ -44,11 +44,11 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "karma", std::to_string(m_Karma) },
-				{ "pkKills", std::to_string(m_PkKills) },
-				{ "pvpKills", std::to_string(m_PvpKills) },
-				{ "recRemaining", std::to_string(m_RecRemaining) },
-				{ "evalScore", std::to_string(m_EvalScore) }
+				{ L"karma", std::to_wstring(m_Karma) },
+				{ L"pkKills", std::to_wstring(m_PkKills) },
+				{ L"pvpKills", std::to_wstring(m_PvpKills) },
+				{ L"recRemaining", std::to_wstring(m_RecRemaining) },
+				{ L"evalScore", std::to_wstring(m_EvalScore) }
 			};
 		}
 

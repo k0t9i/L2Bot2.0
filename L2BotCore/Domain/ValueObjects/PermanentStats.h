@@ -45,12 +45,12 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "str", std::to_string(m_Str) },
-				{ "dex", std::to_string(m_Dex) },
-				{ "con", std::to_string(m_Con) },
-				{ "int", std::to_string(m_Int) },
-				{ "men", std::to_string(m_Men) },
-				{ "wit", std::to_string(m_Wit) }
+				{ L"str", std::to_wstring(m_Str) },
+				{ L"dex", std::to_wstring(m_Dex) },
+				{ L"con", std::to_wstring(m_Con) },
+				{ L"int", std::to_wstring(m_Int) },
+				{ L"men", std::to_wstring(m_Men) },
+				{ L"wit", std::to_wstring(m_Wit) }
 			};
 		}
 

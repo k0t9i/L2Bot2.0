@@ -177,8 +177,8 @@ namespace Interlude
 				{
 					buffer[0],
 					static_cast<uint8_t>(buffer[1]),
-					ConvertFromWideChar(reinterpret_cast<wchar_t*>(buffer[2])),
-					ConvertFromWideChar(reinterpret_cast<wchar_t*>(buffer[3]))
+					std::wstring(reinterpret_cast<wchar_t*>(buffer[2])),
+					std::wstring(reinterpret_cast<wchar_t*>(buffer[3]))
 				}
 			}
 		);

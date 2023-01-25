@@ -40,11 +40,11 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState || !m_FullName.IsEqual(&m_PrevState.fullName))
 			{
-				result.push_back({ "fullName", m_FullName.BuildSerializationNodes() });
+				result.push_back({ L"fullName", m_FullName.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_Phenotype.IsEqual(&m_PrevState.phenotype))
 			{
-				result.push_back({ "phenotype", m_Phenotype.BuildSerializationNodes() });
+				result.push_back({ L"phenotype", m_Phenotype.BuildSerializationNodes() });
 			}
 
 			return result;

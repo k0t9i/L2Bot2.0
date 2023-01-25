@@ -9,11 +9,11 @@ DWORD dwWritten;
 BOOL   fSuccess = FALSE;
 DWORD  cbRead, cbToWrite, cbWritten, dwMode;
 
-int CreatePipe(std::string name)
+int CreatePipe(std::wstring name)
 {
     while (1)
     {
-        hPipe = CreateFileA(
+        hPipe = CreateFileW(
             name.c_str(),   // pipe name 
             GENERIC_READ |  // read and write access 
             GENERIC_WRITE,
@@ -50,9 +50,9 @@ int CreatePipe(std::string name)
     return 0;
 }
 
-std::string ReadMessage()
+std::wstring ReadMessage()
 {
-    char  chBuf[10240];
+    wchar_t  chBuf[10240];
     do
     {
         // Read from the pipe. 
@@ -60,7 +60,7 @@ std::string ReadMessage()
         fSuccess = ReadFile(
             hPipe,    // pipe handle 
             chBuf,    // buffer to receive reply 
-            10240 * sizeof(char),  // size of buffer 
+            10240 * sizeof(wchar_t),  // size of buffer 
             &cbRead,  // number of bytes read 
             NULL);    // not overlapped 
 
@@ -68,27 +68,28 @@ std::string ReadMessage()
             break;
     } while (!fSuccess);
 
-    return std::string(chBuf);
+    return std::wstring(chBuf);
 }
 
 int main()
 {
-    CreatePipe("\\\\.\\pipe\\PipeL2Bot");
+    CreatePipe(L"\\\\.\\pipe\\PipeL2Bot");
     std::cout << "Connected to the connection pipe" << std::endl;
 
     auto name = ReadMessage();
     CloseHandle(hPipe);
-    std::cout << "Received main pipe name: " << name << std::endl;
+    std::wcout << L"Received main pipe name: " << name << std::endl;
 
     std::cin.get();
     CreatePipe(name);
 
-    const std::string message = "invalidate";
+    const std::wstring message = L"invalidate";
     DWORD written;
     WriteFile(hPipe, message.c_str(), message.size() + 1, &written, NULL);
 
     while (true) {
-        std::cout << ReadMessage() << std::endl;
+        const auto msg = ReadMessage();
+        std::wcout << msg << std::endl;
     }
     std::cin.get();
 }

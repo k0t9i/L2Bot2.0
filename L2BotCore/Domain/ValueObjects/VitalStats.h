@@ -49,12 +49,12 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "maxHp", std::to_string(m_MaxHp) },
-				{ "hp", std::to_string(m_Hp) },
-				{ "maxMp", std::to_string(m_MaxMp) },
-				{ "mp", std::to_string(m_Mp) },
-				{ "maxCp", std::to_string(m_MaxCp) },
-				{ "cp", std::to_string(m_Cp) }
+				{ L"maxHp", std::to_wstring(m_MaxHp) },
+				{ L"hp", std::to_wstring(m_Hp) },
+				{ L"maxMp", std::to_wstring(m_MaxMp) },
+				{ L"mp", std::to_wstring(m_Mp) },
+				{ L"maxCp", std::to_wstring(m_MaxCp) },
+				{ L"cp", std::to_wstring(m_Cp) }
 			};
 		}
 

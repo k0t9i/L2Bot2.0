@@ -8,15 +8,15 @@ using namespace L2Bot::Domain;
 class JsonSerializer : public Serializers::SerializerInterface
 {
 public:
-	const std::string Serialize(std::vector<Serializers::Node> nodes, const bool isArray = false) const override
+	const std::wstring Serialize(std::vector<Serializers::Node> nodes, const bool isArray = false) const override
 	{
-		std::string result = isArray ? "[" : "{";
+		std::wstring result = isArray ? L"[" : L"{";
 
 		for (auto it = nodes.begin(); it != nodes.end(); ++it)
 		{
 			if (!isArray)
 			{
-				result += "\"" + it->name + "\":";
+				result += L"\"" + it->name + L"\":";
 			}
 			if (it->isContainer)
 			{
@@ -24,15 +24,15 @@ public:
 			}
 			else
 			{
-				result += "\"" + it->value + "\"";
+				result += L"\"" + it->value + L"\"";
 			}
 			if (std::next(it) != nodes.end())
 			{
-				result += ",";
+				result += L",";
 			}
 		}
 
-		result += isArray ? "]" : "}";
+		result += isArray ? L"]" : L"}";
 
 		return result;
 	}

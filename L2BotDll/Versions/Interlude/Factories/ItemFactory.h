@@ -35,10 +35,10 @@ namespace Interlude
 			const auto data = m_L2GameData.GetItemData(itemInfo.itemId);
 
 			const auto nameEntry = data ? m_FName.GetEntry(data->nameIndex) : nullptr;
-			const auto name = nameEntry ? ConvertFromWideChar(nameEntry->value) : "";
+			const auto name = nameEntry ? std::wstring(nameEntry->value) : L"";
 			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
-			const auto icon = iconEntry ? ConvertFromWideChar(iconEntry->value) : "";
-			const auto description = data && data->description ? ConvertFromWideChar(data->description) : "";
+			const auto icon = iconEntry ? std::wstring(iconEntry->value) : L"";
+			const auto description = data && data->description ? std::wstring(data->description) : L"";
 
 			if (data)
 			{
@@ -92,9 +92,9 @@ namespace Interlude
 		std::unique_ptr<Entities::BaseItem> CreateEtc(
 			const ItemData& itemInfo,
 			const FL2ItemDataBase* itemData,
-			const std::string& name,
-			const std::string& icon,
-			const std::string& description
+			const std::wstring& name,
+			const std::wstring& icon,
+			const std::wstring& description
 		) const
 		{
 			return std::make_unique<Entities::EtcItem>(
@@ -113,16 +113,16 @@ namespace Interlude
 		std::unique_ptr<Entities::BaseItem> CreateArmor(
 			const ItemData& itemInfo,
 			const FL2ItemDataBase* itemData,
-			const std::string& name,
-			const std::string& icon,
-			const std::string& description
+			const std::wstring& name,
+			const std::wstring& icon,
+			const std::wstring& description
 		) const
 		{
 			const auto casted = static_cast<const FL2ArmorItemData*>(itemData);
 
-			const auto setEffect = casted && casted->setEffect ? ConvertFromWideChar(casted->setEffect) : "";
-			const auto addSetEffect = casted && casted->setEffect ? ConvertFromWideChar(casted->setEffect) : "";
-			const auto enchantEffect = casted && casted->enchantEffect ? ConvertFromWideChar(casted->enchantEffect) : "";
+			const auto setEffect = casted && casted->setEffect ? std::wstring(casted->setEffect) : L"";
+			const auto addSetEffect = casted && casted->setEffect ? std::wstring(casted->setEffect) : L"";
+			const auto enchantEffect = casted && casted->enchantEffect ? std::wstring(casted->enchantEffect) : L"";
 
 			return std::make_unique<Entities::ArmorItem>(
 				itemInfo.objectId,
@@ -147,9 +147,9 @@ namespace Interlude
 		std::unique_ptr<Entities::BaseItem> CreateWeaponOrShield(
 			const ItemData& itemInfo,
 			const FL2ItemDataBase* itemData,
-			const std::string& name,
-			const std::string& icon,
-			const std::string& description
+			const std::wstring& name,
+			const std::wstring& icon,
+			const std::wstring& description
 		) const
 		{
 			const auto casted = static_cast<const FL2WeaponItemData*>(itemData);

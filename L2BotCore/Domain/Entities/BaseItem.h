@@ -58,24 +58,24 @@ namespace L2Bot::Domain::Entities
 		{
 			std::vector<Serializers::Node> result;
 
-			result.push_back({ "objectId", std::to_string(m_ObjectId) });
-			result.push_back({ "itemId", std::to_string(m_ItemId) });
+			result.push_back({ L"objectId", std::to_wstring(m_ObjectId) });
+			result.push_back({ L"itemId", std::to_wstring(m_ItemId) });
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "type", std::to_string(static_cast<int8_t>(m_Type))});
-				result.push_back({ "name", m_Name });
-				result.push_back({ "iconName", m_IconName });
-				result.push_back({ "description", m_Description });
+				result.push_back({ L"type", std::to_wstring(static_cast<int8_t>(m_Type))});
+				result.push_back({ L"name", m_Name });
+				result.push_back({ L"iconName", m_IconName });
+				result.push_back({ L"description", m_Description });
 			}
 
 			if (m_PrevState.isNewState || m_Mana != m_PrevState.mana)
 			{
-				result.push_back({ "mana", std::to_string(m_Mana) });
+				result.push_back({ L"mana", std::to_wstring(m_Mana) });
 			}
 			if (m_PrevState.isNewState || m_Weight != m_PrevState.weight)
 			{
-				result.push_back({ "weight", std::to_string(m_Weight) });
+				result.push_back({ L"weight", std::to_wstring(m_Weight) });
 			}
 
 			return result;
@@ -85,9 +85,9 @@ namespace L2Bot::Domain::Entities
 			const uint32_t objectId,
 			const uint32_t itemId,
 			const int32_t mana,
-			const std::string& name,
-			const std::string& iconName,
-			const std::string& description,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
 			const uint16_t weight,
 			const Enums::ItemTypeEnum type
 		) :
@@ -130,9 +130,9 @@ namespace L2Bot::Domain::Entities
 		uint32_t m_ObjectId = 0;
 		uint32_t m_ItemId = 0;
 		int32_t m_Mana = -1;
-		std::string m_Name = "";
-		std::string m_IconName = "";
-		std::string m_Description = "";
+		std::wstring m_Name = L"";
+		std::wstring m_IconName = L"";
+		std::wstring m_Description = L"";
 		uint16_t m_Weight = 0;
 		Enums::ItemTypeEnum m_Type = Enums::ItemTypeEnum::none;
 		GetState m_PrevState = GetState();

@@ -34,10 +34,10 @@ namespace L2Bot::Domain::Entities
 		{
 			std::vector<Serializers::Node> result;
 
-			result.push_back({ "id", std::to_string(GetId()) });
+			result.push_back({ L"id", std::to_wstring(GetId()) });
 			if (m_PrevState.isNewState || !m_Transform.IsEqual(&m_PrevState.transform))
 			{
-				result.push_back({ "transform", m_Transform.BuildSerializationNodes() });
+				result.push_back({ L"transform", m_Transform.BuildSerializationNodes() });
 			}
 
 			return result;

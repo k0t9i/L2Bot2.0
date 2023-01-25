@@ -62,9 +62,9 @@ private:
 	JsonSerializer m_Serializer;
 	NamedPipeTransport m_Transport;
 
-	static const std::string PIPE_NAME;
+	static const std::wstring PIPE_NAME;
 	static const uint16_t RADIUS;
 };
 
-const std::string Application::PIPE_NAME = std::string("PipeL2Bot");
+const std::wstring Application::PIPE_NAME = std::wstring(L"PipeL2Bot");
 const uint16_t Application::RADIUS = 2000;

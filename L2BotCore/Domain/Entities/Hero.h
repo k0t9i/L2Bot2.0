@@ -70,43 +70,43 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState || !m_FullName.IsEqual(&m_PrevState.fullName))
 			{
-				result.push_back({ "fullName", m_FullName.BuildSerializationNodes() });
+				result.push_back({ L"fullName", m_FullName.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_VitalStats.IsEqual(&m_PrevState.vitalStats))
 			{
-				result.push_back({ "vitalStats", m_VitalStats.BuildSerializationNodes() });
+				result.push_back({ L"vitalStats", m_VitalStats.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_Phenotype.IsEqual(&m_PrevState.phenotype))
 			{
-				result.push_back({ "phenotype", m_Phenotype.BuildSerializationNodes() });
+				result.push_back({ L"phenotype", m_Phenotype.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_ExperienceInfo.IsEqual(&m_PrevState.experienceInfo))
 			{
-				result.push_back({ "experienceInfo", m_ExperienceInfo.BuildSerializationNodes() });
+				result.push_back({ L"experienceInfo", m_ExperienceInfo.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_PermanentStats.IsEqual(&m_PrevState.permanentStats))
 			{
-				result.push_back({ "permanentStats", m_PermanentStats.BuildSerializationNodes() });
+				result.push_back({ L"permanentStats", m_PermanentStats.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_VariableStats.IsEqual(&m_PrevState.variableStats))
 			{
-				result.push_back({ "variableStats", m_VariableStats.BuildSerializationNodes() });
+				result.push_back({ L"variableStats", m_VariableStats.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_Reputation.IsEqual(&m_PrevState.reputation))
 			{
-				result.push_back({ "reputation", m_Reputation.BuildSerializationNodes() });
+				result.push_back({ L"reputation", m_Reputation.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || !m_InventoryInfo.IsEqual(&m_PrevState.inventoryInfo))
 			{
-				result.push_back({ "inventoryInfo", m_InventoryInfo.BuildSerializationNodes() });
+				result.push_back({ L"inventoryInfo", m_InventoryInfo.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState || m_TargetId != m_PrevState.targetId)
 			{
-				result.push_back({ "targetId", std::to_string(m_TargetId) });
+				result.push_back({ L"targetId", std::to_wstring(m_TargetId) });
 			}
 			if (m_PrevState.isNewState || m_IsStanding != m_PrevState.isStanding)
 			{
-				result.push_back({ "isStanding", std::to_string(m_IsStanding) });
+				result.push_back({ L"isStanding", std::to_wstring(m_IsStanding) });
 			}
 
 			return result;

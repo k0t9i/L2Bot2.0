@@ -34,9 +34,9 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "maxWeight", std::to_string(m_MaxWeight) },
-				{ "weight", std::to_string(m_Weight) },
-				{ "slots", std::to_string(m_Slots) }
+				{ L"maxWeight", std::to_wstring(m_MaxWeight) },
+				{ L"weight", std::to_wstring(m_Weight) },
+				{ L"slots", std::to_wstring(m_Slots) }
 			};
 		}
 

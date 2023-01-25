@@ -98,8 +98,8 @@ private:
 		{
 			if (m_Transport.IsConnected())
 			{
-				const std::string& response = m_Transport.Receive();
-				if (response == "invalidate")
+				const std::wstring& response = m_Transport.Receive();
+				if (response == L"invalidate")
 				{
 					Invalidate();
 				}
@@ -124,13 +124,13 @@ private:
 	{
 		std::vector<Serializers::SerializableStateContainer> items
 		{
-			Serializers::SerializableStateContainer{m_HeroService.GetEntities(), "hero"},
-			Serializers::SerializableStateContainer{m_DropService.GetEntities(), "drop"},
-			Serializers::SerializableStateContainer{m_NPCService.GetEntities(), "npc"},
-			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), "player"},
-			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), "skill"},
-			Serializers::SerializableStateContainer{m_ItemService.GetEntities(), "item"},
-			Serializers::SerializableStateContainer{m_AbnormalEffectService.GetEntities(), "abnormalEffect"},
+			Serializers::SerializableStateContainer{m_HeroService.GetEntities(), L"hero"},
+			Serializers::SerializableStateContainer{m_DropService.GetEntities(), L"drop"},
+			Serializers::SerializableStateContainer{m_NPCService.GetEntities(), L"npc"},
+			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), L"player"},
+			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), L"skill"},
+			Serializers::SerializableStateContainer{m_ItemService.GetEntities(), L"item"},
+			Serializers::SerializableStateContainer{m_AbnormalEffectService.GetEntities(), L"abnormalEffect"},
 		};
 
 		std::vector<Serializers::Node> result;
@@ -144,7 +144,7 @@ private:
 
 		for (const auto& message : m_ChatMessageService.GetMessages())
 		{
-			result.push_back(Serializers::Node{ "chat", message.BuildSerializationNodes() });
+			result.push_back(Serializers::Node{ L"chat", message.BuildSerializationNodes() });
 		}
 
 		return result;

@@ -5,14 +5,7 @@
 #include <Rpc.h>
 #pragma comment(lib, "Rpcrt4.lib")
 
-std::string ConvertFromWideChar(const wchar_t* str)
-{
-    std::wstring ws(str);
-    std::string result(ws.begin(), ws.end());
-    return result;
-}
-
-std::string GenerateUUID()
+std::wstring GenerateUUID()
 {
     UUID uuid;
     ::ZeroMemory(&uuid, sizeof(UUID));
@@ -24,7 +17,7 @@ std::string GenerateUUID()
 
     if (wszUuid == NULL)
     {
-        return "";
+        return L"";
     }
 
     std::wstring ws = wszUuid;
@@ -32,5 +25,5 @@ std::string GenerateUUID()
     ::RpcStringFree((RPC_WSTR*)&wszUuid);
     wszUuid = NULL;
 
-    return std::string(ws.begin(), ws.end());
+    return ws;
 }

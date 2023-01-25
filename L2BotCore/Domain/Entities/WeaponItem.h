@@ -68,32 +68,32 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "weaponType", std::to_string(static_cast<uint8_t>(m_WeaponType)) });
-				result.push_back({ "crystalType", std::to_string(static_cast<int8_t>(m_CrystalType)) });
-				result.push_back({ "rndDamage", std::to_string(m_RndDamage) });
-				result.push_back({ "critical", std::to_string(m_Critical) });
-				result.push_back({ "hitModify", std::to_string(m_HitModify) });
-				result.push_back({ "attackSpeed", std::to_string(m_AttackSpeed) });
-				result.push_back({ "mpConsume", std::to_string(m_MpConsume) });
-				result.push_back({ "soulshotCount", std::to_string(m_SoulshotCount) });
-				result.push_back({ "spiritshotCount", std::to_string(m_SpiritshotCount) });
+				result.push_back({ L"weaponType", std::to_wstring(static_cast<uint8_t>(m_WeaponType)) });
+				result.push_back({ L"crystalType", std::to_wstring(static_cast<int8_t>(m_CrystalType)) });
+				result.push_back({ L"rndDamage", std::to_wstring(m_RndDamage) });
+				result.push_back({ L"critical", std::to_wstring(m_Critical) });
+				result.push_back({ L"hitModify", std::to_wstring(m_HitModify) });
+				result.push_back({ L"attackSpeed", std::to_wstring(m_AttackSpeed) });
+				result.push_back({ L"mpConsume", std::to_wstring(m_MpConsume) });
+				result.push_back({ L"soulshotCount", std::to_wstring(m_SoulshotCount) });
+				result.push_back({ L"spiritshotCount", std::to_wstring(m_SpiritshotCount) });
 			}
 
 			if (m_PrevState.isNewState || m_IsEquipped != m_PrevState.isEquipped)
 			{
-				result.push_back({ "isEquipped", std::to_string(m_IsEquipped) });
+				result.push_back({ L"isEquipped", std::to_wstring(m_IsEquipped) });
 			}
 			if (m_PrevState.isNewState || m_EnchantLevel != m_PrevState.enchantLevel)
 			{
-				result.push_back({ "enchantLevel", std::to_string(m_EnchantLevel) });
+				result.push_back({ L"enchantLevel", std::to_wstring(m_EnchantLevel) });
 			}
 			if (m_PrevState.isNewState || m_PAttack != m_PrevState.pAttack)
 			{
-				result.push_back({ "pAttack", std::to_string(m_PAttack) });
+				result.push_back({ L"pAttack", std::to_wstring(m_PAttack) });
 			}
 			if (m_PrevState.isNewState || m_MAttack != m_PrevState.mAttack)
 			{
-				result.push_back({ "mAttack", std::to_string(m_MAttack) });
+				result.push_back({ L"mAttack", std::to_wstring(m_MAttack) });
 			}
 
 			return result;
@@ -103,9 +103,9 @@ namespace L2Bot::Domain::Entities
 			const uint32_t objectId,
 			const uint32_t itemId,
 			const int32_t mana,
-			const std::string& name,
-			const std::string& iconName,
-			const std::string& description,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,

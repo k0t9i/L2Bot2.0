@@ -49,20 +49,20 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState || !m_FullName.IsEqual(&m_PrevState.fullName))
 			{
-				result.push_back({ "fullName", m_FullName.BuildSerializationNodes() });
+				result.push_back({ L"fullName", m_FullName.BuildSerializationNodes() });
 			}
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "isHostile", std::to_string(m_IsHostile) });
-				result.push_back({ "npcId", std::to_string(m_NpcId) });
+				result.push_back({ L"isHostile", std::to_wstring(m_IsHostile) });
+				result.push_back({ L"npcId", std::to_wstring(m_NpcId) });
 			}
 			if (m_PrevState.isNewState || m_SpoilState != m_PrevState.spoilState)
 			{
-				result.push_back({ "spoilState", std::to_string(static_cast<uint32_t>(m_SpoilState)) });
+				result.push_back({ L"spoilState", std::to_wstring(static_cast<uint32_t>(m_SpoilState)) });
 			}
 			if (m_PrevState.isNewState || !m_VitalStats.IsEqual(&m_PrevState.vitalStats))
 			{
-				result.push_back({ "vitalStats", m_VitalStats.BuildSerializationNodes() });
+				result.push_back({ L"vitalStats", m_VitalStats.BuildSerializationNodes() });
 			}
 
 			return result;

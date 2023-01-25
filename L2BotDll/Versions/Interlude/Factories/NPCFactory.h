@@ -30,8 +30,8 @@ namespace Interlude
 				item->npcId,
 				spoiledState,
 				ValueObjects::FullName(
-					ConvertFromWideChar(item->nickname),
-					ConvertFromWideChar(item->title)
+					std::wstring(item->nickname),
+					std::wstring(item->title)
 				),
 				ValueObjects::VitalStats(
 					item->maxHp, item->hp,

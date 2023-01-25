@@ -14,21 +14,21 @@ namespace L2Bot::Domain::Serializers
 
 			for (const auto& kvp : m_Objects)
 			{
-				std::string operationName = "";
+				std::wstring operationName = L"";
 				switch (kvp->GetState())
 				{
 				case Enums::EntityStateEnum::created:
-					operationName = "created";
+					operationName = L"created";
 					break;
 				case Enums::EntityStateEnum::updated:
-					operationName = "updated";
+					operationName = L"updated";
 					break;
 				case Enums::EntityStateEnum::deleted:
-					operationName = "deleted";
+					operationName = L"deleted";
 					break;
 				}
 
-				if (operationName != "")
+				if (operationName != L"")
 				{
 					result.push_back(
 						{ 
@@ -42,7 +42,7 @@ namespace L2Bot::Domain::Serializers
 			return result;
 		}
 
-		SerializableStateContainer(const std::vector<std::shared_ptr<DTO::EntityState>> objects, const std::string& containerName) :
+		SerializableStateContainer(const std::vector<std::shared_ptr<DTO::EntityState>> objects, const std::wstring& containerName) :
 			m_Objects(objects), m_ContainerName(containerName)
 		{
 
@@ -51,6 +51,6 @@ namespace L2Bot::Domain::Serializers
 		virtual ~SerializableStateContainer() = default;
 	private:
 		const std::vector<std::shared_ptr<DTO::EntityState>> m_Objects;
-		const std::string m_ContainerName;
+		const std::wstring m_ContainerName;
 	};
 }

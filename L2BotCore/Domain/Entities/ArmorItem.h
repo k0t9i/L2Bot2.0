@@ -60,28 +60,28 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "armorType", std::to_string(static_cast<uint8_t>(m_ArmorType)) });
-				result.push_back({ "crystalType", std::to_string(static_cast<int8_t>(m_CrystalType)) });
-				result.push_back({ "setEffect", m_SetEffect });
-				result.push_back({ "addSetEffect", m_AddSetEffect });
-				result.push_back({ "enchantEffect", m_EnchantEffect });
+				result.push_back({ L"armorType", std::to_wstring(static_cast<uint8_t>(m_ArmorType)) });
+				result.push_back({ L"crystalType", std::to_wstring(static_cast<int8_t>(m_CrystalType)) });
+				result.push_back({ L"setEffect", m_SetEffect });
+				result.push_back({ L"addSetEffect", m_AddSetEffect });
+				result.push_back({ L"enchantEffect", m_EnchantEffect });
 			}
 
 			if (m_PrevState.isNewState || m_IsEquipped != m_PrevState.isEquipped)
 			{
-				result.push_back({ "isEquipped", std::to_string(m_IsEquipped) });
+				result.push_back({ L"isEquipped", std::to_wstring(m_IsEquipped) });
 			}
 			if (m_PrevState.isNewState || m_EnchantLevel != m_PrevState.enchantLevel)
 			{
-				result.push_back({ "enchantLevel", std::to_string(m_EnchantLevel) });
+				result.push_back({ L"enchantLevel", std::to_wstring(m_EnchantLevel) });
 			}
 			if (m_PrevState.isNewState || m_PDefense != m_PrevState.pDefense)
 			{
-				result.push_back({ "pDefense", std::to_string(m_PDefense) });
+				result.push_back({ L"pDefense", std::to_wstring(m_PDefense) });
 			}
 			if (m_PrevState.isNewState || m_MDefense != m_PrevState.mDefense)
 			{
-				result.push_back({ "mDefense", std::to_string(m_MDefense) });
+				result.push_back({ L"mDefense", std::to_wstring(m_MDefense) });
 			}
 
 			return result;
@@ -91,9 +91,9 @@ namespace L2Bot::Domain::Entities
 			const uint32_t objectId,
 			const uint32_t itemId,
 			const int32_t mana,
-			const std::string& name,
-			const std::string& iconName,
-			const std::string& description,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,
@@ -101,9 +101,9 @@ namespace L2Bot::Domain::Entities
 			const Enums::CrystalTypeEnum crystalType,
 			const uint32_t pDefense,
 			const uint32_t mDefense,
-			const std::string& setEffect,
-			const std::string& addSetEffect,
-			const std::string& enchantEffect
+			const std::wstring& setEffect,
+			const std::wstring& addSetEffect,
+			const std::wstring& enchantEffect
 		) :
 			BaseItem
 			(
@@ -163,9 +163,9 @@ namespace L2Bot::Domain::Entities
 		Enums::CrystalTypeEnum m_CrystalType = Enums::CrystalTypeEnum::none;
 		uint32_t m_PDefense = 0;
 		uint32_t m_MDefense = 0;
-		std::string m_SetEffect = "";
-		std::string m_AddSetEffect = "";
-		std::string m_EnchantEffect = "";
+		std::wstring m_SetEffect = L"";
+		std::wstring m_AddSetEffect = L"";
+		std::wstring m_EnchantEffect = L"";
 		GetState m_PrevState = GetState();
 	};
 }

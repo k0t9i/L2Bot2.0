@@ -52,22 +52,22 @@ namespace L2Bot::Domain::Entities
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "crystalType", std::to_string(static_cast<int8_t>(m_CrystalType)) });
-				result.push_back({ "evasion", std::to_string(m_Evasion) });
-				result.push_back({ "defRate", std::to_string(m_DefRate) });
+				result.push_back({ L"crystalType", std::to_wstring(static_cast<int8_t>(m_CrystalType)) });
+				result.push_back({ L"evasion", std::to_wstring(m_Evasion) });
+				result.push_back({ L"defRate", std::to_wstring(m_DefRate) });
 			}
 
 			if (m_PrevState.isNewState || m_IsEquipped != m_PrevState.isEquipped)
 			{
-				result.push_back({ "isEquipped", std::to_string(m_IsEquipped) });
+				result.push_back({ L"isEquipped", std::to_wstring(m_IsEquipped) });
 			}
 			if (m_PrevState.isNewState || m_EnchantLevel != m_PrevState.enchantLevel)
 			{
-				result.push_back({ "enchantLevel", std::to_string(m_EnchantLevel) });
+				result.push_back({ L"enchantLevel", std::to_wstring(m_EnchantLevel) });
 			}
 			if (m_PrevState.isNewState || m_PDefense != m_PrevState.pDefense)
 			{
-				result.push_back({ "pDefense", std::to_string(m_PDefense) });
+				result.push_back({ L"pDefense", std::to_wstring(m_PDefense) });
 			}
 
 			return result;
@@ -77,9 +77,9 @@ namespace L2Bot::Domain::Entities
 			const uint32_t objectId,
 			const uint32_t itemId,
 			const int32_t mana,
-			const std::string& name,
-			const std::string& iconName,
-			const std::string& description,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
 			const uint16_t weight,
 			const bool isEquipped,
 			const uint16_t enchantLevel,

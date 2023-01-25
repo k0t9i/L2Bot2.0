@@ -43,10 +43,10 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "position", m_Position.BuildSerializationNodes() },
-				{ "rotation", m_Rotation.BuildSerializationNodes() },
-				{ "velocity", m_Velocity.BuildSerializationNodes() },
-				{ "acceleration", m_Acceleration.BuildSerializationNodes() }
+				{ L"position", m_Position.BuildSerializationNodes() },
+				{ L"rotation", m_Rotation.BuildSerializationNodes() },
+				{ L"velocity", m_Velocity.BuildSerializationNodes() },
+				{ L"acceleration", m_Acceleration.BuildSerializationNodes() }
 			};
 		}
 

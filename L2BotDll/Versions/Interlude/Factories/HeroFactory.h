@@ -30,8 +30,8 @@ namespace Interlude
 					ValueObjects::Vector3(item->pawn->Acceleration.x, item->pawn->Acceleration.y, item->pawn->Acceleration.z)
 				),
 				ValueObjects::FullName(
-					ConvertFromWideChar(item->nickname),
-					ConvertFromWideChar(item->title)
+					std::wstring(item->nickname),
+					std::wstring(item->title)
 				),
 				ValueObjects::VitalStats(
 					item->maxHp, item->hp,

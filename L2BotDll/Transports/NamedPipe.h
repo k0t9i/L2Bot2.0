@@ -10,7 +10,7 @@
 class NamedPipe
 {
 public:
-	const bool Connect(const std::string& pipeName)
+	const bool Connect(const std::wstring& pipeName)
 	{
 		if (m_Pipe == NULL || m_PipeName != pipeName)
 		{
@@ -25,7 +25,7 @@ public:
 				CreateOverlapped(m_WritingOverlapped);
 			}
 
-			m_Pipe = CreateNamedPipeA(("\\\\.\\pipe\\" + pipeName).c_str(),
+			m_Pipe = CreateNamedPipeW((L"\\\\.\\pipe\\" + pipeName).c_str(),
 				PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
 				PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
 				PIPE_UNLIMITED_INSTANCES,
@@ -58,7 +58,7 @@ public:
 		return m_Connected;
 	}
 
-	void Send(const std::string& message)
+	void Send(const std::wstring& message)
 	{
 		if (!m_Connected)
 		{
@@ -66,7 +66,7 @@ public:
 		}
 
 		DWORD written;
-		const auto result = WriteFile(m_Pipe, message.c_str(), message.size() + 1, &written, &m_WritingOverlapped);
+		const auto result = WriteFile(m_Pipe, message.c_str(), (message.size() + 1) * sizeof(wchar_t), &written, &m_WritingOverlapped);
 
 		const auto lastError = GetLastError();
 		if (!result)
@@ -88,16 +88,16 @@ public:
 		}
 	}
 
-	const std::string Receive()
+	const std::wstring Receive()
 	{
 		if (!m_Connected)
 		{
-			return "";
+			return L"";
 		}
 
 		DWORD dwRead;
-		std::unique_ptr<char[]> buffer = std::make_unique<char[]>(BUFFER_SIZE);
-		const auto result = ReadFile(m_Pipe, buffer.get(), BUFFER_SIZE * sizeof(char), &dwRead, &m_ReadingOverlapped);
+		std::unique_ptr<wchar_t[]> buffer = std::make_unique<wchar_t[]>(BUFFER_SIZE);
+		const auto result = ReadFile(m_Pipe, buffer.get(), BUFFER_SIZE * sizeof(wchar_t), &dwRead, &m_ReadingOverlapped);
 
 		const auto lastError = GetLastError();
 		if (!result)
@@ -110,17 +110,17 @@ public:
 				if (!overlappedResult)
 				{
 					m_Connected = false;
-					return "";
+					return L"";
 				}
 			}
 			else
 			{
 				m_Connected = false;
-				return "";
+				return L"";
 			}
 		}
 
-		std::string message = std::string(buffer.get());
+		std::wstring message = std::wstring(buffer.get());
 
 		return message;
 	}
@@ -182,7 +182,7 @@ private:
 	}
 
 private:
-	std::string m_PipeName = "";
+	std::wstring m_PipeName = L"";
 	HANDLE m_Pipe = NULL;
 	bool m_Connected = false;
 	OVERLAPPED m_ConntectingOverlapped = OVERLAPPED();

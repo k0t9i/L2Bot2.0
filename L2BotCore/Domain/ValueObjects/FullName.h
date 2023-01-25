@@ -7,11 +7,11 @@ namespace L2Bot::Domain::ValueObjects
 	class FullName : public Serializers::Serializable
 	{
 	public:
-		const std::string& GetNickname() const
+		const std::wstring& GetNickname() const
 		{
 			return m_Nickname;
 		}
-		const std::string& GetTitle() const
+		const std::wstring& GetTitle() const
 		{
 			return m_Title;
 		}
@@ -24,14 +24,14 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "nickname", m_Nickname },
-				{ "title", m_Title }
+				{ L"nickname", m_Nickname },
+				{ L"title", m_Title }
 			};
 		}
 
 		FullName(
-			const std::string& nickname,
-			const std::string& title
+			const std::wstring& nickname,
+			const std::wstring& title
 		) :
 			m_Nickname(nickname),
 			m_Title(title)
@@ -41,7 +41,7 @@ namespace L2Bot::Domain::ValueObjects
 		FullName() = default;
 		virtual ~FullName() = default;
 	private:
-		std::string m_Nickname = "";
-		std::string m_Title = "";
+		std::wstring m_Nickname = L"";
+		std::wstring m_Title = L"";
 	};
 }

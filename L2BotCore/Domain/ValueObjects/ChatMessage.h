@@ -13,18 +13,18 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return std::vector<Serializers::Node>
 			{
-				{ "objectId", std::to_string(m_ObjectId) },
-				{ "channel", std::to_string(static_cast<uint8_t>(m_Channel)) },
-				{ "name", m_Name },
-				{ "text", m_Text }
+				{ L"objectId", std::to_wstring(m_ObjectId) },
+				{ L"channel", std::to_wstring(static_cast<uint8_t>(m_Channel)) },
+				{ L"name", m_Name },
+				{ L"text", m_Text }
 			};
 		}
 
 		ChatMessage(
 			const uint32_t objectId,
 			const Enums::ChatChannelEnum channel,
-			const std::string& name,
-			const std::string& text
+			const std::wstring& name,
+			const std::wstring& text
 		) :
 			m_ObjectId(objectId),
 			m_Channel(channel),
@@ -39,7 +39,7 @@ namespace L2Bot::Domain::ValueObjects
 	private:
 		uint32_t m_ObjectId = 0;
 		Enums::ChatChannelEnum m_Channel = Enums::ChatChannelEnum::all;
-		std::string m_Name = "";
-		std::string m_Text = "";
+		std::wstring m_Name = L"";
+		std::wstring m_Text = L"";
 	};
 }

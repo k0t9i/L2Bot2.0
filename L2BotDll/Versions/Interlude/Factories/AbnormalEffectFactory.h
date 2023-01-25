@@ -35,9 +35,9 @@ namespace Interlude
 			return std::make_unique<Entities::AbnormalEffect>(
 				skillId,
 				static_cast<uint8_t>(level),
-				ConvertFromWideChar(name),
-				ConvertFromWideChar(description),
-				iconEntry ? ConvertFromWideChar(iconEntry->value) : ""
+				std::wstring(name),
+				std::wstring(description),
+				iconEntry ? std::wstring(iconEntry->value) : L""
 			);
 		}
 

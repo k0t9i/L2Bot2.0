@@ -11,7 +11,7 @@ class NamedPipeTransport : public Transports::TransportInterface
 public:
 	const bool Connect() override
 	{
-		OutputDebugStringA(m_PipeName.c_str());
+		OutputDebugStringW(m_PipeName.c_str());
 		if (!m_ConnectionPipe.Connect(m_PipeName))
 		{
 			return false;
@@ -19,9 +19,9 @@ public:
 
 		OutputDebugStringA("Client connected to connection pipe");
 
-		const std::string mainPipeName = GenerateUUID();
+		const auto mainPipeName = GenerateUUID();
 
-		m_ConnectionPipe.Send("\\\\.\\pipe\\" + mainPipeName);
+		m_ConnectionPipe.Send(L"\\\\.\\pipe\\" + mainPipeName);
 
 		OutputDebugStringA("Name of main pipe sended");
 
@@ -32,12 +32,12 @@ public:
 		}
 		OutputDebugStringA("Client connected to main pipe");
 
-		m_Pipe.Send("Hello!");
+		m_Pipe.Send(L"Hello!");
 
 		return true;
 	}
 
-	const void Send(const std::string& data) override
+	const void Send(const std::wstring& data) override
 	{
 		if (!m_Pipe.IsConnected())
 		{
@@ -46,11 +46,11 @@ public:
 
 		m_Pipe.Send(data);
 	}
-	const std::string Receive() override
+	const std::wstring Receive() override
 	{
 		if (!m_Pipe.IsConnected())
 		{
-			return "";
+			return L"";
 		}
 
 		return m_Pipe.Receive();
@@ -61,7 +61,7 @@ public:
 		return m_Pipe.IsConnected();
 	}
 
-	NamedPipeTransport(const std::string& pipeName) :
+	NamedPipeTransport(const std::wstring& pipeName) :
 		m_PipeName(pipeName)
 	{
 	}
@@ -72,5 +72,5 @@ public:
 private:
 	NamedPipe m_ConnectionPipe;
 	NamedPipe m_Pipe;
-	std::string m_PipeName = "";
+	std::wstring m_PipeName = L"";
 };

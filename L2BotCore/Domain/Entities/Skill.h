@@ -90,43 +90,43 @@ namespace L2Bot::Domain::Entities
 		{
 			std::vector<Serializers::Node> result;
 
-			result.push_back({ "skillId", std::to_string(m_SkillId) });
-			result.push_back({ "level", std::to_string(m_Level) });
+			result.push_back({ L"skillId", std::to_wstring(m_SkillId) });
+			result.push_back({ L"level", std::to_wstring(m_Level) });
 
 			if (m_PrevState.isNewState)
 			{
-				result.push_back({ "isActive", std::to_string(m_IsActive) });
-				result.push_back({ "name", m_Name });
-				result.push_back({ "iconName", m_IconName });
+				result.push_back({ L"isActive", std::to_wstring(m_IsActive) });
+				result.push_back({ L"name", m_Name });
+				result.push_back({ L"iconName", m_IconName });
 			}
 
 			if (m_PrevState.isNewState || m_Description != m_PrevState.description)
 			{
-				result.push_back({ "description", m_Description });
+				result.push_back({ L"description", m_Description });
 			}
 			if (m_PrevState.isNewState || m_Cost != m_PrevState.cost)
 			{
-				result.push_back({ "cost", std::to_string(m_Cost) });
+				result.push_back({ L"cost", std::to_wstring(m_Cost) });
 			}
 			if (m_PrevState.isNewState || m_Range != m_PrevState.range)
 			{
-				result.push_back({ "range", std::to_string(m_Range) });
+				result.push_back({ L"range", std::to_wstring(m_Range) });
 			}
 			if (m_PrevState.isNewState || m_IsToggled != m_PrevState.isToggled)
 			{
-				result.push_back({ "isToggled", std::to_string(m_IsToggled) });
+				result.push_back({ L"isToggled", std::to_wstring(m_IsToggled) });
 			}
 			if (m_PrevState.isNewState || m_IsCasting != m_PrevState.isCasting)
 			{
-				result.push_back({ "isCasting", std::to_string(m_IsCasting) });
+				result.push_back({ L"isCasting", std::to_wstring(m_IsCasting) });
 			}
 			if (m_PrevState.isNewState || m_IsReloading != m_PrevState.isReloading)
 			{
-				result.push_back({ "isReloading", std::to_string(m_IsReloading) });
+				result.push_back({ L"isReloading", std::to_wstring(m_IsReloading) });
 			}
 			if (m_PrevState.isNewState || IsReadyToUse() != m_PrevState.isReadyToUse)
 			{
-				result.push_back({ "isReadyToUse", std::to_string(IsReadyToUse()) });
+				result.push_back({ L"isReadyToUse", std::to_wstring(IsReadyToUse()) });
 			}
 
 			return result;
@@ -138,9 +138,9 @@ namespace L2Bot::Domain::Entities
 			const bool isActive,
 			const uint8_t cost,
 			const int16_t range,
-			const std::string& name,
-			const std::string& description,
-			const std::string& iconName,
+			const std::wstring& name,
+			const std::wstring& description,
+			const std::wstring& iconName,
 			const bool isToggled,
 			const bool isCasting,
 			const bool isReloading
@@ -183,7 +183,7 @@ namespace L2Bot::Domain::Entities
 		{
 			uint8_t cost = 0;
 			int16_t range = 0;
-			std::string description = "";
+			std::wstring description = L"";
 			bool isToggled = false;
 			bool isCasting = false;
 			bool isReloading = false;
@@ -198,9 +198,9 @@ namespace L2Bot::Domain::Entities
 		bool m_IsActive = false;
 		uint8_t m_Cost = 0;
 		int16_t m_Range = 0;
-		std::string m_Name = "";
-		std::string m_Description = "";
-		std::string m_IconName = "";
+		std::wstring m_Name = L"";
+		std::wstring m_Description = L"";
+		std::wstring m_IconName = L"";
 		bool m_IsToggled = false;
 		bool m_IsCasting = false;
 		bool m_IsReloading = false;

@@ -18,15 +18,15 @@ public:
 		return true;
 	}
 
-	const void Send(const std::string& data) override
+	const void Send(const std::wstring& data) override
 	{
-		OutputDebugStringA(data.c_str());
+		OutputDebugStringW(data.c_str());
 	}
-	const std::string Receive() override
+	const std::wstring Receive() override
 	{
 		// delay imitation
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
-		return "";
+		return L"";
 	}
 
 	DebugViewTransport() = default;
