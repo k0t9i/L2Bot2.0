@@ -11,6 +11,7 @@
 #include "Domain/Entities/WeaponItem.h"
 #include "Domain/Entities/ShieldItem.h"
 #include "../../../DTO/ItemData.h"
+#include "../Helpers/EnchantHelper.h"
 
 using namespace L2Bot::Domain;
 
@@ -19,9 +20,10 @@ namespace Interlude
 	class ItemFactory
 	{
 	public:
-		ItemFactory(const L2GameDataWrapper& l2GameData, const FName& fName) :
+		ItemFactory(const L2GameDataWrapper& l2GameData, const FName& fName, const EnchantHelper& enchantHelper) :
 			m_L2GameData(l2GameData),
-			m_FName(fName)
+			m_FName(fName),
+			m_EnchantHelper(enchantHelper)
 		{
 		}
 
@@ -134,8 +136,8 @@ namespace Interlude
 				itemInfo.enchantLevel,
 				casted ? static_cast<Enums::ArmorType>(casted->armorType) : Enums::ArmorType::none,
 				casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
-				GetEnchantValue(casted ? casted->pDefense : 0, itemInfo.enchantLevel, 1, 3),
-				GetEnchantValue(casted ? casted->mDefense : 0, itemInfo.enchantLevel, 1, 3),
+				m_EnchantHelper.GetDefenseEnchantValue(casted ? casted->pDefense : 0, itemInfo.enchantLevel),
+				m_EnchantHelper.GetDefenseEnchantValue(casted ? casted->mDefense : 0, itemInfo.enchantLevel),
 				setEffect,
 				addSetEffect,
 				enchantEffect
@@ -167,8 +169,8 @@ namespace Interlude
 					casted ? static_cast<Enums::WeaponType>(casted->weaponType) : Enums::WeaponType::none,
 					casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
 					casted ? casted->rndDamage : 0,
-					GetEnchantValue(casted ? casted->pAttack : 0, itemInfo.enchantLevel, 3, 6),
-					GetEnchantValue(casted ? casted->mAttack : 0, itemInfo.enchantLevel, 3, 6),
+					m_EnchantHelper.GetPAttackEnchantValue(casted->weaponType, itemInfo.isTwoHanded, casted->crystalType, casted ? casted->pAttack : 0, itemInfo.enchantLevel),
+					m_EnchantHelper.GetMAttackEnchantValue(casted->crystalType, casted ? casted->mAttack : 0, itemInfo.enchantLevel),
 					casted ? casted->critical : 0,
 					casted ? casted->hitModify : 0,
 					casted ? casted->atkSpd : 0,
@@ -190,7 +192,7 @@ namespace Interlude
 				itemInfo.enchantLevel,
 				casted ? static_cast<Enums::CrystalType>(casted->crystalType) : Enums::CrystalType::none,
 				casted ? casted->shieldEvasion : 0,
-				GetEnchantValue(casted ? casted->shieldPdef : 0, itemInfo.enchantLevel, 1, 3),
+				m_EnchantHelper.GetDefenseEnchantValue(casted ? casted->shieldPdef : 0, itemInfo.enchantLevel),
 				casted ? casted->shieldDefRate : 0
 			);
 		}
@@ -198,5 +200,6 @@ namespace Interlude
 	private:
 		const L2GameDataWrapper& m_L2GameData;
 		const FName& m_FName;
+		const EnchantHelper& m_EnchantHelper;
 	};
 }

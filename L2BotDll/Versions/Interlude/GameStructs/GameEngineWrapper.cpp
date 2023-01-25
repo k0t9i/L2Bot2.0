@@ -104,7 +104,8 @@ namespace Interlude
 					itemInfo.isEquipped,
 					itemInfo.enchantLevel,
 					itemInfo.mana,
-					itemInfo.type2 == L2::ItemType2::QUEST
+					itemInfo.type2 == L2::ItemType2::QUEST,
+					itemInfo.itemSlot == L2::ItemSlot::LR_HAND
 				}
 			}
 		);
@@ -121,7 +122,8 @@ namespace Interlude
 			itemInfo.isEquipped,
 			itemInfo.enchantLevel,
 			itemInfo.mana,
-			itemInfo.type2 == L2::ItemType2::QUEST
+			itemInfo.type2 == L2::ItemType2::QUEST,
+			itemInfo.itemSlot == L2::ItemSlot::LR_HAND
 		};
 
 		switch (actionType)

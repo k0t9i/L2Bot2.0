@@ -197,6 +197,7 @@
     <ClInclude Include="Versions\Interlude\GameStructs\L2GameDataWrapper.h" />
     <ClInclude Include="Versions\Interlude\GameStructs\FName.h" />
     <ClInclude Include="Transports\DebugViewTransport.h" />
+    <ClInclude Include="Versions\Interlude\Helpers\EnchantHelper.h" />
     <ClInclude Include="Versions\Interlude\Repositories\AbnormalEffectRepository.h" />
     <ClInclude Include="Versions\Interlude\Repositories\DropRepository.h" />
     <ClInclude Include="framework.h" />

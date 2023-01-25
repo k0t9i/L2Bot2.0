@@ -183,6 +183,9 @@
     <ClInclude Include="Events\GameEngineTickedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Versions\Interlude\Helpers\EnchantHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

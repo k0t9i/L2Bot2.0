@@ -20,6 +20,7 @@
 #include "GameStructs/L2GameDataWrapper.h"
 #include "GameStructs/FName.h"
 #include "../../Services/EntityHandler.h"
+#include "Helpers/EnchantHelper.h"
 
 namespace Interlude
 {
@@ -94,7 +95,8 @@ namespace Interlude
 		}
 		ItemRepository& GetItemRepository() const override
 		{
-			static auto factory = ItemFactory(GetL2GameData(), GetFName());
+			static EnchantHelper enchantHelper;
+			static auto factory = ItemFactory(GetL2GameData(), GetFName(), enchantHelper);
 			static EntityHandler handler;
 			static auto result = ItemRepository(
 				GetNetworkHandler(),

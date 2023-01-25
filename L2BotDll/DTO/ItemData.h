@@ -11,4 +11,5 @@ struct ItemData
 	const uint16_t enchantLevel = 0;
 	const int32_t mana = -1;
 	const bool isQuest = false;
+	const bool isTwoHanded = false;
 };
