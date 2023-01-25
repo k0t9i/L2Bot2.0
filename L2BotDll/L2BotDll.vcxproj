@@ -168,6 +168,7 @@
     <ClInclude Include="Events\CreatureDiedEvent.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventDispatcher.h" />
+    <ClInclude Include="Events\GameEngineTickedEvent.h" />
     <ClInclude Include="Events\HeroCreatedEvent.h" />
     <ClInclude Include="Events\HeroDeletedEvent.h" />
     <ClInclude Include="Events\ItemAutousedEvent.h" />

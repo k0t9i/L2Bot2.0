@@ -11,14 +11,13 @@
 #include "../../../Events/ItemUpdatedEvent.h"
 #include "../../../Events/ItemDeletedEvent.h"
 #include "../../../Events/ItemAutousedEvent.h"
+#include "../../../Events/GameEngineTickedEvent.h"
 #include "../../../DTO/ItemData.h"
 
 namespace Interlude
 {
-	void* GameEngineWrapper::originalInitAddress = 0;
 	GameEngineWrapper::GameEngine* GameEngineWrapper::_target = 0;
 
-	void(__thiscall* GameEngineWrapper::__Init)(GameEngine*, float_t) = 0;
 	void(__thiscall* GameEngineWrapper::__OnSkillListPacket)(GameEngine*, L2ParamStack&) = 0;
 	int(__thiscall* GameEngineWrapper::__OnReceiveMagicSkillUse)(GameEngine*, User*, User*, L2ParamStack&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnReceiveMagicSkillCanceled)(GameEngine*, User*) = 0;
@@ -26,14 +25,14 @@ namespace Interlude
 	void(__thiscall* GameEngineWrapper::__AddInventoryItem)(GameEngine*, ItemInfo&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnReceiveUpdateItemList)(GameEngine*, UpdateItemListActionType, ItemInfo&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnExAutoSoulShot)(GameEngine*, L2ParamStack&) = 0;
+	void(__thiscall* GameEngineWrapper::__Tick)(GameEngine*, float_t) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
 	{
-		void* initAddress = GetProcAddress(hModule, "?Tick@UGameEngine@@UAEXM@Z");
-		originalInitAddress = splice(initAddress, __Init_hook);
-		(FARPROC&)__Init = (FARPROC)initAddress;
-
+		(FARPROC&)__Tick = (FARPROC)splice(
+			GetProcAddress(hModule, "?Tick@UGameEngine@@UAEXM@Z"), __Tick_hook
+		);
 		(FARPROC&)__OnSkillListPacket = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnSkillListPacket@UGameEngine@@UAEXAAVL2ParamStack@@@Z"), __OnSkillListPacket_hook
 		);
@@ -59,7 +58,6 @@ namespace Interlude
 
 	void GameEngineWrapper::Restore()
 	{
-		restore(originalInitAddress);
 		restore((void*&)__OnSkillListPacket);
 		restore((void*&)__OnReceiveMagicSkillUse);
 		restore((void*&)__OnReceiveMagicSkillCanceled);
@@ -67,19 +65,6 @@ namespace Interlude
 		restore((void*&)__AddInventoryItem);
 		restore((void*&)__OnReceiveUpdateItemList);
 		restore((void*&)__OnExAutoSoulShot);
-	}
-
-	void __fastcall GameEngineWrapper::__Init_hook(GameEngine* This, uint32_t /*edx*/, float_t unk)
-	{
-		if (_target == 0) {
-			_target = This;
-
-			InjectLibrary::StopCurrentProcess();
-			restore(originalInitAddress);
-			InjectLibrary::StartCurrentProcess();
-
-			(*__Init)(This, unk);
-		}
 	}
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
@@ -106,7 +91,7 @@ namespace Interlude
 		(*__AddAbnormalStatus)(This, stack);
 	}
 
-	void __fastcall GameEngineWrapper::__AddInventoryItem_hook(GameEngine* This, int, ItemInfo& itemInfo)
+	void __fastcall GameEngineWrapper::__AddInventoryItem_hook(GameEngine* This, uint32_t, ItemInfo& itemInfo)
 	{
 		EventDispatcher::GetInstance().Dispatch(
 			ItemCreatedEvent
@@ -126,7 +111,7 @@ namespace Interlude
 		(*__AddInventoryItem)(This, itemInfo);
 	}
 
-	void __fastcall GameEngineWrapper::__OnReceiveUpdateItemList_hook(GameEngine* This, int, UpdateItemListActionType actionType, ItemInfo& itemInfo)
+	void __fastcall GameEngineWrapper::__OnReceiveUpdateItemList_hook(GameEngine* This, uint32_t, UpdateItemListActionType actionType, ItemInfo& itemInfo)
 	{
 		const ItemData itemData
 		{
@@ -154,9 +139,21 @@ namespace Interlude
 		(*__OnReceiveUpdateItemList)(This, actionType, itemInfo);
 	}
 
-	void __fastcall GameEngineWrapper::__OnExAutoSoulShot_hook(GameEngine* This, int, L2ParamStack& stack)
+	void __fastcall GameEngineWrapper::__OnExAutoSoulShot_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
 	{
 		EventDispatcher::GetInstance().Dispatch(ItemAutousedEvent{ stack.GetBufferAsVector<uint32_t>() });
 		(*__OnExAutoSoulShot)(This, stack);
+	}
+
+	void __fastcall GameEngineWrapper::__Tick_hook(GameEngine* This, uint32_t, float_t deltaTime)
+	{
+		if (_target == 0)
+		{
+			_target = This;
+		}
+
+		(*__Tick)(This, deltaTime);
+
+		EventDispatcher::GetInstance().Dispatch(GameEngineTickedEvent{});
 	}
 }

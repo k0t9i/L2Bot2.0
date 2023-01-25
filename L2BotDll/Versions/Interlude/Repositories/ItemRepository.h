@@ -12,6 +12,7 @@
 #include "../../../Events/ItemDeletedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/ItemAutousedEvent.h"
+#include "../../../Events/GameEngineTickedEvent.h"
 #include "../../../Events/EventDispatcher.h"
 
 using namespace L2Bot::Domain;
@@ -65,8 +66,32 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(ItemAutousedEvent::name, [this](const Event& evt) {
 				OnItemAutoused(evt);
 			});
+			EventDispatcher::GetInstance().Subscribe(GameEngineTickedEvent::name, [this](const Event& evt) {
+				OnGameEngineTicked(evt);
+			});
 		}
 
+		void OnGameEngineTicked(const Event& evt)
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			if (evt.GetName() == GameEngineTickedEvent::name)
+			{
+				for (auto it = m_Items.begin(); it != m_Items.end();)
+				{
+					if (m_NewItems.find(it->first) == m_NewItems.end())
+					{
+						it = m_Items.erase(it);
+					}
+					else
+					{
+						++it;
+					}
+				}
+
+				m_IsNewCycle = true;
+			}
+		}
+		
 		void OnHeroDeleted(const Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
@@ -87,11 +112,11 @@ namespace Interlude
 				const auto itemId = data[0];
 				const bool isEnabled = data[1] > 0;
 
-				for (const auto& item : m_Items)
+				for (const auto& kvp : m_Items)
 				{
-					if (item.second->GetItemId() == itemId)
+					if (kvp.second->GetItemId() == itemId)
 					{
-						auto ptr = dynamic_cast<Entities::EtcItem*>(item.second.get());
+						auto ptr = dynamic_cast<Entities::EtcItem*>(kvp.second.get());
 						if (ptr)
 						{
 							ptr->Autouse(isEnabled);
@@ -101,12 +126,17 @@ namespace Interlude
 			}
 		}
 
-		//todo need to delete items if they are not exists in create "queue"
 		void OnItemCreated(const Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			if (evt.GetName() == ItemCreatedEvent::name)
 			{
+				if (m_IsNewCycle)
+				{
+					m_IsNewCycle = false;
+					m_NewItems.clear();
+				}
+
 				const auto casted = static_cast<const ItemCreatedEvent&>(evt);
 				const auto& data = casted.GetItemData();
 
@@ -120,6 +150,7 @@ namespace Interlude
 					// When equip/unequip accessories
 					m_Items[data.objectId]->Update(item.get());
 				}
+				m_NewItems[data.objectId] = data.objectId;
 			}
 		}
 
@@ -163,12 +194,16 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			m_IsNewCycle = false;
+			m_NewItems.clear();
 			m_Items.clear();
 		}
 
 	private:
 		const ItemFactory& m_Factory;
 		std::map<uint32_t, std::unique_ptr<Entities::BaseItem>> m_Items;
+		std::map<uint32_t, uint32_t> m_NewItems;
+		bool m_IsNewCycle = true;
 		uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		std::shared_timed_mutex m_Mutex;

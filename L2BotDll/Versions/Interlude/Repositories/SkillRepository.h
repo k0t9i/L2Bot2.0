@@ -10,6 +10,7 @@
 #include "../../../Events/SkillCancelledEvent.h"
 #include "../../../Events/AbnormalEffectChangedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
+#include "../../../Events/GameEngineTickedEvent.h"
 #include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../../../Common/TimerMap.h"
@@ -66,6 +67,9 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
 				OnHeroDeleted(evt);
 			});
+			EventDispatcher::GetInstance().Subscribe(GameEngineTickedEvent::name, [this](const Event& evt) {
+				OnGameEngineTicked(evt);
+			});
 		}
 
 		SkillRepository() = delete;
@@ -78,6 +82,29 @@ namespace Interlude
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			m_Skills.clear();
+			m_IsNewCycle = false;
+			m_NewSkills.clear();
+		}
+
+		void OnGameEngineTicked(const Event& evt)
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			if (evt.GetName() == GameEngineTickedEvent::name)
+			{
+				for (auto it = m_Skills.begin(); it != m_Skills.end();)
+				{
+					if (m_NewSkills.find(it->first) == m_NewSkills.end())
+					{
+						it = m_Skills.erase(it);
+					}
+					else
+					{
+						++it;
+					}
+				}
+
+				m_IsNewCycle = true;
+			}
 		}
 
 		void OnHeroDeleted(const Event& evt)
@@ -97,6 +124,12 @@ namespace Interlude
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			if (evt.GetName() == SkillCreatedEvent::name)
 			{
+				if (m_IsNewCycle)
+				{
+					m_IsNewCycle = false;
+					m_NewSkills.clear();
+				}
+
 				const auto casted = static_cast<const SkillCreatedEvent&>(evt);
 				const auto skillInfo = casted.GetSkillInfo();
 				const auto skillId = skillInfo[2];
@@ -115,6 +148,7 @@ namespace Interlude
 				{
 					m_Skills[skillId]->UpdateLevel(skillInfo[1]);
 				}
+				m_NewSkills[skillId] = skillId;
 			}
 		}
 		void OnSkillUsed(const Event& evt)
@@ -213,6 +247,8 @@ namespace Interlude
 	private:
 		const SkillFactory& m_Factory;
 		std::map<uint32_t, std::unique_ptr<Entities::Skill>> m_Skills;
+		std::map<uint32_t, uint32_t> m_NewSkills;
+		bool m_IsNewCycle = true;
 		uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		TimerMap m_ReloadingTimers;
