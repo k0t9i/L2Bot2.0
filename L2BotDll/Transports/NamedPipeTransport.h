@@ -21,7 +21,7 @@ public:
 
 		const auto mainPipeName = GenerateUUID();
 
-		m_ConnectionPipe.Send(L"\\\\.\\pipe\\" + mainPipeName);
+		m_ConnectionPipe.Send(mainPipeName);
 
 		OutputDebugStringA("Name of main pipe sended");
 

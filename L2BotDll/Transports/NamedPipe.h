@@ -29,8 +29,8 @@ public:
 				PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
 				PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
 				PIPE_UNLIMITED_INSTANCES,
-				BUFFER_SIZE * sizeof(char),
-				BUFFER_SIZE * sizeof(char),
+				BUFFER_SIZE * sizeof(wchar_t),
+				BUFFER_SIZE * sizeof(wchar_t),
 				NMPWAIT_USE_DEFAULT_WAIT,
 				NULL
 			);
@@ -64,6 +64,8 @@ public:
 		{
 			return;
 		}
+
+		const std::wstring preparedMessage = message + L"\n";
 
 		DWORD written;
 		const auto result = WriteFile(m_Pipe, message.c_str(), (message.size() + 1) * sizeof(wchar_t), &written, &m_WritingOverlapped);
