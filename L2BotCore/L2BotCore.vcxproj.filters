@@ -141,6 +141,15 @@
     <ClInclude Include="Domain\Enums\ChatChannelEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Domain\ValueObjects\ChatMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Services\ChatMessageService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Repositories\ChatMessageRepositoryInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

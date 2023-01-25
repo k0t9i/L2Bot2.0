@@ -5,6 +5,7 @@
 #include <memory>
 #include <Windows.h>
 #include "Domain/Services/EntityService.h"
+#include "Domain/Services/ChatMessageService.h"
 #include "Domain/Serializers/SerializableStateContainer.h"
 #include "Domain/Serializers/SerializerInterface.h"
 #include "Domain/Repositories/EntityRepositoryInterface.h"
@@ -22,7 +23,8 @@ public:
 		Repositories::EntityRepositoryInterface& playerRepository,
 		Repositories::EntityRepositoryInterface& skillRepository,
 		Repositories::EntityRepositoryInterface& itemRepository,
-		Repositories::EntityRepositoryInterface& abnormalEffectService,
+		Repositories::EntityRepositoryInterface& abnormalEffectRepository,
+		Repositories::ChatMessageRepositoryInterface& chatMessageRepository,
 		const Serializers::SerializerInterface& serializer,
 		Transports::TransportInterface& transport
 	) :
@@ -32,7 +34,8 @@ public:
 		m_PlayerService(Services::EntityService(playerRepository)),
 		m_SkillService(Services::EntityService(skillRepository)),
 		m_ItemService(Services::EntityService(itemRepository)),
-		m_AbnormalEffectService(Services::EntityService(abnormalEffectService)),
+		m_AbnormalEffectService(Services::EntityService(abnormalEffectRepository)),
+		m_ChatMessageService(Services::ChatMessageService(chatMessageRepository)),
 		m_Serializer(serializer),
 		m_Transport(transport)
 	{
@@ -139,6 +142,11 @@ private:
 			}
 		}
 
+		for (const auto& message : m_ChatMessageService.GetMessages())
+		{
+			result.push_back(Serializers::Node{ "chat", message.BuildSerializationNodes() });
+		}
+
 		return result;
 	}
 
@@ -161,6 +169,7 @@ private:
 	Services::EntityService m_SkillService;
 	Services::EntityService m_ItemService;
 	Services::EntityService m_AbnormalEffectService;
+	Services::ChatMessageService m_ChatMessageService;
 	const Serializers::SerializerInterface& m_Serializer;
 	Transports::TransportInterface& m_Transport;
 	bool m_Stopped = false;

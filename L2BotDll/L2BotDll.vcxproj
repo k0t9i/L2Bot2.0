@@ -164,7 +164,9 @@
     <ClInclude Include="Common\apihook.h" />
     <ClInclude Include="Common\Common.h" />
     <ClInclude Include="Common\TimerMap.h" />
+    <ClInclude Include="DTO\ChatMessage.h" />
     <ClInclude Include="DTO\ItemData.h" />
+    <ClInclude Include="Events\ChatMessageCreatedEvent.h" />
     <ClInclude Include="Events\CreatureDiedEvent.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventDispatcher.h" />
@@ -188,6 +190,7 @@
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h" />
     <ClInclude Include="Versions\GameStructs\L2GameDataInterface.h" />
     <ClInclude Include="Versions\Interlude\Factories\AbnormalEffectFactory.h" />
+    <ClInclude Include="Versions\Interlude\Factories\ChatMessageFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\ItemFactory.h" />
     <ClInclude Include="Versions\Interlude\Factories\NPCFactory.h" />
@@ -199,6 +202,7 @@
     <ClInclude Include="Transports\DebugViewTransport.h" />
     <ClInclude Include="Versions\Interlude\Helpers\EnchantHelper.h" />
     <ClInclude Include="Versions\Interlude\Repositories\AbnormalEffectRepository.h" />
+    <ClInclude Include="Versions\Interlude\Repositories\ChatMessageRepository.h" />
     <ClInclude Include="Versions\Interlude\Repositories\DropRepository.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Versions\GameStructs\FindObjectsTrait.h" />

@@ -186,6 +186,18 @@
     <ClInclude Include="Versions\Interlude\Helpers\EnchantHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DTO\ChatMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\ChatMessageCreatedEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Factories\ChatMessageFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Repositories\ChatMessageRepository.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

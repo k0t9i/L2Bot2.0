@@ -26,6 +26,7 @@ public:
 			m_AbstractFactory.GetSkillRepository(),
 			m_AbstractFactory.GetItemRepository(),
 			m_AbstractFactory.GetAbnormalEffectRepository(),
+			m_AbstractFactory.GetChatMessageRepository(),
 			m_Serializer,
 			m_Transport
 		)

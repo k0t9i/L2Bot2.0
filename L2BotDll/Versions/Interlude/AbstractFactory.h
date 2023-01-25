@@ -8,6 +8,7 @@
 #include "Factories/SkillFactory.h"
 #include "Factories/ItemFactory.h"
 #include "Factories/AbnormalEffectFactory.h"
+#include "Factories/ChatMessageFactory.h"
 #include "Repositories/DropRepository.h"
 #include "Repositories/HeroRepository.h"
 #include "Repositories/NPCRepository.h"
@@ -15,6 +16,7 @@
 #include "Repositories/SkillRepository.h"
 #include "Repositories/ItemRepository.h"
 #include "Repositories/AbnormalEffectRepository.h"
+#include "Repositories/ChatMessageRepository.h"
 #include "GameStructs/NetworkHandlerWrapper.h"
 #include "GameStructs/GameEngineWrapper.h"
 #include "GameStructs/L2GameDataWrapper.h"
@@ -112,6 +114,14 @@ namespace Interlude
 			static auto result = AbnormalEffectRepository(
 				factory,
 				handler
+			);
+			return result;
+		}
+		ChatMessageRepository& GetChatMessageRepository() const override
+		{
+			static auto factory = ChatMessageFactory();
+			static auto result = ChatMessageRepository(
+				factory
 			);
 			return result;
 		}

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "../../../Common/apihook.h"
+#include "../../../Common/Common.h"
 #include "GameEngineWrapper.h"
 #include "ProcessManipulation.h"
 #include "../../../Events/SkillCreatedEvent.h"
@@ -12,7 +13,9 @@
 #include "../../../Events/ItemDeletedEvent.h"
 #include "../../../Events/ItemAutousedEvent.h"
 #include "../../../Events/GameEngineTickedEvent.h"
+#include "../../../Events/ChatMessageCreatedEvent.h"
 #include "../../../DTO/ItemData.h"
+#include "FName.h"
 
 namespace Interlude
 {
@@ -26,6 +29,7 @@ namespace Interlude
 	void(__thiscall* GameEngineWrapper::__OnReceiveUpdateItemList)(GameEngine*, UpdateItemListActionType, ItemInfo&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnExAutoSoulShot)(GameEngine*, L2ParamStack&) = 0;
 	void(__thiscall* GameEngineWrapper::__Tick)(GameEngine*, float_t) = 0;
+	void(__thiscall* GameEngineWrapper::__OnSay2)(GameEngine*, L2ParamStack&) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
@@ -54,6 +58,9 @@ namespace Interlude
 		(FARPROC&)__OnExAutoSoulShot = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnExAutoSoulShot@UGameEngine@@UAEXAAVL2ParamStack@@@Z"), __OnExAutoSoulShot_hook
 		);
+		(FARPROC&)__OnSay2 = (FARPROC)splice(
+			GetProcAddress(hModule, "?OnSay2@UGameEngine@@UAEXAAVL2ParamStack@@@Z"), __OnSay2_hook
+		);
 	}
 
 	void GameEngineWrapper::Restore()
@@ -65,6 +72,7 @@ namespace Interlude
 		restore((void*&)__AddInventoryItem);
 		restore((void*&)__OnReceiveUpdateItemList);
 		restore((void*&)__OnExAutoSoulShot);
+		restore((void*&)__OnSay2);
 	}
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
@@ -157,5 +165,24 @@ namespace Interlude
 		(*__Tick)(This, deltaTime);
 
 		EventDispatcher::GetInstance().Dispatch(GameEngineTickedEvent{});
+	}
+	void __fastcall GameEngineWrapper::__OnSay2_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
+	{
+		const auto buffer = stack.GetBufferAsVector<uint32_t>();
+
+		EventDispatcher::GetInstance().Dispatch(
+			ChatMessageCreatedEvent
+			{
+				ChatMessage
+				{
+					buffer[0],
+					static_cast<uint8_t>(buffer[1]),
+					ConvertFromWideChar(reinterpret_cast<wchar_t*>(buffer[2])),
+					ConvertFromWideChar(reinterpret_cast<wchar_t*>(buffer[3]))
+				}
+			}
+		);
+
+		(*__OnSay2)(This, stack);
 	}
 }
