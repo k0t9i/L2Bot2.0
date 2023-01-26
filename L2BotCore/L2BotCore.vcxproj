@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Domain\DTO\EntityState.h" />
+    <ClInclude Include="Domain\DTO\Message.h" />
     <ClInclude Include="Domain\Entities\AbnormalEffect.h" />
     <ClInclude Include="Domain\Entities\ArmorItem.h" />
     <ClInclude Include="Domain\Entities\EntityInterface.h" />
@@ -195,7 +196,6 @@
     <ClInclude Include="Domain\ValueObjects\ExperienceInfo.h" />
     <ClInclude Include="Domain\ValueObjects\FullName.h" />
     <ClInclude Include="Domain\ValueObjects\InventoryInfo.h" />
-    <ClInclude Include="Domain\Serializers\SerializableStateContainer.h" />
     <ClInclude Include="Domain\ValueObjects\PermanentStats.h" />
     <ClInclude Include="Domain\ValueObjects\Phenotype.h" />
     <ClInclude Include="Domain\ValueObjects\Reputation.h" />

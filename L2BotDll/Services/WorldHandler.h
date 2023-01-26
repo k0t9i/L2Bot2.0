@@ -6,10 +6,10 @@
 #include <Windows.h>
 #include "Domain/Services/EntityService.h"
 #include "Domain/Services/ChatMessageService.h"
-#include "Domain/Serializers/SerializableStateContainer.h"
 #include "Domain/Serializers/SerializerInterface.h"
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "Domain/Transports/TransportInterface.h"
+#include "Domain/DTO/Message.h"
 
 using namespace L2Bot::Domain;
 
@@ -83,7 +83,7 @@ private:
 				for (const auto& item : data)
 				{
 					m_Transport.Send(
-						m_Serializer.Serialize({ item })
+						m_Serializer.Serialize(item)
 					);
 				}
 			}
@@ -120,33 +120,38 @@ private:
 		}
 	}
 
-	const std::vector<Serializers::Node> GetData()
+	const std::vector<std::vector<Serializers::Node>> GetData()
 	{
-		std::vector<Serializers::SerializableStateContainer> items
+		std::map<std::wstring, Services::EntityService> services
 		{
-			Serializers::SerializableStateContainer{m_HeroService.GetEntities(), L"hero"},
-			Serializers::SerializableStateContainer{m_DropService.GetEntities(), L"drop"},
-			Serializers::SerializableStateContainer{m_NPCService.GetEntities(), L"npc"},
-			Serializers::SerializableStateContainer{m_PlayerService.GetEntities(), L"player"},
-			Serializers::SerializableStateContainer{m_SkillService.GetEntities(), L"skill"},
-			Serializers::SerializableStateContainer{m_ItemService.GetEntities(), L"item"},
-			Serializers::SerializableStateContainer{m_AbnormalEffectService.GetEntities(), L"abnormalEffect"},
+			{L"hero", m_HeroService},
+			{L"drop", m_DropService},
+			{L"npc", m_NPCService},
+			{L"player", m_PlayerService},
+			{L"skill", m_SkillService},
+			{L"item", m_ItemService},
+			{L"abnormalEffect", m_AbnormalEffectService}
 		};
 
-		std::vector<Serializers::Node> result;
-		for (const auto& item : items)
+		std::vector<std::vector<Serializers::Node>> result;
+
+		for (auto& kvp : services)
 		{
-			for (const auto node : item.BuildSerializationNodes())
+			for (const auto& entity : kvp.second.GetEntities())
 			{
-				result.push_back(node);
-			}
+				if (entity->GetState() != Enums::EntityStateEnum::none)
+				{
+					const auto message = DTO::Message{ kvp.first, entity->GetState(), *entity->GetEntity().get() };
+					result.push_back(message.BuildSerializationNodes());
+				}
+			};
 		}
-
-		for (const auto& message : m_ChatMessageService.GetMessages())
+		for (const auto& chatMessage : m_ChatMessageService.GetMessages())
 		{
-			result.push_back(Serializers::Node{ L"chat", message.BuildSerializationNodes() });
+			const auto message = DTO::Message{ L"chat", Enums::EntityStateEnum::created, chatMessage };
+			result.push_back(message.BuildSerializationNodes());
 		}
-
+		
 		return result;
 	}
 
