@@ -32,6 +32,7 @@ namespace Interlude
 
 		std::unique_ptr<Entities::BaseItem> Create(const ItemData& itemInfo) const
 		{
+			//FIXME during first start data may be undefined
 			const auto data = m_L2GameData.GetItemData(itemInfo.itemId);
 
 			const auto nameEntry = data ? m_FName.GetEntry(data->nameIndex) : nullptr;
