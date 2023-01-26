@@ -90,7 +90,7 @@ namespace L2Bot::Domain::Entities
 		{
 			std::vector<Serializers::Node> result;
 
-			result.push_back({ L"skillId", std::to_wstring(m_SkillId) });
+			result.push_back({ L"id", std::to_wstring(m_SkillId) });
 			result.push_back({ L"level", std::to_wstring(m_Level) });
 
 			if (m_PrevState.isNewState)

@@ -58,7 +58,7 @@ namespace L2Bot::Domain::Entities
 		{
 			std::vector<Serializers::Node> result;
 
-			result.push_back({ L"objectId", std::to_wstring(m_ObjectId) });
+			result.push_back({ L"id", std::to_wstring(m_ObjectId) });
 			result.push_back({ L"itemId", std::to_wstring(m_ItemId) });
 
 			if (m_PrevState.isNewState)
