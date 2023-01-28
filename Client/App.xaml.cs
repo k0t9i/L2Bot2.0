@@ -11,6 +11,8 @@ using Client.Domain.Entities;
 using Client.Domain.Service;
 using BaseApp = System.Windows.Application;
 using Client.Domain.ValueObjects;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace Client
 {
@@ -20,38 +22,14 @@ namespace Client
     public partial class App : BaseApp
     {
         public static IHost? AppHost { get; private set; }
+        public static IConfiguration? AppConfig { get; private set; }
 
         public App()
         {
             AppHost = Host.CreateDefaultBuilder()
-                .ConfigureServices((hostContext, services) => {
-                    services
-                        .AddSingleton<MainWindow>()
-                        .AddSingleton(
-                            typeof(Application),
-                            x => new Application(
-                                x.GetRequiredService<TransportInterface>(),
-                                x.GetRequiredService<MessageParserInterface>(),
-                                x.GetRequiredService<EntityHandlerFactoryInterface>(),
-                                "L2BotDll.dll"
-                             )
-                         )
-                        .AddSingleton(typeof(EntityHandlerFactoryInterface), typeof(EntityHandlerFactory))
-                        .AddSingleton(typeof(MessageParserInterface), typeof(JsonMessageParser))
-                        .AddSingleton(typeof(TransportInterface), x => new NamedPipeTransport("PipeL2Bot"))
-
-                        .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
-                        .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))
-                        .AddTransient(typeof(EntityFactoryInterface<NPC>), typeof(EntityFactory<NPC>))
-                        .AddTransient(typeof(EntityFactoryInterface<Player>), typeof(EntityFactory<Player>))
-                        .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
-
-                        .AddSingleton<EntityHandler<Hero>>()
-                        .AddSingleton<EntityHandler<Drop>>()
-                        .AddSingleton<EntityHandler<NPC>>()
-                        .AddSingleton<EntityHandler<Player>>()
-                        .AddSingleton<ChatMessageHandler>();
-                })
+                .ConfigureServices(
+                    (hostContext, services) => ConfigureServices(services)
+                )
                 .Build();
         }
 
@@ -73,6 +51,46 @@ namespace Client
             await AppHost!.StopAsync();
 
             base.OnExit(e);
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile("config.json", optional: true, reloadOnChange: false)
+                .Build();
+
+            services
+                .AddSingleton(typeof(IConfiguration), config)
+                .AddSingleton<MainWindow>()
+                .AddSingleton(
+                    typeof(Application),
+                    x => new Application(
+                            x.GetRequiredService<TransportInterface>(),
+                            x.GetRequiredService<MessageParserInterface>(),
+                            x.GetRequiredService<EntityHandlerFactoryInterface>(),
+                            config.GetValue<string>("DLLName") ?? ""
+                        )
+                    )
+                .AddSingleton(typeof(EntityHandlerFactoryInterface), typeof(EntityHandlerFactory))
+                .AddSingleton(typeof(MessageParserInterface), typeof(JsonMessageParser))
+                .AddSingleton(
+                    typeof(TransportInterface),
+                    x => new NamedPipeTransport(
+                        config.GetValue<string>("ConnectionPipeName") ?? ""
+                    )
+                )
+
+                .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
+                .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))
+                .AddTransient(typeof(EntityFactoryInterface<NPC>), typeof(EntityFactory<NPC>))
+                .AddTransient(typeof(EntityFactoryInterface<Player>), typeof(EntityFactory<Player>))
+                .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
+
+                .AddSingleton<EntityHandler<Hero>>()
+                .AddSingleton<EntityHandler<Drop>>()
+                .AddSingleton<EntityHandler<NPC>>()
+                .AddSingleton<EntityHandler<Player>>()
+                .AddSingleton<ChatMessageHandler>();
         }
     }
 }
