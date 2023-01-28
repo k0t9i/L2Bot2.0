@@ -27,6 +27,12 @@ namespace Client.Infrastructure.Factories
                 case MessageTypeEnum.Drop:
                     result = serviceProvider.GetService<EntityHandler<Drop>>();
                     break;
+                case MessageTypeEnum.NPC:
+                    result = serviceProvider.GetService<EntityHandler<NPC>>();
+                    break;
+                case MessageTypeEnum.Player:
+                    result = serviceProvider.GetService<EntityHandler<Player>>();
+                    break;
                 case MessageTypeEnum.Chat:
                     result = serviceProvider.GetService<ChatMessageHandler>();
                     break;

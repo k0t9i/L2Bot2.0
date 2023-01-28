@@ -42,10 +42,14 @@ namespace Client
 
                         .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
                         .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))
+                        .AddTransient(typeof(EntityFactoryInterface<NPC>), typeof(EntityFactory<NPC>))
+                        .AddTransient(typeof(EntityFactoryInterface<Player>), typeof(EntityFactory<Player>))
                         .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
 
                         .AddSingleton<EntityHandler<Hero>>()
                         .AddSingleton<EntityHandler<Drop>>()
+                        .AddSingleton<EntityHandler<NPC>>()
+                        .AddSingleton<EntityHandler<Player>>()
                         .AddSingleton<ChatMessageHandler>();
                 })
                 .Build();
