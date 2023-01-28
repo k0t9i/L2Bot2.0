@@ -10,7 +10,7 @@ using Client.Domain.Factories;
 
 namespace Client.Domain.Service
 {
-    public class EntityHandler<T> : HandlerInterface where T : EntityInterface
+    public class EntityHandler<T> : HandlerInterface where T : class, EntityInterface
     {
         public void Update(MessageOperationEnum operation, string content)
         {

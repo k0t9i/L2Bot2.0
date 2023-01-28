@@ -10,6 +10,7 @@ using Client.Infrastructure.Transports;
 using Client.Domain.Entities;
 using Client.Domain.Service;
 using BaseApp = System.Windows.Application;
+using Client.Domain.ValueObjects;
 
 namespace Client
 {
@@ -38,10 +39,14 @@ namespace Client
                         .AddSingleton(typeof(EntityHandlerFactoryInterface), typeof(EntityHandlerFactory))
                         .AddSingleton(typeof(MessageParserInterface), typeof(JsonMessageParser))
                         .AddSingleton(typeof(TransportInterface), x => new NamedPipeTransport("PipeL2Bot"))
+
                         .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
                         .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))
+                        .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
+
                         .AddSingleton<EntityHandler<Hero>>()
-                        .AddSingleton<EntityHandler<Drop>>();
+                        .AddSingleton<EntityHandler<Drop>>()
+                        .AddSingleton<ChatMessageHandler>();
                 })
                 .Build();
         }

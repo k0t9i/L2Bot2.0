@@ -53,8 +53,6 @@ namespace Client
             try
             {
                 var message = messageParser.Parse(args);
-                Debug.WriteLine(message);
-
                 try
                 {
                     var handler = entityHandlerFactory.GetHandler(message.Type);

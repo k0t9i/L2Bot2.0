@@ -7,6 +7,7 @@ using Client.Domain.Entities;
 using Client.Domain.Enums;
 using Client.Domain.Factories;
 using Client.Domain.Service;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Client.Infrastructure.Factories
 {
@@ -21,10 +22,13 @@ namespace Client.Infrastructure.Factories
             switch (type)
             {
                 case MessageTypeEnum.Hero:
-                    result = (HandlerInterface?)serviceProvider.GetService(typeof(EntityHandler<Hero>));
+                    result = serviceProvider.GetService<EntityHandler<Hero>>();
                     break;
                 case MessageTypeEnum.Drop:
-                    result = (HandlerInterface?)serviceProvider.GetService(typeof(EntityHandler<Drop>));
+                    result = serviceProvider.GetService<EntityHandler<Drop>>();
+                    break;
+                case MessageTypeEnum.Chat:
+                    result = serviceProvider.GetService<ChatMessageHandler>();
                     break;
             }
             

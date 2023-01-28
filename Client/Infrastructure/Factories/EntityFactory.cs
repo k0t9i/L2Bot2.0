@@ -10,7 +10,7 @@ using Client.Infrastructure.Parsers.Converters;
 
 namespace Client.Infrastructure.Factories
 {
-    public class EntityFactory<T> : EntityFactoryInterface<T> where T : EntityInterface
+    public class EntityFactory<T> : EntityFactoryInterface<T> where T : class
     {
         public T? Create(string data)
         {
