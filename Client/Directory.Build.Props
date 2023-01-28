@@ -3,8 +3,8 @@
        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	   <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
        <BaseOutputPath>$(SolutionDir)$(Configuration)\bin\</BaseOutputPath>
-       <BaseIntermediateOutputPath>$(SolutionDir)$(Configuration)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-       <MSBuildProjectExtensionsPath>$(SolutionDir)$(Configuration)\$(MSBuildProjectName)\ext\</MSBuildProjectExtensionsPath>
+       <BaseIntermediateOutputPath>$(SolutionDir)$(Configuration)\$(ProjectName)\obj\</BaseIntermediateOutputPath>
+       <MSBuildProjectExtensionsPath>$(SolutionDir)$(Configuration)\$(ProjectName)\ext\</MSBuildProjectExtensionsPath>
 	   <PackageOutputPath>$(BaseOutputPath)</PackageOutputPath>
 	   <OutputPath>$(BaseOutputPath)</OutputPath>
 	   <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
