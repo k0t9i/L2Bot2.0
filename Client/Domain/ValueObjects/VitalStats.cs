@@ -18,6 +18,28 @@ namespace Client.Domain.ValueObjects
         public uint Cp { get => cp; set { if (value != cp) { cp = value; OnPropertyChanged("Cp"); } } }
         public uint MaxCp { get => maxCp; set { if (value != maxCp) { maxCp = value; OnPropertyChanged("MaxCp"); } } }
 
+        public double HpPercent
+        {
+            get
+            {
+                return maxHp != 0 ? hp / (double)maxHp * 100 : 0;
+            }
+        }
+        public double MpPercent
+        {
+            get
+            {
+                return maxMp != 0 ? mp / (double)maxMp * 100 : 0;
+            }
+        }
+        public double CpPercent
+        {
+            get
+            {
+                return maxCp != 0 ? cp / (double)maxCp * 100 : 0;
+            }
+        }
+
         public VitalStats(uint hp, uint maxHp, uint mp, uint maxMp, uint cp, uint maxCp)
         {
             this.hp = hp;

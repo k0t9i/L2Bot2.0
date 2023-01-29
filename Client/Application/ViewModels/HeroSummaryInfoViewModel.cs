@@ -48,6 +48,13 @@ namespace Client.Application.ViewModels
                 return hero.ExperienceInfo;
             }
         }
+        public VitalStats VitalStats
+        {
+            get
+            {
+                return hero.VitalStats;
+            }
+        }
         public HeroSummaryInfoViewModel(Hero hero)
         {
             this.hero = hero;
@@ -56,6 +63,12 @@ namespace Client.Application.ViewModels
             hero.Phenotype.PropertyChanged += Phenotype_PropertyChanged;
             hero.ExperienceInfo.PropertyChanged += ExperienceInfo_PropertyChanged;
             hero.Transform.Position.PropertyChanged += Position_PropertyChanged;
+            hero.VitalStats.PropertyChanged += VitalStats_PropertyChanged;
+        }
+
+        private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("VitalStats");
         }
 
         private void Position_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

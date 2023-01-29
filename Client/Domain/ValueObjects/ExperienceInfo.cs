@@ -13,6 +13,13 @@ namespace Client.Domain.ValueObjects
         public uint Exp { get => exp; set { if (value != exp) { exp = value; OnPropertyChanged("Exp"); } } }
         public uint Sp { get => sp; set { if (value != sp) { sp = value; OnPropertyChanged("Sp"); } } }
         public ulong ExpToLevel { get => expToLevel; set { if (value != expToLevel) { expToLevel = value; OnPropertyChanged("ExpToLevel"); } } }
+        public double ExpPercent
+        {
+            get
+            {
+                return ExpToLevel != 0 ? Exp / (double) ExpToLevel * 100 : 0;
+            }
+        }
 
         public ExperienceInfo(uint level, uint exp, uint sp)
         {
