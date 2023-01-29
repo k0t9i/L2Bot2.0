@@ -15,6 +15,8 @@ using System.Reflection;
 using Client.Application.Views;
 using Client.Domain.ViewModels;
 using Client.Application.ViewModels;
+using Client.Domain.Helpers;
+using Client.Infrastructure.Helpers;
 
 namespace Client
 {
@@ -57,7 +59,8 @@ namespace Client
         private void ConfigureServices(IServiceCollection services)
         {
             IConfiguration config = new ConfigurationBuilder()
-                .AddJsonFile("config.json", optional: true, reloadOnChange: false)
+                .AddJsonFile("config.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("experience.json", optional: false, reloadOnChange: true)
                 .Build();
 
             services
@@ -80,6 +83,7 @@ namespace Client
                         config.GetValue<string>("ConnectionPipeName") ?? ""
                     )
                 )
+                .AddSingleton(typeof(ExperienceHelperInterface), typeof(ConfigurationExperienceHelper))
 
                 .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
                 .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))

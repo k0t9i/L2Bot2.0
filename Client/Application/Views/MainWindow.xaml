@@ -31,7 +31,7 @@
         <ListBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ChatMessages, Mode=OneWay}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock FontSize="12" Text="{Binding Path=Text, Mode=OneWay}" Foreground="{Binding Path=Color, Mode=OneWay}" />
+                    <TextBlock Text="{Binding Path=Text, Mode=OneWay}" Foreground="{Binding Path=Color, Mode=OneWay}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -97,26 +97,26 @@
         <StackPanel Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4">
             <TextBlock FontSize="16" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
             <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="12">
+                <TextBlock>
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}, {1} {2}lvl">
                             <Binding Path="Race"/>
                             <Binding Path="Class"/>
-                            <Binding Path="Level"/>
+                            <Binding Path="Experience.Level"/>
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
             <DockPanel>
                 <StackPanel DockPanel.Dock="Left" Margin="0 0 5 0">
-                    <TextBlock FontSize="12" Padding="0 0 0 3">Position:</TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">Exp:</TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">Weight:</TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">Adena:</TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">Inv. slots:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Position:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Exp:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Weight:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Adena:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Inv. slots:</TextBlock>
                 </StackPanel>
                 <StackPanel>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">
+                    <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0:F0}, {1:F0}, {2:F0}">
                                 <Binding Path="Position.X"/>
@@ -125,7 +125,7 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">
+                    <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
                                 <Binding Path="Experience.Exp"/>
@@ -133,7 +133,7 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">
+                    <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
                                 <Binding Path="Weight.Current"/>
@@ -141,8 +141,8 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock FontSize="12" Text="{Binding Path=Money}" Padding="0 0 0 3"></TextBlock>
-                    <TextBlock FontSize="12" Padding="0 0 0 3">
+                    <TextBlock Text="{Binding Path=Money}" Padding="0 0 0 3"></TextBlock>
+                    <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
                                 <Binding Path="Slots.Current"/>

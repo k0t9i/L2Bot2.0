@@ -7,16 +7,12 @@ namespace Client.Domain.ValueObjects
         private uint level;
         private uint exp;
         private uint sp;
+        private ulong expToLevel;
 
-        public uint Level { get => level; set { if (value != level) { level = value; OnPropertyChanged("Level"); OnPropertyChanged("ExpToLevel"); } } }
+        public uint Level { get => level; set { if (value != level) { level = value; OnPropertyChanged("Level"); } } }
         public uint Exp { get => exp; set { if (value != exp) { exp = value; OnPropertyChanged("Exp"); } } }
         public uint Sp { get => sp; set { if (value != sp) { sp = value; OnPropertyChanged("Sp"); } } }
-        public uint ExpToLevel {
-            get
-            {
-                return level * 200;
-            }
-        }
+        public ulong ExpToLevel { get => expToLevel; set { if (value != expToLevel) { expToLevel = value; OnPropertyChanged("ExpToLevel"); } } }
 
         public ExperienceInfo(uint level, uint exp, uint sp)
         {

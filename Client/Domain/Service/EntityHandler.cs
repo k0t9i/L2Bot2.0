@@ -30,7 +30,7 @@ namespace Client.Domain.Service
                 if (entity != null && entities.ContainsKey(entity.Id))
                 {
                     factory.Update(entities[entity.Id], content);
-                    OnUpdate(entity);
+                    OnUpdate(entities[entity.Id]);
                 }
             }
             else if (operation == MessageOperationEnum.Delete)

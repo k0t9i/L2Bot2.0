@@ -1,0 +1,352 @@
+{
+    "experience": [
+      {
+        "level": "1",
+        "tolevel": "0"
+      },
+      {
+        "level": "2",
+        "tolevel": "68"
+      },
+      {
+        "level": "3",
+        "tolevel": "363"
+      },
+      {
+        "level": "4",
+        "tolevel": "1168"
+      },
+      {
+        "level": "5",
+        "tolevel": "2884"
+      },
+      {
+        "level": "6",
+        "tolevel": "6038"
+      },
+      {
+        "level": "7",
+        "tolevel": "11287"
+      },
+      {
+        "level": "8",
+        "tolevel": "19423"
+      },
+      {
+        "level": "9",
+        "tolevel": "31378"
+      },
+      {
+        "level": "10",
+        "tolevel": "48229"
+      },
+      {
+        "level": "11",
+        "tolevel": "71201"
+      },
+      {
+        "level": "12",
+        "tolevel": "101676"
+      },
+      {
+        "level": "13",
+        "tolevel": "141192"
+      },
+      {
+        "level": "14",
+        "tolevel": "191452"
+      },
+      {
+        "level": "15",
+        "tolevel": "254327"
+      },
+      {
+        "level": "16",
+        "tolevel": "331864"
+      },
+      {
+        "level": "17",
+        "tolevel": "426284"
+      },
+      {
+        "level": "18",
+        "tolevel": "539995"
+      },
+      {
+        "level": "19",
+        "tolevel": "675590"
+      },
+      {
+        "level": "20",
+        "tolevel": "835854"
+      },
+      {
+        "level": "21",
+        "tolevel": "1023775"
+      },
+      {
+        "level": "22",
+        "tolevel": "1242536"
+      },
+      {
+        "level": "23",
+        "tolevel": "1495531"
+      },
+      {
+        "level": "24",
+        "tolevel": "1786365"
+      },
+      {
+        "level": "25",
+        "tolevel": "2118860"
+      },
+      {
+        "level": "26",
+        "tolevel": "2497059"
+      },
+      {
+        "level": "27",
+        "tolevel": "2925229"
+      },
+      {
+        "level": "28",
+        "tolevel": "3407873"
+      },
+      {
+        "level": "29",
+        "tolevel": "3949727"
+      },
+      {
+        "level": "30",
+        "tolevel": "4555766"
+      },
+      {
+        "level": "31",
+        "tolevel": "5231213"
+      },
+      {
+        "level": "32",
+        "tolevel": "5981539"
+      },
+      {
+        "level": "33",
+        "tolevel": "6812472"
+      },
+      {
+        "level": "34",
+        "tolevel": "7729999"
+      },
+      {
+        "level": "35",
+        "tolevel": "8740372"
+      },
+      {
+        "level": "36",
+        "tolevel": "9850111"
+      },
+      {
+        "level": "37",
+        "tolevel": "11066012"
+      },
+      {
+        "level": "38",
+        "tolevel": "12395149"
+      },
+      {
+        "level": "39",
+        "tolevel": "13844879"
+      },
+      {
+        "level": "40",
+        "tolevel": "15422851"
+      },
+      {
+        "level": "41",
+        "tolevel": "17137002"
+      },
+      {
+        "level": "42",
+        "tolevel": "18995573"
+      },
+      {
+        "level": "43",
+        "tolevel": "21007103"
+      },
+      {
+        "level": "44",
+        "tolevel": "23180442"
+      },
+      {
+        "level": "45",
+        "tolevel": "25524751"
+      },
+      {
+        "level": "46",
+        "tolevel": "28049509"
+      },
+      {
+        "level": "47",
+        "tolevel": "30764519"
+      },
+      {
+        "level": "48",
+        "tolevel": "33679907"
+      },
+      {
+        "level": "49",
+        "tolevel": "36806133"
+      },
+      {
+        "level": "50",
+        "tolevel": "40153995"
+      },
+      {
+        "level": "51",
+        "tolevel": "45524865"
+      },
+      {
+        "level": "52",
+        "tolevel": "51262204"
+      },
+      {
+        "level": "53",
+        "tolevel": "57383682"
+      },
+      {
+        "level": "54",
+        "tolevel": "63907585"
+      },
+      {
+        "level": "55",
+        "tolevel": "70852742"
+      },
+      {
+        "level": "56",
+        "tolevel": "80700339"
+      },
+      {
+        "level": "57",
+        "tolevel": "91162131"
+      },
+      {
+        "level": "58",
+        "tolevel": "102265326"
+      },
+      {
+        "level": "59",
+        "tolevel": "114038008"
+      },
+      {
+        "level": "60",
+        "tolevel": "126509030"
+      },
+      {
+        "level": "61",
+        "tolevel": "146307211"
+      },
+      {
+        "level": "62",
+        "tolevel": "167243291"
+      },
+      {
+        "level": "63",
+        "tolevel": "189363788"
+      },
+      {
+        "level": "64",
+        "tolevel": "212716741"
+      },
+      {
+        "level": "65",
+        "tolevel": "237351413"
+      },
+      {
+        "level": "66",
+        "tolevel": "271973532"
+      },
+      {
+        "level": "67",
+        "tolevel": "308441375"
+      },
+      {
+        "level": "68",
+        "tolevel": "346825235"
+      },
+      {
+        "level": "69",
+        "tolevel": "387197529"
+      },
+      {
+        "level": "70",
+        "tolevel": "429632402"
+      },
+      {
+        "level": "71",
+        "tolevel": "474205751"
+      },
+      {
+        "level": "72",
+        "tolevel": "532692055"
+      },
+      {
+        "level": "73",
+        "tolevel": "606319094"
+      },
+      {
+        "level": "74",
+        "tolevel": "696376867"
+      },
+      {
+        "level": "75",
+        "tolevel": "804219972"
+      },
+      {
+        "level": "76",
+        "tolevel": "931275828"
+      },
+      {
+        "level": "77",
+        "tolevel": "1151275834"
+      },
+      {
+        "level": "78",
+        "tolevel": "1511275834"
+      },
+      {
+        "level": "79",
+        "tolevel": "2099275834"
+      },
+      {
+        "level": "80",
+        "tolevel": "4200000000"
+      },
+      {
+        "level": "81",
+        "tolevel": "6300000000"
+      },
+      {
+        "level": "82",
+        "tolevel": "8820000000"
+      },
+      {
+        "level": "83",
+        "tolevel": "11844000000"
+      },
+      {
+        "level": "84",
+        "tolevel": "15472800000"
+      },
+      {
+        "level": "85",
+        "tolevel": "19827360000"
+      },
+      {
+        "level": "86",
+        "tolevel": "25314105600"
+      },
+      {
+        "level": "87",
+        "tolevel": "32211728640"
+      }
+    ]
+}

@@ -22,7 +22,7 @@ namespace Client.Application.ViewModels
         {
             get
             {
-                //toto race string
+                //todo race string
                 return hero.Phenotype.Race.ToString();
             }
         }
@@ -32,13 +32,6 @@ namespace Client.Application.ViewModels
             {
                 //todo class string
                 return hero.Phenotype.Class.ToString();
-            }
-        }
-        public string Level
-        {
-            get
-            {
-                return hero.ExperienceInfo.Level.ToString();
             }
         }
         public Vector3 Position
@@ -84,11 +77,7 @@ namespace Client.Application.ViewModels
 
         private void ExperienceInfo_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Level")
-            {
-                OnPropertyChanged("Level");
-            }
-            if (e.PropertyName == "Exp" || e.PropertyName == "ExpToLevel")
+            if (e.PropertyName == "Exp" || e.PropertyName == "ExpToLevel" || e.PropertyName == "Level")
             {
                 OnPropertyChanged("Experience");
             }
@@ -99,23 +88,6 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "Nickname")
             {
                 OnPropertyChanged("Fullname");
-            }
-        }
-
-        private void Hero_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Fullname")
-            {
-                OnPropertyChanged("Fullname");
-            }
-            if (e.PropertyName == "Phenotype")
-            {
-                OnPropertyChanged("Class");
-                OnPropertyChanged("Race");
-            }
-            if (e.PropertyName == "ExperienceInfo")
-            {
-                OnPropertyChanged("Level");
             }
         }
 
