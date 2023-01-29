@@ -3,6 +3,7 @@ using Client.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,11 @@ namespace Client.Domain.Entities
             SpoilState = spoilState;
             FullName = fullName;
             VitalStats = vitalStats;
+        }
+
+        public bool IsDead()
+        {
+            return VitalStats.MaxHp > 0 && VitalStats.Hp <= 0;
         }
     }
 }

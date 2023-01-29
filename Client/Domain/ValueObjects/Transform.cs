@@ -1,18 +1,25 @@
-﻿namespace Client.Domain.ValueObjects
+﻿using Client.Domain.Common;
+
+namespace Client.Domain.ValueObjects
 {
-    public class Transform
+    public class Transform : NotifyPropertyChanged
     {
-        public Vector3 Position { get; set; }
-        public Vector3 Rotation { get; set; }
-        public Vector3 Velocity { get; set; }
-        public Vector3 Acceleration { get; set; }
+        private Vector3 position;
+        private Vector3 rotation;
+        private Vector3 velocity;
+        private Vector3 acceleration;
+
+        public Vector3 Position { get => position; set { if (value != position) { position = value; OnPropertyChanged("Position"); } } }
+        public Vector3 Rotation { get => rotation; set { if (value != rotation) { rotation = value; OnPropertyChanged("Rotation"); } } }
+        public Vector3 Velocity { get => velocity; set { if (value != velocity) { velocity = value; OnPropertyChanged("Velocity"); } } }
+        public Vector3 Acceleration { get => acceleration; set { if (value != acceleration) { acceleration = value; OnPropertyChanged("Acceleration"); } } }
 
         public Transform(Vector3 position, Vector3 rotation, Vector3 velocity, Vector3 acceleration)
         {
-            Position = position;
-            Rotation = rotation;
-            Velocity = velocity;
-            Acceleration = acceleration;
+            this.position = position;
+            this.rotation = rotation;
+            this.velocity = velocity;
+            this.acceleration = acceleration;
         }
     }
 }

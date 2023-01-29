@@ -60,7 +60,6 @@ namespace L2Bot::Domain::Entities
 			m_FullName(fullName),
 			m_Phenotype(phenotype)
 		{
-			SaveState();
 		}
 
 		Player() = default;

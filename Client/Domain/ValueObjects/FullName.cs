@@ -1,14 +1,19 @@
-﻿namespace Client.Domain.ValueObjects
+﻿using Client.Domain.Common;
+
+namespace Client.Domain.ValueObjects
 {
-    public class FullName
+    public class FullName : NotifyPropertyChanged
     {
-        public string Nickname { get; set; }
-        public string Title { get; set; }
+        private string nickname;
+        private string title;
+
+        public string Nickname { get => nickname; set { if (value != nickname) { nickname = value; OnPropertyChanged("Nickname"); } } }
+        public string Title { get => title; set { if (value != title) { title = value; OnPropertyChanged("Title"); } } }
 
         public FullName(string nickname, string title)
         {
-            Nickname = nickname;
-            Title = title;
+            this.nickname = nickname;
+            this.title = title;
         }
     }
 }

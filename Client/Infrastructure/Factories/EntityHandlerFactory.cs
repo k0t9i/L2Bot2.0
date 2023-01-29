@@ -22,16 +22,16 @@ namespace Client.Infrastructure.Factories
             switch (type)
             {
                 case MessageTypeEnum.Hero:
-                    result = serviceProvider.GetService<EntityHandler<Hero>>();
+                    result = serviceProvider.GetService<HeroHandler>();
                     break;
                 case MessageTypeEnum.Drop:
-                    result = serviceProvider.GetService<EntityHandler<Drop>>();
+                    result = serviceProvider.GetService<DropHandler>();
                     break;
                 case MessageTypeEnum.NPC:
-                    result = serviceProvider.GetService<EntityHandler<NPC>>();
+                    result = serviceProvider.GetService<NpcHandler>();
                     break;
                 case MessageTypeEnum.Player:
-                    result = serviceProvider.GetService<EntityHandler<Player>>();
+                    result = serviceProvider.GetService<PlayerHandler>();
                     break;
                 case MessageTypeEnum.Chat:
                     result = serviceProvider.GetService<ChatMessageHandler>();

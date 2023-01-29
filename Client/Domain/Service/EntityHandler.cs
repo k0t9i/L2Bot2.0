@@ -23,13 +23,14 @@ namespace Client.Domain.Service
                 }
                 entities[entity.Id] = entity;
 
-
+                OnCreate(entity);
             }
             else if (operation == MessageOperationEnum.Update)
             {
                 if (entity != null && entities.ContainsKey(entity.Id))
                 {
                     factory.Update(entities[entity.Id], content);
+                    OnUpdate(entity);
                 }
             }
             else if (operation == MessageOperationEnum.Delete)
@@ -37,8 +38,24 @@ namespace Client.Domain.Service
                 if (entity != null)
                 {
                     entities.Remove(entity.Id);
+                    OnDelete(entity);
                 }
             }
+        }
+
+        public virtual void OnCreate(T entity)
+        {
+
+        }
+
+        public virtual void OnUpdate(T entity)
+        {
+
+        }
+
+        public virtual void OnDelete(T entity)
+        {
+
         }
 
         public EntityHandler(EntityFactoryInterface<T> factory)

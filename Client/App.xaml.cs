@@ -9,20 +9,21 @@ using Client.Domain.Transports;
 using Client.Infrastructure.Transports;
 using Client.Domain.Entities;
 using Client.Domain.Service;
-using BaseApp = System.Windows.Application;
 using Client.Domain.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using Client.Application.Views;
+using Client.Domain.ViewModels;
+using Client.Application.ViewModels;
 
 namespace Client
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : BaseApp
+    public partial class App : System.Windows.Application
     {
         public static IHost? AppHost { get; private set; }
-        public static IConfiguration? AppConfig { get; private set; }
 
         public App()
         {
@@ -40,7 +41,7 @@ namespace Client
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
             startupForm.Show();
 
-            var application = AppHost.Services.GetRequiredService<Application>();
+            var application = AppHost.Services.GetRequiredService<Bot>();
             application.StartAsync();
 
             base.OnStartup(e);
@@ -63,8 +64,8 @@ namespace Client
                 .AddSingleton(typeof(IConfiguration), config)
                 .AddSingleton<MainWindow>()
                 .AddSingleton(
-                    typeof(Application),
-                    x => new Application(
+                    typeof(Bot),
+                    x => new Bot(
                             x.GetRequiredService<TransportInterface>(),
                             x.GetRequiredService<MessageParserInterface>(),
                             x.GetRequiredService<EntityHandlerFactoryInterface>(),
@@ -86,11 +87,13 @@ namespace Client
                 .AddTransient(typeof(EntityFactoryInterface<Player>), typeof(EntityFactory<Player>))
                 .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
 
-                .AddSingleton<EntityHandler<Hero>>()
-                .AddSingleton<EntityHandler<Drop>>()
-                .AddSingleton<EntityHandler<NPC>>()
-                .AddSingleton<EntityHandler<Player>>()
-                .AddSingleton<ChatMessageHandler>();
+                .AddSingleton<HeroHandler>()
+                .AddSingleton<DropHandler>()
+                .AddSingleton<NpcHandler>()
+                .AddSingleton<PlayerHandler>()
+                .AddSingleton<ChatMessageHandler>()
+                
+                .AddSingleton(typeof(MainViewModelInterface), typeof(MainViewModel));
         }
     }
 }
