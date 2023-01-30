@@ -41,10 +41,12 @@ namespace Client
             Debug.WriteLine(dllName + " loaded\n");
             transport.Message += OnMessage;
 
+            await transport.ConnectAsync();
+            await transport.SendAsync("invalidate");
             while (true)
             {
-                await transport.ConnectAsync();
                 await transport.StartReceiveAsync();
+                await transport.ConnectAsync();
             }
         }
 
