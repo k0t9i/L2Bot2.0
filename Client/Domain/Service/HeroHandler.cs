@@ -16,6 +16,7 @@ namespace Client.Domain.Service
         {
             mainViewModel.CreateHero(entity);
             entity.ExperienceInfo.ExpToLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level + 1);
+            entity.ExperienceInfo.ExpToPrevLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level);
         }
 
         public override void OnUpdate(Hero entity)
@@ -23,6 +24,7 @@ namespace Client.Domain.Service
             if (entity.ExperienceInfo != null)
             {
                 entity.ExperienceInfo.ExpToLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level + 1);
+                entity.ExperienceInfo.ExpToPrevLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level);
             }
         }
 

@@ -90,7 +90,7 @@ namespace Client.Application.ViewModels
 
         private void ExperienceInfo_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Exp" || e.PropertyName == "ExpToLevel" || e.PropertyName == "Level")
+            if (e.PropertyName == "Exp" || e.PropertyName == "ExpToLevel" || e.PropertyName == "ExpToPrevLevel" || e.PropertyName == "Level")
             {
                 OnPropertyChanged("Experience");
             }
