@@ -1,4 +1,5 @@
-﻿using Client.Domain.Common;
+﻿using Client.Application.Extensions;
+using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.ValueObjects;
 using Client.Domain.ViewModels;
@@ -11,6 +12,8 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Client.Application.ViewModels
 {
@@ -45,13 +48,7 @@ namespace Client.Application.ViewModels
 
         public void RemoveNpc(NPC npc)
         {
-            foreach (var item in Creatures)
-            {
-                if (item.Id == npc.Id)
-                {
-                    Creatures.Remove(item);
-                }
-            }
+            Creatures.RemoveAll(x => x.Id == npc.Id);
         }
 
         public void AddPlayer(Player player)
@@ -64,13 +61,7 @@ namespace Client.Application.ViewModels
 
         public void RemovePlayer(Player player)
         {
-            foreach (var item in Creatures)
-            {
-                if (item.Id == player.Id)
-                {
-                    Creatures.Remove(item);
-                }
-            }
+            Creatures.RemoveAll(x => x.Id == player.Id);
         }
 
         public void AddDrop(Drop drop)
@@ -83,13 +74,7 @@ namespace Client.Application.ViewModels
 
         public void RemoveDrop(Drop drop)
         {
-            foreach (var item in Drops)
-            {
-                if (item.Id == drop.Id)
-                {
-                    Drops.Remove(item);
-                }
-            }
+            Drops.RemoveAll(x => x.Id == drop.Id);
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
