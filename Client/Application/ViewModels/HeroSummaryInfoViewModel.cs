@@ -11,34 +11,31 @@ namespace Client.Application.ViewModels
 {
     public class HeroSummaryInfoViewModel : NotifyPropertyChanged
     {
-        public string Fullname
-        {
+        public bool IsVisible {
             get
             {
-                return hero.FullName.Nickname;
+                return true;
             }
         }
-        public string Race
+        public FullName Fullname
         {
             get
             {
-                //todo race string
-                return hero.Phenotype.Race.ToString();
+                return hero.FullName;
             }
         }
-        public string Class
+        public Phenotype Phenotype
         {
             get
             {
-                //todo class string
-                return hero.Phenotype.Class.ToString();
+                return hero.Phenotype;
             }
         }
-        public Vector3 Position
+        public Transform Transform
         {
             get
             {
-                return hero.Transform.Position;
+                return hero.Transform;
             }
         }
         public ExperienceInfo Experience
@@ -55,6 +52,20 @@ namespace Client.Application.ViewModels
                 return hero.VitalStats;
             }
         }
+        public InventoryInfo InventoryInfo
+        {
+            get
+            {
+                return hero.InventoryInfo;
+            }
+        }
+        public ulong Money
+        {
+            get
+            {
+                return 0;
+            }
+        }
         public HeroSummaryInfoViewModel(Hero hero)
         {
             this.hero = hero;
@@ -62,8 +73,14 @@ namespace Client.Application.ViewModels
             hero.FullName.PropertyChanged += FullName_PropertyChanged;
             hero.Phenotype.PropertyChanged += Phenotype_PropertyChanged;
             hero.ExperienceInfo.PropertyChanged += ExperienceInfo_PropertyChanged;
-            hero.Transform.Position.PropertyChanged += Position_PropertyChanged;
+            hero.Transform.PropertyChanged += Transform_PropertyChanged;
             hero.VitalStats.PropertyChanged += VitalStats_PropertyChanged;
+            hero.InventoryInfo.PropertyChanged += InventoryInfo_PropertyChanged;
+        }
+
+        private void InventoryInfo_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("InventoryInfo");
         }
 
         private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -71,37 +88,24 @@ namespace Client.Application.ViewModels
             OnPropertyChanged("VitalStats");
         }
 
-        private void Position_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Transform_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            OnPropertyChanged("Position");
+            OnPropertyChanged("Transform");
         }
 
         private void Phenotype_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Class")
-            {
-                OnPropertyChanged("Class");
-            }
-            if (e.PropertyName == "Race")
-            {
-                OnPropertyChanged("Race");
-            }
+            OnPropertyChanged("Phenotype");
         }
 
         private void ExperienceInfo_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Exp" || e.PropertyName == "ExpToLevel" || e.PropertyName == "ExpToPrevLevel" || e.PropertyName == "Level")
-            {
-                OnPropertyChanged("Experience");
-            }
+            OnPropertyChanged("Experience");
         }
 
         private void FullName_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Nickname")
-            {
-                OnPropertyChanged("Fullname");
-            }
+            OnPropertyChanged("Fullname");
         }
 
         private readonly Hero hero;

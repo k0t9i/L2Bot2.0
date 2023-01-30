@@ -8,18 +8,19 @@
         xmlns:converters="clr-namespace:Client.Application.Converters"
         xmlns:components="clr-namespace:Client.Application.Components"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1024">
+        Title="L2Bot 2.0 Client" Height="600" Width="1024">
     <Window.Resources>
-        <CollectionViewSource x:Key="SortedCreatures" Source="{Binding Creatures}" IsLiveSortingRequested="True">
+        <CollectionViewSource x:Key="SortedCreatures" Source="{Binding Creatures, Mode=OneWay}" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Distance" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
-        <CollectionViewSource x:Key="SortedDrops" Source="{Binding Drops}" IsLiveSortingRequested="True">
+        <CollectionViewSource x:Key="SortedDrops" Source="{Binding Drops, Mode=OneWay}" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Distance" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -46,17 +47,17 @@
                             <RowDefinition Height="2*"></RowDefinition>
                             <RowDefinition Height="1*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ListBox ItemsSource="{Binding Source={StaticResource SortedCreatures}}" Grid.Row="0">
+                        <ListBox ItemsSource="{Binding Source={StaticResource SortedCreatures}, Mode=OneWay}" Grid.Row="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="5">
-                                        <TextBlock FontSize="16" Text="{Binding Path=Title}" />
+                                        <TextBlock FontSize="16" Text="{Binding Path=Title,Mode=OneWay}" />
                                         <TextBlock FontSize="11">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}; distance: {1:F2}m; delta z: {2:F2}m">
-                                                    <Binding Path="Info"/>
-                                                    <Binding Path="Distance"/>
-                                                    <Binding Path="DeltaZ"/>
+                                                    <Binding Path="Info" Mode="OneWay"/>
+                                                    <Binding Path="Distance" Mode="OneWay"/>
+                                                    <Binding Path="DeltaZ" Mode="OneWay"/>
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
@@ -64,26 +65,26 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <ListBox ItemsSource="{Binding Source={StaticResource SortedDrops}}" Grid.Row="1">
+                        <ListBox ItemsSource="{Binding Source={StaticResource SortedDrops}, Mode=OneWay}" Grid.Row="1">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>
-                                        <Image DockPanel.Dock="Left" Source="{Binding Path=IconName, FallbackValue=./Assets/icons/_fallback.png}" Height="32" Width="32" />
+                                        <Image DockPanel.Dock="Left" Source="{Binding Path=IconName, FallbackValue=./Assets/icons/_fallback.png, Mode=OneWay}" Height="32" Width="32" />
                                         <StackPanel Margin="5">
                                             <TextBlock FontSize="16">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0}[{1}]">
-                                                        <Binding Path="Name"/>
-                                                        <Binding Path="ItemId"/>
+                                                        <Binding Path="Name" Mode="OneWay"/>
+                                                        <Binding Path="ItemId" Mode="OneWay"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
                                             <TextBlock FontSize="11">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}Count {0}; distance: {1:F2}m; delta z: {2:F2}m">
-                                                        <Binding Path="Amount"/>
-                                                        <Binding Path="Distance"/>
-                                                        <Binding Path="DeltaZ"/>
+                                                        <Binding Path="Amount" Mode="OneWay"/>
+                                                        <Binding Path="Distance" Mode="OneWay"/>
+                                                        <Binding Path="DeltaZ" Mode="OneWay"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
@@ -96,20 +97,20 @@
                 </TabItem.Content>
             </TabItem>
         </TabControl>
-        <StackPanel Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4">
-            <TextBlock FontSize="16" Text="{Binding Path=Fullname, Mode=OneWay}"></TextBlock>
+        <StackPanel Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
+            <TextBlock FontSize="16" Text="{Binding Path=Fullname.Nickname, Mode=OneWay}"></TextBlock>
             <StackPanel Orientation="Horizontal">
                 <TextBlock>
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}, {1} {2}lvl">
-                            <Binding Path="Race"/>
-                            <Binding Path="Class"/>
-                            <Binding Path="Experience.Level"/>
+                            <Binding Path="Phenotype.Race" Mode="OneWay"/>
+                            <Binding Path="Phenotype.Class" Mode="OneWay"/>
+                            <Binding Path="Experience.Level" Mode="OneWay"/>
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
-            <components:StatsPanel DataContext="{Binding .}" />
+            <components:StatsPanel DataContext="{Binding ., Mode=OneWay}" Margin="0 5 0 5" />
             <DockPanel>
                 <StackPanel DockPanel.Dock="Left" Margin="0 0 5 0">
                     <TextBlock Padding="0 0 0 3">Position:</TextBlock>
@@ -122,34 +123,34 @@
                     <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0:F0}, {1:F0}, {2:F0}">
-                                <Binding Path="Position.X"/>
-                                <Binding Path="Position.Y"/>
-                                <Binding Path="Position.Z"/>
+                                <Binding Path="Transform.Position.X" Mode="OneWay"/>
+                                <Binding Path="Transform.Position.Y" Mode="OneWay"/>
+                                <Binding Path="Transform.Position.Z" Mode="OneWay"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                     <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
-                                <Binding Path="Experience.Exp"/>
-                                <Binding Path="Experience.ExpToLevel"/>
+                                <Binding Path="Experience.Exp" Mode="OneWay"/>
+                                <Binding Path="Experience.ExpToLevel" Mode="OneWay"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                     <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
-                                <Binding Path="Weight.Current"/>
-                                <Binding Path="Weight.Max"/>
+                                <Binding Path="InventoryInfo.Weight" Mode="OneWay"/>
+                                <Binding Path="InventoryInfo.MaxWeight" Mode="OneWay"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock Text="{Binding Path=Money}" Padding="0 0 0 3"></TextBlock>
+                    <TextBlock Text="{Binding Path=Money, Mode=OneWay}" Padding="0 0 0 3"></TextBlock>
                     <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
-                                <Binding Path="Slots.Current"/>
-                                <Binding Path="Slots.Max"/>
+                                <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
+                                <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>

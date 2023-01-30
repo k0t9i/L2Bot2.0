@@ -1,16 +1,22 @@
-﻿namespace Client.Domain.ValueObjects
+﻿using Client.Domain.Common;
+
+namespace Client.Domain.ValueObjects
 {
-    public class InventoryInfo
+    public class InventoryInfo : NotifyPropertyChanged
     {
-        public uint MaxWeight { get; set; }
-        public uint Weight { get; set; }
-        public uint Slots { get; set; }
+        private uint maxWeight;
+        private uint weight;
+        private uint slots;
+
+        public uint MaxWeight { get => maxWeight; set { if (value != maxWeight) { maxWeight = value; OnPropertyChanged("MaxWeight"); } } }
+        public uint Weight { get => weight; set { if (value != weight) { weight = value; OnPropertyChanged("Weight"); } } }
+        public uint Slots { get => slots; set { if (value != slots) { slots = value; OnPropertyChanged("Slots"); } } }
 
         public InventoryInfo(uint maxWeight, uint weight, uint slots)
         {
-            MaxWeight = maxWeight;
-            Weight = weight;
-            Slots = slots;
+            this.maxWeight = maxWeight;
+            this.weight = weight;
+            this.slots = slots;
         }
     }
 }
