@@ -39,16 +39,10 @@ namespace Client.Infrastructure.Helpers
         private readonly IConfiguration configuration;
         private Dictionary<uint, ulong> experienceToLevel = new Dictionary<uint, ulong>();
 
-        public class ExpInfo
+        private class ExpInfo
         {
             public uint level { get; set; }
             public ulong toLevel { get; set; }
-
-            /* public ExpInfo(uint level, ulong toLevel)
-             {
-                 this.level = level;
-                 this.toLevel = toLevel;
-             }*/
         }
     }
 }

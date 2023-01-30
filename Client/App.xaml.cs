@@ -60,7 +60,8 @@ namespace Client
         {
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("config.json", optional: false, reloadOnChange: true)
-                .AddJsonFile("experience.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("Assets/data/experience.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("Assets/data/npcInfo.json", optional: false, reloadOnChange: true)
                 .Build();
 
             services
@@ -84,6 +85,7 @@ namespace Client
                     )
                 )
                 .AddSingleton(typeof(ExperienceHelperInterface), typeof(ConfigurationExperienceHelper))
+                .AddSingleton(typeof(NpcInfoHelperInterface), typeof(ConfigurationNpcInfoHelper))
 
                 .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
                 .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))

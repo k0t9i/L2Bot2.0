@@ -1,5 +1,6 @@
 ﻿using Client.Domain.Entities;
 using Client.Domain.Factories;
+using Client.Domain.Helpers;
 using Client.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,17 +15,21 @@ namespace Client.Domain.Service
         public override void OnCreate(NPC entity)
         {
             mainViewModel.AddNpc(entity);
+            entity.Level = npcInfoHelper.GetLevel(entity.NpcId);
+            entity.AggroRadius = npcInfoHelper.GetAggroRadius(entity.NpcId);
         }
         public override void OnDelete(NPC entity)
         {
             mainViewModel.RemoveNpc(entity);
         }
 
-        public NpcHandler(EntityFactoryInterface<NPC> factory, MainViewModelInterface mainViewModel) : base(factory)
+        public NpcHandler(EntityFactoryInterface<NPC> factory, MainViewModelInterface mainViewModel, NpcInfoHelperInterface npcInfoHelper) : base(factory)
         {
             this.mainViewModel = mainViewModel;
+            this.npcInfoHelper = npcInfoHelper;
         }
 
         private readonly MainViewModelInterface mainViewModel;
+        private readonly NpcInfoHelperInterface npcInfoHelper;
     }
 }

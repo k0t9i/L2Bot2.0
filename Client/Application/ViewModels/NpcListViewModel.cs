@@ -41,9 +41,12 @@ namespace Client.Application.ViewModels
                 if (npc.IsHostile)
                 {
                     result = "Monster";
-                    //todo aggr
+                    if (npc.AggroRadius > 0)
+                    {
+                        result += "*";
+                    }
                 }
-                //todo level
+                result += " " + npc.Level + "lvl";
                 return result;
             }
         }
