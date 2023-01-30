@@ -1,0 +1,40 @@
+﻿<StackPanel x:Class="Client.Application.Components.StatsPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Application.Components"
+        mc:Ignorable="d">
+    <local:StatsBar
+        BackgroundSource="/Assets/icons/ps_cpbar_back.png"
+        ForegroundSource="/Assets/icons/ps_cpbar.png"
+        Current="{Binding VitalStats.Cp}"
+        Total="{Binding VitalStats.MaxCp}"
+        Height="15"
+        Margin="0 0 0 2"
+    />
+    <local:StatsBar
+        BackgroundSource="/Assets/icons/ps_hpbar_back.png"
+        ForegroundSource="/Assets/icons/ps_hpbar.png"
+        Current="{Binding VitalStats.Hp}"
+        Total="{Binding VitalStats.MaxHp}"
+        Height="15"
+        Margin="0 0 0 2"
+    />
+    <local:StatsBar
+        BackgroundSource="/Assets/icons/ps_mpbar_back.png"
+        ForegroundSource="/Assets/icons/ps_mpbar.png"
+        Current="{Binding VitalStats.Mp}"
+        Total="{Binding VitalStats.MaxMp}"
+        Height="15"
+        Margin="0 0 0 2"
+    />
+    <local:StatsBar
+        BackgroundSource="/Assets/icons/ps_expbar_back.png"
+        ForegroundSource="/Assets/icons/ps_expbar.png"
+        Current="{Binding Experience.ExpPercent}"
+        Format="{}{0:F2}%"
+        Height="15"
+        Margin="0 0 0 2"
+    />
+</StackPanel>
