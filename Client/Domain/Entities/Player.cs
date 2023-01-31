@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Entities
 {
-    public class Player : NotifyPropertyChanged, EntityInterface, CreatureInterface
+    public class Player : ObservableObject, EntityInterface, CreatureInterface
     {
         private FullName fullName;
         private Phenotype phenotype;

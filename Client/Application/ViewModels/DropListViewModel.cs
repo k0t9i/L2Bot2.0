@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Client.Application.ViewModels
 {
-    public class DropListViewModel : NotifyPropertyChanged
+    public class DropListViewModel : ObservableObject
     {
         public uint Id
         {

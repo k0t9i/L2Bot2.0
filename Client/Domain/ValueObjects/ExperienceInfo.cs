@@ -2,7 +2,7 @@
 
 namespace Client.Domain.ValueObjects
 {
-    public class ExperienceInfo : NotifyPropertyChanged
+    public class ExperienceInfo : ObservableObject
     {
         private uint level;
         private uint exp;

@@ -2,7 +2,7 @@
 
 namespace Client.Domain.ValueObjects
 {
-    public class Transform : NotifyPropertyChanged
+    public class Transform : ObservableObject
     {
         private Vector3 position;
         private Vector3 rotation;

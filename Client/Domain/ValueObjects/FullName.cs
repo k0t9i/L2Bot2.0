@@ -2,7 +2,7 @@
 
 namespace Client.Domain.ValueObjects
 {
-    public class FullName : NotifyPropertyChanged
+    public class FullName : ObservableObject
     {
         private string nickname;
         private string title;

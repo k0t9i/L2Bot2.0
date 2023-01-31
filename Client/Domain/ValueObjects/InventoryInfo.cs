@@ -2,7 +2,7 @@
 
 namespace Client.Domain.ValueObjects
 {
-    public class InventoryInfo : NotifyPropertyChanged
+    public class InventoryInfo : ObservableObject
     {
         private uint maxWeight;
         private uint weight;

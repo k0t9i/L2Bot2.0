@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Client.Application.ViewModels
 {
-    public class CreatureListViewModel : NotifyPropertyChanged
+    public class CreatureListViewModel : ObservableObject
     {
         public uint Id => creature.Id;
 

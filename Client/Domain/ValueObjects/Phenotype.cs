@@ -3,7 +3,7 @@ using Client.Domain.Enums;
 
 namespace Client.Domain.ValueObjects
 {
-    public class Phenotype : NotifyPropertyChanged
+    public class Phenotype : ObservableObject
     {
         private RaceEnum race;
         private bool isMale;

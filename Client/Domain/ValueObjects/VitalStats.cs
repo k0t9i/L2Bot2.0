@@ -2,7 +2,7 @@
 
 namespace Client.Domain.ValueObjects
 {
-    public class VitalStats : NotifyPropertyChanged
+    public class VitalStats : ObservableObject
     {
         private uint hp;
         private uint maxHp;

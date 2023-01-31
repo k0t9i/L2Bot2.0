@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Client.Domain.Entities
 {
-    public class Hero : NotifyPropertyChanged, EntityInterface, CreatureInterface
+    public class Hero : ObservableObject, EntityInterface, CreatureInterface
     {
         private FullName fullName;
         private Phenotype phenotype;

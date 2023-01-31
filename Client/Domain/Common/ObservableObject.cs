@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Common
 {
-    public class NotifyPropertyChanged : INotifyPropertyChanged
+    public class ObservableObject : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")

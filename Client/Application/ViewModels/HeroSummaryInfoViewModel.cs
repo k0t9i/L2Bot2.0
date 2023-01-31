@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Client.Application.ViewModels
 {
-    public class HeroSummaryInfoViewModel : NotifyPropertyChanged
+    public class HeroSummaryInfoViewModel : ObservableObject
     {
         public bool IsVisible {
             get

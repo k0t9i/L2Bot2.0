@@ -3,7 +3,7 @@ using System;
 
 namespace Client.Domain.ValueObjects
 {
-    public class Vector3 : NotifyPropertyChanged
+    public class Vector3 : ObservableObject
     {
         private float x;
         private float y;

@@ -18,7 +18,7 @@ using System.Windows.Media;
 namespace Client.Application.ViewModels
 {
     public class MainViewModel :
-        NotifyPropertyChanged,
+        ObservableObject,
         EventHandlerInterface<HeroCreatedEvent>,
         EventHandlerInterface<HeroDeletedEvent>,
         EventHandlerInterface<CreatureCreatedEvent>,

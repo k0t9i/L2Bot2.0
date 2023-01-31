@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Entities
 {
-    public class NPC : NotifyPropertyChanged, EntityInterface, CreatureInterface
+    public class NPC : ObservableObject, EntityInterface, CreatureInterface
     {
         public uint Id { get; set; }
         public Transform Transform { get; set; }

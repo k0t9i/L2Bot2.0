@@ -3,7 +3,7 @@ using Client.Domain.ValueObjects;
 
 namespace Client.Domain.Entities
 {
-    public class Drop : NotifyPropertyChanged, EntityInterface
+    public class Drop : ObservableObject, EntityInterface
     {
         private uint id;
         private Transform transform;
