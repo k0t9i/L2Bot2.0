@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Service
 {
-    public class NpcHandler : EntityHandler<NPC>
+    public class NpcHandler : EntityHandler<NPC>, EventHandlerInterface<TargetChangedEvent>
     {
         public override void OnCreate(NPC entity)
         {
@@ -21,6 +21,16 @@ namespace Client.Domain.Service
         public override void OnDelete(NPC entity)
         {
             eventBus.Publish(new CreatureDeletedEvent(entity.Id));
+        }
+
+        public void Handle(TargetChangedEvent @event)
+        {
+            var target = GetEntity(@event.Hero.TargetId);
+            if (target == null)
+            {
+                return;
+            }
+            @event.Hero.Target = target;
         }
 
         public NpcHandler(EntityFactoryInterface<NPC> factory, EventBusInterface eventBus, NpcInfoHelperInterface npcInfoHelper) : base(factory)

@@ -66,6 +66,14 @@ namespace Client.Application.ViewModels
                 return 0;
             }
         }
+
+        public CreatureListViewModel? Target
+        {
+            get
+            {
+                return target;
+            }
+        }
         public HeroSummaryInfoViewModel(Hero hero)
         {
             this.hero = hero;
@@ -76,6 +84,24 @@ namespace Client.Application.ViewModels
             hero.Transform.PropertyChanged += Transform_PropertyChanged;
             hero.VitalStats.PropertyChanged += VitalStats_PropertyChanged;
             hero.InventoryInfo.PropertyChanged += InventoryInfo_PropertyChanged;
+            hero.PropertyChanged += Hero_PropertyChanged;
+        }
+
+        private void Hero_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Target")
+            {
+                if (target == null && hero.Target != null)
+                {
+                    target = new CreatureListViewModel(hero.Target, hero);
+                    OnPropertyChanged("Target");
+                }
+                else if (target != null && hero.Target == null)
+                {
+                    target = null;
+                    OnPropertyChanged("Target");
+                }
+            }
         }
 
         private void InventoryInfo_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -109,5 +135,6 @@ namespace Client.Application.ViewModels
         }
 
         private readonly Hero hero;
+        private CreatureListViewModel? target;
     }
 }

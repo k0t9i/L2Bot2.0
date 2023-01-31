@@ -9,6 +9,7 @@ using Client.Application.ViewModels;
 using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.Parsers;
+using Client.Domain.Service;
 using Client.Domain.Transports;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -69,6 +70,13 @@ namespace Client
             eventBus.Subscrbe((EventHandlerInterface<HeroDeletedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<CreatureCreatedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<CreatureDeletedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<DropCreatedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<DropDeletedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<ChatMessageCreatedEvent>)viewModel);
+
+            eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<HeroHandler>());
+            eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<NpcHandler>());
+            eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<PlayerHandler>());
         }
 
         private void OnMessage(string args)

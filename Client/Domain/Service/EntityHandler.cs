@@ -43,6 +43,15 @@ namespace Client.Domain.Service
             }
         }
 
+        public T? GetEntity(uint id)
+        {
+            T? result = null;
+
+            entities.TryGetValue(id, out result);
+
+            return result;
+        }
+
         public virtual void OnCreate(T entity)
         {
 

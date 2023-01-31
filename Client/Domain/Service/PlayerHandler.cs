@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Service
 {
-    public class PlayerHandler : EntityHandler<Player>
+    public class PlayerHandler : EntityHandler<Player>, EventHandlerInterface<TargetChangedEvent>
     {
         public override void OnCreate(Player entity)
         {
@@ -23,6 +23,16 @@ namespace Client.Domain.Service
         public PlayerHandler(EntityFactoryInterface<Player> factory, EventBusInterface eventBus) : base(factory)
         {
             this.eventBus = eventBus;
+        }
+
+        public void Handle(TargetChangedEvent @event)
+        {
+            var target = GetEntity(@event.Hero.TargetId);
+            if (target == null)
+            {
+                return;
+            }
+            @event.Hero.Target = target;
         }
 
         private readonly EventBusInterface eventBus;
