@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Service
 {
-    public class PlayerHandler : EntityHandler<Player>
+    public class DropHandler : EntityHandler<Drop>
     {
-        public override void OnCreate(Player entity)
+        public override void OnCreate(Drop entity)
         {
-            mainViewModel.AddPlayer(entity);
+            mainViewModel.AddDrop(entity);
         }
-        public override void OnDelete(Player entity)
+        public override void OnDelete(Drop entity)
         {
-            mainViewModel.RemovePlayer(entity);
+            mainViewModel.RemoveDrop(entity);
         }
 
-        public PlayerHandler(EntityFactoryInterface<Player> factory, MainViewModelInterface mainViewModel) : base(factory)
+        public DropHandler(EntityFactoryInterface<Drop> factory, MainViewModelInterface mainViewModel) : base(factory)
         {
             this.mainViewModel = mainViewModel;
         }

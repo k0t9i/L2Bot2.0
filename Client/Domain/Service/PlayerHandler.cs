@@ -1,4 +1,5 @@
 ﻿using Client.Domain.Entities;
+using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.ViewModels;
 using System;
@@ -9,22 +10,22 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Service
 {
-    public class DropHandler : EntityHandler<Drop>
+    public class PlayerHandler : EntityHandler<Player>
     {
-        public override void OnCreate(Drop entity)
+        public override void OnCreate(Player entity)
         {
-            mainViewModel.AddDrop(entity);
+            eventBus.Publish(new CreatureCreatedEvent(entity));
         }
-        public override void OnDelete(Drop entity)
+        public override void OnDelete(Player entity)
         {
-            mainViewModel.RemoveDrop(entity);
-        }
-
-        public DropHandler(EntityFactoryInterface<Drop> factory, MainViewModelInterface mainViewModel) : base(factory)
-        {
-            this.mainViewModel = mainViewModel;
+            eventBus.Publish(new CreatureDeletedEvent(entity.Id));
         }
 
-        private readonly MainViewModelInterface mainViewModel;
+        public PlayerHandler(EntityFactoryInterface<Player> factory, EventBusInterface eventBus) : base(factory)
+        {
+            this.eventBus = eventBus;
+        }
+
+        private readonly EventBusInterface eventBus;
     }
 }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Events
 {
-    public class NpcCreatedEvent : EventInterface
+    public class CreatureCreatedEvent : EventInterface
     {
-        public readonly NPC NPC;
+        public readonly CreatureInterface Creature;
 
-        public NpcCreatedEvent(NPC npc)
+        public CreatureCreatedEvent(CreatureInterface creature)
         {
-            NPC = npc;
+            Creature = creature;
         }
     }
 }

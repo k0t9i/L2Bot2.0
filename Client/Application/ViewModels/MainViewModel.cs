@@ -23,26 +23,13 @@ namespace Client.Application.ViewModels
         MainViewModelInterface,
         EventHandlerInterface<HeroCreatedEvent>,
         EventHandlerInterface<HeroDeletedEvent>,
-        EventHandlerInterface<NpcCreatedEvent>,
-        EventHandlerInterface<NpcDeletedEvent>
+        EventHandlerInterface<CreatureCreatedEvent>,
+        EventHandlerInterface<CreatureDeletedEvent>
     {
 
         public void AddChatMessage(ChatMessage chatMessage)
         {
             ChatMessages.Add(new ChatMessageViewModel(chatMessage));
-        }
-
-        public void AddPlayer(Player player)
-        {
-            if (hero != null)
-            {
-                Creatures.Add(new PlayerListViewModel(player, hero));
-            }
-        }
-
-        public void RemovePlayer(Player player)
-        {
-            Creatures.RemoveAll(x => x.Id == player.Id);
         }
 
         public void AddDrop(Drop drop)
@@ -72,21 +59,21 @@ namespace Client.Application.ViewModels
             OnPropertyChanged("Hero");
         }
 
-        public void Handle(NpcCreatedEvent @event)
+        public void Handle(CreatureCreatedEvent @event)
         {
             if (hero != null)
             {
-                Creatures.Add(new NpcListViewModel(@event.NPC, hero));
+                Creatures.Add(new CreatureListViewModel(@event.Creature, hero));
             }
         }
 
-        public void Handle(NpcDeletedEvent @event)
+        public void Handle(CreatureDeletedEvent @event)
         {
             Creatures.RemoveAll(x => x.Id == @event.Id);
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
-        public ObservableCollection<CreatureListViewModelInterface> Creatures { get; } = new ObservableCollection<CreatureListViewModelInterface>();
+        public ObservableCollection<CreatureListViewModel> Creatures { get; } = new ObservableCollection<CreatureListViewModel>();
         public ObservableCollection<DropListViewModel> Drops { get; } = new ObservableCollection<DropListViewModel>();
         public HeroSummaryInfoViewModel? Hero { get; private set; }
         public Hero? hero;

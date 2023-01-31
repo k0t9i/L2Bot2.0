@@ -51,11 +51,11 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="5">
-                                        <TextBlock FontSize="16" Text="{Binding Path=Title,Mode=OneWay}" />
+                                        <TextBlock FontSize="16" Text="{Binding Path=Name,Mode=OneWay}" />
                                         <TextBlock FontSize="11">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}; distance: {1:F2}m; delta z: {2:F2}m">
-                                                    <Binding Path="Info" Mode="OneWay"/>
+                                                    <Binding Path="BriefInfo" Mode="OneWay"/>
                                                     <Binding Path="Distance" Mode="OneWay"/>
                                                     <Binding Path="DeltaZ" Mode="OneWay"/>
                                                 </MultiBinding>

@@ -17,11 +17,11 @@ namespace Client.Domain.Service
         {
             entity.Level = npcInfoHelper.GetLevel(entity.NpcId);
             entity.AggroRadius = npcInfoHelper.GetAggroRadius(entity.NpcId);
-            eventBus.Publish(new NpcCreatedEvent(entity));
+            eventBus.Publish(new CreatureCreatedEvent(entity));
         }
         public override void OnDelete(NPC entity)
         {
-            eventBus.Publish(new NpcDeletedEvent(entity.Id));
+            eventBus.Publish(new CreatureDeletedEvent(entity.Id));
         }
 
         public NpcHandler(EntityFactoryInterface<NPC> factory, EventBusInterface eventBus, NpcInfoHelperInterface npcInfoHelper) : base(factory)

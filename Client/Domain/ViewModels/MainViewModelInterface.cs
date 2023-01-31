@@ -12,8 +12,6 @@ namespace Client.Domain.ViewModels
     public interface MainViewModelInterface
     {
         void AddChatMessage(ChatMessage chatMessage);
-        void AddPlayer(Player player);
-        void RemovePlayer(Player player);
         void AddDrop(Drop drop);
         void RemoveDrop(Drop drop);
     }

@@ -67,8 +67,8 @@ namespace Client
             var viewModel = serviceProvider.GetRequiredService<MainViewModelInterface>();
             eventBus.Subscrbe((EventHandlerInterface<HeroCreatedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<HeroDeletedEvent>)viewModel);
-            eventBus.Subscrbe((EventHandlerInterface<NpcCreatedEvent>)viewModel);
-            eventBus.Subscrbe((EventHandlerInterface<NpcDeletedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<CreatureCreatedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<CreatureDeletedEvent>)viewModel);
         }
 
         private void OnMessage(string args)

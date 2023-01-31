@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Events
 {
-    public class NpcDeletedEvent : EventInterface
+    public class CreatureDeletedEvent : EventInterface
     {
         public readonly uint Id;
 
-        public NpcDeletedEvent(uint id)
+        public CreatureDeletedEvent(uint id)
         {
             Id = id;
         }
