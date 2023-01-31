@@ -34,10 +34,6 @@ namespace L2Bot::Domain::Entities
 		{
 			m_IsToggled = isToggled;
 		}
-		void UpdateLevel(const uint8_t level)
-		{
-			m_Level = level;
-		}
 
 		void Update(const EntityInterface* other) override
 		{
@@ -60,6 +56,8 @@ namespace L2Bot::Domain::Entities
 		{
 			m_PrevState =
 			{
+				m_Name,
+				m_IconName,
 				m_Cost,
 				m_Range,
 				m_Description,
@@ -96,10 +94,16 @@ namespace L2Bot::Domain::Entities
 			if (m_PrevState.isNewState)
 			{
 				result.push_back({ L"isActive", std::to_wstring(m_IsActive) });
-				result.push_back({ L"name", m_Name });
-				result.push_back({ L"iconName", m_IconName });
 			}
 
+			if (m_PrevState.isNewState || m_Name != m_PrevState.name)
+			{
+				result.push_back({ L"name", m_Name });
+			}
+			if (m_PrevState.isNewState || m_IconName != m_PrevState.iconName)
+			{
+				result.push_back({ L"iconName", m_IconName });
+			}
 			if (m_PrevState.isNewState || m_Description != m_PrevState.description)
 			{
 				result.push_back({ L"description", m_Description });
@@ -181,6 +185,8 @@ namespace L2Bot::Domain::Entities
 	private:
 		struct GetState
 		{
+			std::wstring name = L"";
+			std::wstring iconName = L"";
 			uint8_t cost = 0;
 			int16_t range = 0;
 			std::wstring description = L"";

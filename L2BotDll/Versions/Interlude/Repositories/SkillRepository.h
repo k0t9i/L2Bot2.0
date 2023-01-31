@@ -134,19 +134,18 @@ namespace Interlude
 				const auto skillInfo = casted.GetSkillInfo();
 				const auto skillId = skillInfo[2];
 
+				auto skill = m_Factory.Create(
+					skillInfo[2],
+					skillInfo[1],
+					skillInfo[0]
+				);
 				if (m_Skills.find(skillId) == m_Skills.end())
 				{
-					auto skill = m_Factory.Create(
-						skillInfo[2],
-						skillInfo[1],
-						skillInfo[0]
-					);
-
 					m_Skills.emplace(skill->GetId(), std::move(skill));
 				}
 				else
 				{
-					m_Skills[skillId]->UpdateLevel(skillInfo[1]);
+					m_Skills[skillId] = std::move(skill);
 				}
 				m_NewSkills[skillId] = skillId;
 			}
