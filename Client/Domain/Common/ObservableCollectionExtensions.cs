@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client.Application.Extensions
+namespace Client.Domain.Common
 {
     public static class ObservableCollectionExtensions
     {

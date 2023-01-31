@@ -1,5 +1,4 @@
-﻿using Client.Application.Extensions;
-using Client.Domain.Common;
+﻿using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.Events;
 using Client.Domain.ValueObjects;

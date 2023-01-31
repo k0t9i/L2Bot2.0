@@ -17,9 +17,9 @@ namespace Client.Application.ViewModels
 
         public string BriefInfo => creature.BriefInfo;
 
-        public float Distance => creature.Transform.Position.HorizontalDistance(hero.Transform.Position) / 100;
+        public float Distance => creature.Distance(hero);
 
-        public float DeltaZ => (creature.Transform.Position.Z - hero.Transform.Position.Z) / 100;
+        public float DeltaZ => creature.DeltaZ(hero);
 
         public CreatureListViewModel(CreatureInterface creature, Hero hero)
         {
