@@ -7,15 +7,11 @@ namespace L2Bot::Domain::ValueObjects
 	class InventoryInfo : public Serializers::Serializable
 	{
 	public:
-		const bool IsOverloaded() const
-		{
-			return m_Weight >= m_MaxWeight;
-		}
-		const uint16_t GetMaxWeight() const
+		const uint32_t GetMaxWeight() const
 		{
 			return m_MaxWeight;
 		}
-		const uint16_t GetWeight() const
+		const uint32_t GetWeight() const
 		{
 			return m_Weight;
 		}
@@ -41,8 +37,8 @@ namespace L2Bot::Domain::ValueObjects
 		}
 
 		InventoryInfo(
-			const uint16_t maxWeight,
-			const uint16_t weight,
+			const uint32_t maxWeight,
+			const uint32_t weight,
 			const uint16_t slots
 		) :
 			m_MaxWeight(maxWeight),
@@ -54,8 +50,8 @@ namespace L2Bot::Domain::ValueObjects
 		InventoryInfo() = default;
 		virtual ~InventoryInfo() = default;
 	private:
-		uint16_t m_MaxWeight = 0;
-		uint16_t m_Weight = 0;
+		uint32_t m_MaxWeight = 0;
+		uint32_t m_Weight = 0;
 		uint16_t m_Slots = 0;
 	};
 }
