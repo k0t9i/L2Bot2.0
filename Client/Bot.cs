@@ -73,6 +73,8 @@ namespace Client
             eventBus.Subscrbe((EventHandlerInterface<DropCreatedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<DropDeletedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<ChatMessageCreatedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<SkillCreatedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<SkillDeletedEvent>)viewModel);
 
             eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<HeroHandler>());
             eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<NpcHandler>());

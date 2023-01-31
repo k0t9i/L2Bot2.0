@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:ctrls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
         xmlns:converters="clr-namespace:Client.Application.Converters"
         xmlns:components="clr-namespace:Client.Application.Components"
         mc:Ignorable="d"
@@ -21,11 +22,12 @@
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <ctrls:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="454"></ColumnDefinition>
+            <ColumnDefinition Width="444"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
@@ -96,6 +98,86 @@
                     </Grid>
                 </TabItem.Content>
             </TabItem>
+            <TabItem>
+                <TabItem.Header>Skills</TabItem.Header>
+                <TabItem.Content>
+                    <TabControl>
+                        <TabItem>
+                            <TabItem.Header>Active</TabItem.Header>
+                            <TabItem.Content>
+                                <ItemsControl ItemsSource="{Binding ActiveSkills,Mode=OneWay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button IsEnabled="{Binding Path=IsReadyToUse,Mode=OneWay}">
+                                                <Button.Content>
+                                                    <Grid>
+                                                        <Image Source="{Binding Path=IconName}" Height="32" Width="32" />
+                                                        <Rectangle Fill="Black" Opacity=".5" Visibility="{Binding Path=IsBusy,Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}"/>
+                                                    </Grid>
+                                                </Button.Content>
+                                                <Button.ToolTip>
+                                                    <StackPanel MaxWidth="300">
+                                                        <TextBlock TextWrapping="Wrap" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0} Lv {1}">
+                                                                    <Binding Path="Name" Mode="OneWay"/>
+                                                                    <Binding Path="Level" Mode="OneWay"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <TextBlock TextWrapping="Wrap" Text="{Binding Path=Cost,Mode=OneWay,StringFormat='MP Cost {0}'}" />
+                                                        <TextBlock TextWrapping="Wrap" Text="{Binding Path=Range,Mode=OneWay,StringFormat='Range {0}'}" />
+                                                        <TextBlock TextWrapping="Wrap" Text="{Binding Path=Description,Mode=OneWay}" />
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>Passive</TabItem.Header>
+                            <TabItem.Content>
+                                <ItemsControl ItemsSource="{Binding PassiveSkills,Mode=OneWay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button IsEnabled="False" ToolTipService.ShowOnDisabled="True">
+                                                <Button.Content>
+                                                    <Image Source="{Binding Path=IconName}" Height="32" Width="32" />
+                                                </Button.Content>
+                                                <Button.ToolTip>
+                                                    <StackPanel MaxWidth="300">
+                                                        <TextBlock TextWrapping="Wrap" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0} Lv {1}">
+                                                                    <Binding Path="Name" Mode="OneWay"/>
+                                                                    <Binding Path="Level" Mode="OneWay"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <TextBlock TextWrapping="Wrap"  Text="{Binding Path=Description,Mode=OneWay}" />
+                                                    </StackPanel>
+                                                </Button.ToolTip>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </TabItem.Content>
+                        </TabItem>
+                    </TabControl>
+                </TabItem.Content>
+            </TabItem>
         </TabControl>
         <Grid Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
@@ -107,7 +189,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <StackPanel>
+            <StackPanel Margin="4">
                 <TextBlock FontSize="16" Text="{Binding Path=Fullname.Nickname, Mode=OneWay}"></TextBlock>
                 <TextBlock>
                     <TextBlock.Text>

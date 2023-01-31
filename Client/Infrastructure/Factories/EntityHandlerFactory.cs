@@ -36,6 +36,9 @@ namespace Client.Infrastructure.Factories
                 case MessageTypeEnum.Chat:
                     result = serviceProvider.GetService<ChatMessageHandler>();
                     break;
+                case MessageTypeEnum.Skill:
+                    result = serviceProvider.GetService<SkillHandler>();
+                    break;
             }
             
             if (result == null)

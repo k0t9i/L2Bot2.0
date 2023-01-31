@@ -7,11 +7,6 @@ namespace Client.Domain.Entities
 {
     public class Hero : ObservableObject, EntityInterface, CreatureInterface
     {
-        private FullName fullName;
-        private Phenotype phenotype;
-        private CreatureInterface? target;
-        private uint targetId;
-
         public uint Id { get; set; }
         public Transform Transform { get; set; }
         public VitalStats VitalStats { get; set; }
@@ -96,5 +91,10 @@ namespace Client.Domain.Entities
                 OnPropertyChanged("Name");
             }
         }
+
+        private FullName fullName;
+        private Phenotype phenotype;
+        private CreatureInterface? target;
+        private uint targetId;
     }
 }

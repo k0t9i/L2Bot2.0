@@ -45,8 +45,7 @@ namespace Client.Domain.Service
 
         public T? GetEntity(uint id)
         {
-            T? result = null;
-
+            T? result;
             entities.TryGetValue(id, out result);
 
             return result;

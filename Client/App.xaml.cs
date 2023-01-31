@@ -93,12 +93,14 @@ namespace Client
                 .AddTransient(typeof(EntityFactoryInterface<NPC>), typeof(EntityFactory<NPC>))
                 .AddTransient(typeof(EntityFactoryInterface<Player>), typeof(EntityFactory<Player>))
                 .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
+                .AddTransient(typeof(EntityFactoryInterface<Skill>), typeof(EntityFactory<Skill>))
 
                 .AddSingleton<HeroHandler>()
                 .AddSingleton<DropHandler>()
                 .AddSingleton<NpcHandler>()
                 .AddSingleton<PlayerHandler>()
                 .AddSingleton<ChatMessageHandler>()
+                .AddSingleton<SkillHandler>()
                 
                 .AddSingleton<MainViewModel>();
         }
