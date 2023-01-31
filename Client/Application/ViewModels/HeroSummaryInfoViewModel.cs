@@ -67,7 +67,7 @@ namespace Client.Application.ViewModels
             }
         }
 
-        public CreatureListViewModel? Target
+        public TargetSummaryInfoViewModel? Target
         {
             get
             {
@@ -93,7 +93,7 @@ namespace Client.Application.ViewModels
             {
                 if (target == null && hero.Target != null)
                 {
-                    target = new CreatureListViewModel(hero.Target, hero);
+                    target = new TargetSummaryInfoViewModel(hero.Target, hero);
                     OnPropertyChanged("Target");
                 }
                 else if (target != null && hero.Target == null)
@@ -135,6 +135,6 @@ namespace Client.Application.ViewModels
         }
 
         private readonly Hero hero;
-        private CreatureListViewModel? target;
+        private TargetSummaryInfoViewModel? target;
     }
 }

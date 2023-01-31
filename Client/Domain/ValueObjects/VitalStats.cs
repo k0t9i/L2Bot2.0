@@ -1,4 +1,5 @@
 ﻿using Client.Domain.Common;
+using System;
 
 namespace Client.Domain.ValueObjects
 {
@@ -11,8 +12,8 @@ namespace Client.Domain.ValueObjects
         private uint cp;
         private uint maxCp;
 
-        public uint Hp { get => hp; set { if (value != hp) { hp = value; OnPropertyChanged("Hp"); } } }
-        public uint MaxHp { get => maxHp; set { if (value != maxHp) { maxHp = value; OnPropertyChanged("MaxHp"); } } }
+        public uint Hp { get => hp; set { if (value != hp) { hp = value; OnPropertyChanged("Hp"); OnPropertyChanged("MaxHp"); } } }
+        public uint MaxHp { get => Math.Max(hp, maxHp); set { if (value != maxHp) { maxHp = value; OnPropertyChanged("MaxHp"); } } }
         public uint Mp { get => mp; set { if (value != mp) { mp = value; OnPropertyChanged("Mp"); } } }
         public uint MaxMp { get => maxMp; set { if (value != maxMp) { maxMp = value; OnPropertyChanged("MaxMp"); } } }
         public uint Cp { get => cp; set { if (value != cp) { cp = value; OnPropertyChanged("Cp"); } } }

@@ -15,6 +15,7 @@ namespace Client.Domain.Entities
     {
         private FullName fullName;
         private Phenotype phenotype;
+        private VitalStats vitalStats = new VitalStats(0, 0, 0, 0, 0, 0);
 
         public uint Id { get; set; }
         public Transform Transform { get; set; }
@@ -57,6 +58,8 @@ namespace Client.Domain.Entities
                 return Phenotype.Race.ToString() + ", " + Phenotype.Class.ToString();
             }
         }
+
+        public VitalStats VitalStats { get => vitalStats; set => vitalStats = value; }
 
         public Player(uint id, Transform transform, FullName fullName, Phenotype phenotype)
         {

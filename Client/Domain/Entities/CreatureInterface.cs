@@ -11,6 +11,7 @@ namespace Client.Domain.Entities
     public interface CreatureInterface : INotifyPropertyChanged
     {
         uint Id { get; set; }
+        VitalStats VitalStats { get; set; }
         Transform Transform { get; set; }
         string Name { get; }
         string BriefInfo { get; }

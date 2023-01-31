@@ -97,12 +97,17 @@
                 </TabItem.Content>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Grid.Column="1">
+        <Grid Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <StackPanel DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel>
                 <TextBlock FontSize="16" Text="{Binding Path=Fullname.Nickname, Mode=OneWay}"></TextBlock>
                 <TextBlock>
                     <TextBlock.Text>
@@ -113,77 +118,86 @@
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
-                <components:StatsPanel DataContext="{Binding ., Mode=OneWay}" Margin="0 5 0 5" />
-                <DockPanel>
-                    <StackPanel DockPanel.Dock="Left" Margin="0 0 5 0">
-                        <TextBlock Padding="0 0 0 3">Position:</TextBlock>
-                        <TextBlock Padding="0 0 0 3">Exp:</TextBlock>
-                        <TextBlock Padding="0 0 0 3">Weight:</TextBlock>
-                        <TextBlock Padding="0 0 0 3">Adena:</TextBlock>
-                        <TextBlock Padding="0 0 0 3">Inv. slots:</TextBlock>
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Padding="0 0 0 3">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0:F0}, {1:F0}, {2:F0}">
-                                    <Binding Path="Transform.Position.X" Mode="OneWay"/>
-                                    <Binding Path="Transform.Position.Y" Mode="OneWay"/>
-                                    <Binding Path="Transform.Position.Z" Mode="OneWay"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Padding="0 0 0 3">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}/{1}">
-                                    <Binding Path="Experience.Exp" Mode="OneWay"/>
-                                    <Binding Path="Experience.ExpToLevel" Mode="OneWay"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Padding="0 0 0 3">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}/{1}">
-                                    <Binding Path="InventoryInfo.Weight" Mode="OneWay"/>
-                                    <Binding Path="InventoryInfo.MaxWeight" Mode="OneWay"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Text="{Binding Path=Money, Mode=OneWay}" Padding="0 0 0 3"></TextBlock>
-                        <TextBlock Padding="0 0 0 3">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}/{1}">
-                                    <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
-                                    <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </StackPanel>
-                </DockPanel>
             </StackPanel>
-            <StackPanel Grid.Column="1" DataContext="{Binding Hero.Target, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
+            <components:StatsPanel DataContext="{Binding ., Mode=OneWay}" Margin="4" Grid.Row="1" />
+            <DockPanel Grid.Row="2" Margin="4">
+                <StackPanel DockPanel.Dock="Left" Margin="0 0 5 0">
+                    <TextBlock Padding="0 0 0 3">Position:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Exp:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Weight:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Adena:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Inv. slots:</TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Padding="0 0 0 3">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0:F0}, {1:F0}, {2:F0}">
+                                <Binding Path="Transform.Position.X" Mode="OneWay"/>
+                                <Binding Path="Transform.Position.Y" Mode="OneWay"/>
+                                <Binding Path="Transform.Position.Z" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Padding="0 0 0 3">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="Experience.Exp" Mode="OneWay"/>
+                                <Binding Path="Experience.ExpToLevel" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Padding="0 0 0 3">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="InventoryInfo.Weight" Mode="OneWay"/>
+                                <Binding Path="InventoryInfo.MaxWeight" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Text="{Binding Path=Money, Mode=OneWay}" Padding="0 0 0 3"></TextBlock>
+                    <TextBlock Padding="0 0 0 3">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
+                                <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </DockPanel>
+            <StackPanel Grid.Column="1" DataContext="{Binding Target, Mode=OneWay}" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}" Margin="4">
                 <TextBlock FontSize="16" Text="{Binding Path=Name, Mode=OneWay}"></TextBlock>
                 <TextBlock Text="{Binding Path=BriefInfo, Mode=OneWay}"></TextBlock>
-                <DockPanel>
-                    <StackPanel DockPanel.Dock="Left" Margin="0 0 5 0">
-                        <TextBlock Padding="0 0 0 3">Position:</TextBlock>
-                        <TextBlock Padding="0 0 0 3">Distance:</TextBlock>
-                        <TextBlock Padding="0 0 0 3">Delta Z:</TextBlock>
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Padding="0 0 0 3">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0:F0}, {1:F0}, {2:F0}">
-                                    <Binding Path="Transform.Position.X" Mode="OneWay"/>
-                                    <Binding Path="Transform.Position.Y" Mode="OneWay"/>
-                                    <Binding Path="Transform.Position.Z" Mode="OneWay"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Padding="0 0 0 3" Text="{Binding Distance,Mode=OneWay,StringFormat='{}{0:F2}m'}"></TextBlock>
-                        <TextBlock Padding="0 0 0 3" Text="{Binding DeltaZ,Mode=OneWay,StringFormat='{}{0:F2}m'}"></TextBlock>
-                    </StackPanel>
-                </DockPanel>
             </StackPanel>
+            <StackPanel Margin="4" Grid.Column="1" Grid.Row="1" DataContext="{Binding Target, Mode=OneWay}" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
+                <components:StatsBar
+                    BackgroundSource="/Assets/icons/ps_hpbar_back.png"
+                    ForegroundSource="/Assets/icons/ps_hpbar.png"
+                    Current="{Binding Path=Hp,Mode=OneWay}"
+                    Total="{Binding Path=MaxHp,Mode=OneWay}"
+                    Height="15"
+                />
+            </StackPanel>
+            <DockPanel Grid.Column="1" Grid.Row="2" Margin="4" DataContext="{Binding Target, Mode=OneWay}" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel DockPanel.Dock="Left" Margin="0 0 5 0">
+                    <TextBlock Padding="0 0 0 3">Position:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Distance:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">Delta Z:</TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Padding="0 0 0 3">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0:F0}, {1:F0}, {2:F0}">
+                                <Binding Path="Position.X" Mode="OneWay"/>
+                                <Binding Path="Position.Y" Mode="OneWay"/>
+                                <Binding Path="Position.Z" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Padding="0 0 0 3" Text="{Binding Distance,Mode=OneWay,StringFormat='{}{0:F2}m'}"></TextBlock>
+                    <TextBlock Padding="0 0 0 3" Text="{Binding DeltaZ,Mode=OneWay,StringFormat='{}{0:F2}m'}"></TextBlock>
+                </StackPanel>
+            </DockPanel>
         </Grid>
     </Grid>
 </Window>

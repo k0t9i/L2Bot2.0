@@ -9,6 +9,15 @@
     <Grid>
         <Image Stretch="Fill" Source="{Binding BackgroundSource,ElementName=root,Mode=OneWay}" />
         <Image Stretch="Fill" Source="{Binding ForegroundSource,ElementName=root,Mode=OneWay}" Width="{Binding ForegroundWidth,ElementName=root,Mode=OneWay}" HorizontalAlignment="Left" />
-        <TextBlock Text="{Binding Text,ElementName=root,Mode=OneWay}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Text,ElementName=root,Mode=OneWay}" Foreground="Black">
+                <TextBlock.Effect>
+                    <BlurEffect
+                      Radius="1.0"
+                      KernelType="Box"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Text="{Binding Text,ElementName=root,Mode=OneWay}" Foreground="White" />
+        </Grid>
     </Grid>
 </UserControl>
