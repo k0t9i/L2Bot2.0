@@ -5,9 +5,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.Parsers;
 using Client.Domain.Transports;
+using Client.Domain.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Client
 {
@@ -19,13 +22,20 @@ namespace Client
         private readonly TransportInterface transport;
         private readonly MessageParserInterface messageParser;
         private readonly EntityHandlerFactoryInterface entityHandlerFactory;
+        private readonly EventBusInterface eventBus;
+        private readonly IServiceProvider serviceProvider;
         private readonly string dllName;
 
-        public Bot(TransportInterface transport, MessageParserInterface messageParser, EntityHandlerFactoryInterface entityHandlerFactory, string dllName)
+        public Bot(
+            IServiceProvider serviceProvider,
+            string dllName
+        )
         {
-            this.transport = transport;
-            this.messageParser = messageParser;
-            this.entityHandlerFactory = entityHandlerFactory;
+            transport = serviceProvider.GetRequiredService<TransportInterface>();
+            messageParser = serviceProvider.GetRequiredService<MessageParserInterface>();
+            entityHandlerFactory = serviceProvider.GetRequiredService<EntityHandlerFactoryInterface>();
+            eventBus = serviceProvider.GetRequiredService<EventBusInterface>();
+            this.serviceProvider = serviceProvider;
             this.dllName = dllName;
         }
 
@@ -41,6 +51,8 @@ namespace Client
             Debug.WriteLine(dllName + " loaded\n");
             transport.Message += OnMessage;
 
+            SubscribeAllHandlers();
+
             await transport.ConnectAsync();
             await transport.SendAsync("invalidate");
             while (true)
@@ -48,6 +60,15 @@ namespace Client
                 await transport.StartReceiveAsync();
                 await transport.ConnectAsync();
             }
+        }
+
+        private void SubscribeAllHandlers()
+        {
+            var viewModel = serviceProvider.GetRequiredService<MainViewModelInterface>();
+            eventBus.Subscrbe((EventHandlerInterface<HeroCreatedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<HeroDeletedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<NpcCreatedEvent>)viewModel);
+            eventBus.Subscrbe((EventHandlerInterface<NpcDeletedEvent>)viewModel);
         }
 
         private void OnMessage(string args)

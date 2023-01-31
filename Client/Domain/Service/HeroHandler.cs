@@ -1,4 +1,5 @@
 ﻿using Client.Domain.Entities;
+using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.Helpers;
 using Client.Domain.ViewModels;
@@ -14,9 +15,9 @@ namespace Client.Domain.Service
     {
         public override void OnCreate(Hero entity)
         {
-            mainViewModel.CreateHero(entity);
             entity.ExperienceInfo.ExpToLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level + 1);
             entity.ExperienceInfo.ExpToPrevLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level);
+            eventBus.Publish(new HeroCreatedEvent(entity));
         }
 
         public override void OnUpdate(Hero entity)
@@ -30,16 +31,16 @@ namespace Client.Domain.Service
 
         public override void OnDelete(Hero entity)
         {
-            mainViewModel.DeleteHero();
+            eventBus.Publish(new HeroDeletedEvent());
         }
 
-        public HeroHandler(EntityFactoryInterface<Hero> factory, MainViewModelInterface mainViewModel, ExperienceHelperInterface experienceHelper) : base(factory)
+        public HeroHandler(EntityFactoryInterface<Hero> factory, EventBusInterface eventBus, ExperienceHelperInterface experienceHelper) : base(factory)
         {
-            this.mainViewModel = mainViewModel;
+            this.eventBus = eventBus;
             this.experienceHelper = experienceHelper;
         }
 
-        private readonly MainViewModelInterface mainViewModel;
+        private readonly EventBusInterface eventBus;
         private readonly ExperienceHelperInterface experienceHelper;
     }
 }

@@ -17,6 +17,9 @@ using Client.Domain.ViewModels;
 using Client.Application.ViewModels;
 using Client.Domain.Helpers;
 using Client.Infrastructure.Helpers;
+using Client.Domain.Events;
+using Client.Infrastructure.Events;
+using System;
 
 namespace Client
 {
@@ -70,9 +73,7 @@ namespace Client
                 .AddSingleton(
                     typeof(Bot),
                     x => new Bot(
-                            x.GetRequiredService<TransportInterface>(),
-                            x.GetRequiredService<MessageParserInterface>(),
-                            x.GetRequiredService<EntityHandlerFactoryInterface>(),
+                            x.GetRequiredService<IServiceProvider>(),
                             config.GetValue<string>("DLLName") ?? ""
                         )
                     )
@@ -86,6 +87,7 @@ namespace Client
                 )
                 .AddSingleton(typeof(ExperienceHelperInterface), typeof(ConfigurationExperienceHelper))
                 .AddSingleton(typeof(NpcInfoHelperInterface), typeof(ConfigurationNpcInfoHelper))
+                .AddSingleton(typeof(EventBusInterface), typeof(InMemoryEventBus))
 
                 .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
                 .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))

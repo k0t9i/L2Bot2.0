@@ -1,6 +1,7 @@
 ﻿using Client.Application.Extensions;
 using Client.Domain.Common;
 using Client.Domain.Entities;
+using Client.Domain.Events;
 using Client.Domain.ValueObjects;
 using Client.Domain.ViewModels;
 using System;
@@ -17,38 +18,18 @@ using System.Windows.Media;
 
 namespace Client.Application.ViewModels
 {
-    public class MainViewModel : NotifyPropertyChanged, MainViewModelInterface
+    public class MainViewModel :
+        NotifyPropertyChanged,
+        MainViewModelInterface,
+        EventHandlerInterface<HeroCreatedEvent>,
+        EventHandlerInterface<HeroDeletedEvent>,
+        EventHandlerInterface<NpcCreatedEvent>,
+        EventHandlerInterface<NpcDeletedEvent>
     {
 
         public void AddChatMessage(ChatMessage chatMessage)
         {
             ChatMessages.Add(new ChatMessageViewModel(chatMessage));
-        }
-
-        public void CreateHero(Hero hero)
-        {
-            Hero = new HeroSummaryInfoViewModel(hero);
-            this.hero = hero;
-            OnPropertyChanged("Hero");
-        }
-        public void DeleteHero()
-        {
-            Hero = null;
-            hero = null;
-            OnPropertyChanged("Hero");
-        }
-
-        public void AddNpc(NPC npc)
-        {
-            if (hero != null)
-            {
-                Creatures.Add(new NpcListViewModel(npc, hero));
-            }
-        }
-
-        public void RemoveNpc(NPC npc)
-        {
-            Creatures.RemoveAll(x => x.Id == npc.Id);
         }
 
         public void AddPlayer(Player player)
@@ -75,6 +56,33 @@ namespace Client.Application.ViewModels
         public void RemoveDrop(Drop drop)
         {
             Drops.RemoveAll(x => x.Id == drop.Id);
+        }
+
+        public void Handle(HeroCreatedEvent @event)
+        {
+            Hero = new HeroSummaryInfoViewModel(@event.Hero);
+            hero = @event.Hero;
+            OnPropertyChanged("Hero");
+        }
+
+        public void Handle(HeroDeletedEvent @event)
+        {
+            Hero = null;
+            hero = null;
+            OnPropertyChanged("Hero");
+        }
+
+        public void Handle(NpcCreatedEvent @event)
+        {
+            if (hero != null)
+            {
+                Creatures.Add(new NpcListViewModel(@event.NPC, hero));
+            }
+        }
+
+        public void Handle(NpcDeletedEvent @event)
+        {
+            Creatures.RemoveAll(x => x.Id == @event.Id);
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
