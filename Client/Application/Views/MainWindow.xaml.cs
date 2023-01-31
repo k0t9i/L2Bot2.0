@@ -1,4 +1,4 @@
-﻿using Client.Domain.ViewModels;
+﻿using Client.Application.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +21,10 @@ namespace Client.Application.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly MainViewModelInterface mainViewModel;
-
-        public MainWindow(MainViewModelInterface mainViewModel)
+        public MainWindow(MainViewModel mainViewModel)
         {
             InitializeComponent();
-            this.mainViewModel = mainViewModel;
+
             DataContext = mainViewModel;
         }
     }

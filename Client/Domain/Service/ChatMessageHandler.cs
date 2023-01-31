@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Client.Domain.DTO;
 using Client.Domain.Entities;
 using Client.Domain.Enums;
+using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.ValueObjects;
-using Client.Domain.ViewModels;
 
 namespace Client.Domain.Service
 {
@@ -23,19 +23,17 @@ namespace Client.Domain.Service
                 {
                     throw new ArgumentNullException(nameof(message));
                 }
-                messages.Add(message);
-                mainViewModel.AddChatMessage(message);
+                eventBus.Publish(new ChatMessageCreatedEvent(message));
             }
         }
 
-        public ChatMessageHandler(EntityFactoryInterface<ChatMessage> factory, MainViewModelInterface mainViewModel)
+        public ChatMessageHandler(EntityFactoryInterface<ChatMessage> factory, EventBusInterface eventBus)
         {
             this.factory = factory;
-            this.mainViewModel = mainViewModel;
+            this.eventBus = eventBus;
         }
 
         private readonly EntityFactoryInterface<ChatMessage> factory;
-        private readonly MainViewModelInterface mainViewModel;
-        private List<ChatMessage> messages = new List<ChatMessage>();
+        private readonly EventBusInterface eventBus;
     }
 }

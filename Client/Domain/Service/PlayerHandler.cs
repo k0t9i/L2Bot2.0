@@ -1,7 +1,6 @@
 ﻿using Client.Domain.Entities;
 using Client.Domain.Events;
 using Client.Domain.Factories;
-using Client.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

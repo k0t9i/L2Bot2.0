@@ -13,7 +13,6 @@ using Client.Domain.ValueObjects;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using Client.Application.Views;
-using Client.Domain.ViewModels;
 using Client.Application.ViewModels;
 using Client.Domain.Helpers;
 using Client.Infrastructure.Helpers;
@@ -101,7 +100,7 @@ namespace Client
                 .AddSingleton<PlayerHandler>()
                 .AddSingleton<ChatMessageHandler>()
                 
-                .AddSingleton(typeof(MainViewModelInterface), typeof(MainViewModel));
+                .AddSingleton<MainViewModel>();
         }
     }
 }

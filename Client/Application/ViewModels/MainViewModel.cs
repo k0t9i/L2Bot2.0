@@ -3,7 +3,6 @@ using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.Events;
 using Client.Domain.ValueObjects;
-using Client.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,31 +19,14 @@ namespace Client.Application.ViewModels
 {
     public class MainViewModel :
         NotifyPropertyChanged,
-        MainViewModelInterface,
         EventHandlerInterface<HeroCreatedEvent>,
         EventHandlerInterface<HeroDeletedEvent>,
         EventHandlerInterface<CreatureCreatedEvent>,
-        EventHandlerInterface<CreatureDeletedEvent>
+        EventHandlerInterface<CreatureDeletedEvent>,
+        EventHandlerInterface<DropCreatedEvent>,
+        EventHandlerInterface<DropDeletedEvent>,
+        EventHandlerInterface<ChatMessageCreatedEvent>
     {
-
-        public void AddChatMessage(ChatMessage chatMessage)
-        {
-            ChatMessages.Add(new ChatMessageViewModel(chatMessage));
-        }
-
-        public void AddDrop(Drop drop)
-        {
-            if (hero != null)
-            {
-                Drops.Add(new DropListViewModel(drop, hero));
-            }
-        }
-
-        public void RemoveDrop(Drop drop)
-        {
-            Drops.RemoveAll(x => x.Id == drop.Id);
-        }
-
         public void Handle(HeroCreatedEvent @event)
         {
             Hero = new HeroSummaryInfoViewModel(@event.Hero);
@@ -70,6 +52,24 @@ namespace Client.Application.ViewModels
         public void Handle(CreatureDeletedEvent @event)
         {
             Creatures.RemoveAll(x => x.Id == @event.Id);
+        }
+
+        public void Handle(DropCreatedEvent @event)
+        {
+            if (hero != null)
+            {
+                Drops.Add(new DropListViewModel(@event.Drop, hero));
+            }
+        }
+
+        public void Handle(DropDeletedEvent @event)
+        {
+            Drops.RemoveAll(x => x.Id == @event.Id);
+        }
+
+        public void Handle(ChatMessageCreatedEvent @event)
+        {
+            ChatMessages.Add(new ChatMessageViewModel(@event.Message));
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();

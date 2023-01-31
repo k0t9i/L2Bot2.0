@@ -5,11 +5,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Client.Application.ViewModels;
 using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.Parsers;
 using Client.Domain.Transports;
-using Client.Domain.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Client
@@ -64,7 +64,7 @@ namespace Client
 
         private void SubscribeAllHandlers()
         {
-            var viewModel = serviceProvider.GetRequiredService<MainViewModelInterface>();
+            var viewModel = serviceProvider.GetRequiredService<MainViewModel>();
             eventBus.Subscrbe((EventHandlerInterface<HeroCreatedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<HeroDeletedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<CreatureCreatedEvent>)viewModel);

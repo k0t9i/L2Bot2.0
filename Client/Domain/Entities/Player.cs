@@ -62,8 +62,8 @@ namespace Client.Domain.Entities
         {
             Id = id;
             Transform = transform;
-            FullName = fullName;
-            Phenotype = phenotype;
+            this.fullName = FullName = fullName;
+            this.phenotype = Phenotype = phenotype;
         }
 
         private void Phenotype_PropertyChanged(object? sender, PropertyChangedEventArgs e)

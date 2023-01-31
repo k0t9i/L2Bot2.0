@@ -109,8 +109,8 @@ namespace Client.Domain.Entities
             IsHostile = isHostile;
             NpcId = npcId;
             SpoilState = spoilState;
-            FullName = fullName;
-            VitalStats = vitalStats;
+            this.fullName = FullName = fullName;
+            this.vitalStats = VitalStats = vitalStats;
         }
 
         private void FullName_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

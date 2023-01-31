@@ -1,6 +1,6 @@
 ﻿using Client.Domain.Entities;
+using Client.Domain.Events;
 using Client.Domain.Factories;
-using Client.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +13,18 @@ namespace Client.Domain.Service
     {
         public override void OnCreate(Drop entity)
         {
-            mainViewModel.AddDrop(entity);
+            eventBus.Publish(new DropCreatedEvent(entity));
         }
         public override void OnDelete(Drop entity)
         {
-            mainViewModel.RemoveDrop(entity);
+            eventBus.Publish(new DropDeletedEvent(entity.Id));
         }
 
-        public DropHandler(EntityFactoryInterface<Drop> factory, MainViewModelInterface mainViewModel) : base(factory)
+        public DropHandler(EntityFactoryInterface<Drop> factory, EventBusInterface eventBus) : base(factory)
         {
-            this.mainViewModel = mainViewModel;
+            this.eventBus = eventBus;
         }
 
-        private readonly MainViewModelInterface mainViewModel;
+        private readonly EventBusInterface eventBus;
     }
 }
