@@ -9,18 +9,21 @@ using System.Windows.Data;
 
 namespace Client.Application.Converters
 {
-    public class NullToVisibilityConverter : IValueConverter
+    public class BooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var isCollapsedWhenNull = parameter == null ? false : true;
-            var nullVisibility = isCollapsedWhenNull ? Visibility.Collapsed : Visibility.Hidden;
-            return value == null ? nullVisibility : Visibility.Visible;
+            var isInverted = parameter == null ? false : true;
+            var preparedValue = value == null ? false : (bool)value;
+            preparedValue = isInverted ? !preparedValue : preparedValue;
+            return innerConverter.Convert(preparedValue, targetType, parameter, culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
+
+        System.Windows.Controls.BooleanToVisibilityConverter innerConverter = new System.Windows.Controls.BooleanToVisibilityConverter();
     }
 }

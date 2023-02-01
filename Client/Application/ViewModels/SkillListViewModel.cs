@@ -18,8 +18,8 @@ namespace Client.Application.ViewModels
         public bool IsActive => skill.IsActive;
         public bool IsReadyToUse => skill.IsReadyToUse;
         public bool IsBusy => !skill.IsReadyToUse;
-        public uint Cost => skill.Cost;
-        public int Range => skill.Range;
+        public uint? Cost => skill.Cost == 0 ? null : skill.Cost;
+        public int? Range => skill.Range <= 0 ? null : skill.Range;
 
         public SkillListViewModel(Skill skill)
         {

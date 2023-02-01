@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Client.Application.Components
+namespace Client.Application.Views
 {
     /// <summary>
     /// Interaction logic for StatsPanel.xaml
