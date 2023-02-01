@@ -14,6 +14,7 @@ namespace Interlude
 	Item* (__thiscall* NetworkHandlerWrapper::__GetNextItem)(NetworkHandler*, float, int) = 0;
 	User* (__thiscall* NetworkHandlerWrapper::__GetNextCreature)(NetworkHandler*, float, int) = 0;
 	int(__thiscall* NetworkHandlerWrapper::__AddNetworkQueue)(NetworkHandler*, L2::NetworkPacket*) = 0;
+	int(__thiscall* NetworkHandlerWrapper::__RequestItemList)(NetworkHandler*);
 
 	//todo exception
 	Item* NetworkHandlerWrapper::GetNextItem(float_t radius, int prevId) const
@@ -50,6 +51,14 @@ namespace Interlude
 		return 0;
 	}
 
+	int NetworkHandlerWrapper::RequestItemList() const
+	{
+		if (__RequestItemList && _target) {
+			return (*__RequestItemList)(_target);
+		}
+		return 0;
+	}
+
 	void NetworkHandlerWrapper::Init(HMODULE hModule)
 	{
 		void* initAddress = GetProcAddress(hModule, "?Tick@UNetworkHandler@@UAEXM@Z");
@@ -58,6 +67,7 @@ namespace Interlude
 
 		(FARPROC&)__GetNextItem = GetProcAddress(hModule, "?GetNextItem@UNetworkHandler@@UAEPAUItem@@MH@Z");
 		(FARPROC&)__GetNextCreature = GetProcAddress(hModule, "?GetNextCreature@UNetworkHandler@@UAEPAUUser@@MH@Z");
+		(FARPROC&)__RequestItemList = GetProcAddress(hModule, "?RequestItemList@UNetworkHandler@@UAEHXZ");
 
 		
 		(FARPROC&)__AddNetworkQueue = (FARPROC)splice(

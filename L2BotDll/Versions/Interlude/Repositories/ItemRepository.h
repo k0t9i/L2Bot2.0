@@ -197,6 +197,7 @@ namespace Interlude
 			m_IsNewCycle = false;
 			m_NewItems.clear();
 			m_Items.clear();
+			m_NetworkHandler.RequestItemList();
 		}
 
 	private:
