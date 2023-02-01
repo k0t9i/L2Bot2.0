@@ -12,7 +12,7 @@
 #include "../../../Events/ItemDeletedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/ItemAutousedEvent.h"
-#include "../../../Events/GameEngineTickedEvent.h"
+#include "../../../Events/OnEndItemListEvent.h"
 #include "../../../Events/EventDispatcher.h"
 
 using namespace L2Bot::Domain;
@@ -66,15 +66,15 @@ namespace Interlude
 			EventDispatcher::GetInstance().Subscribe(ItemAutousedEvent::name, [this](const Event& evt) {
 				OnItemAutoused(evt);
 			});
-			EventDispatcher::GetInstance().Subscribe(GameEngineTickedEvent::name, [this](const Event& evt) {
-				OnGameEngineTicked(evt);
+			EventDispatcher::GetInstance().Subscribe(OnEndItemListEvent::name, [this](const Event& evt) {
+				OnEndItemList(evt);
 			});
 		}
 
-		void OnGameEngineTicked(const Event& evt)
+		void OnEndItemList(const Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == GameEngineTickedEvent::name)
+			if (evt.GetName() == OnEndItemListEvent::name)
 			{
 				for (auto it = m_Items.begin(); it != m_Items.end();)
 				{

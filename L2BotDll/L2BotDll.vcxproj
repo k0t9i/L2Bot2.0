@@ -177,6 +177,7 @@
     <ClInclude Include="Events\ItemCreatedEvent.h" />
     <ClInclude Include="Events\ItemDeletedEvent.h" />
     <ClInclude Include="Events\ItemUpdatedEvent.h" />
+    <ClInclude Include="Events\OnEndItemListEvent.h" />
     <ClInclude Include="Events\SkillCancelledEvent.h" />
     <ClInclude Include="Events\SkillCreatedEvent.h" />
     <ClInclude Include="Events\AbnormalEffectChangedEvent.h" />

@@ -14,6 +14,7 @@
 #include "../../../Events/ItemAutousedEvent.h"
 #include "../../../Events/GameEngineTickedEvent.h"
 #include "../../../Events/ChatMessageCreatedEvent.h"
+#include "../../../Events/OnEndItemListEvent.h"
 #include "../../../DTO/ItemData.h"
 #include "FName.h"
 
@@ -30,6 +31,7 @@ namespace Interlude
 	void(__thiscall* GameEngineWrapper::__OnExAutoSoulShot)(GameEngine*, L2ParamStack&) = 0;
 	void(__thiscall* GameEngineWrapper::__Tick)(GameEngine*, float_t) = 0;
 	void(__thiscall* GameEngineWrapper::__OnSay2)(GameEngine*, L2ParamStack&) = 0;
+	void(__thiscall* GameEngineWrapper::__OnEndItemList)(GameEngine*) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
@@ -61,6 +63,9 @@ namespace Interlude
 		(FARPROC&)__OnSay2 = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnSay2@UGameEngine@@UAEXAAVL2ParamStack@@@Z"), __OnSay2_hook
 		);
+		(FARPROC&)__OnEndItemList = (FARPROC)splice(
+			GetProcAddress(hModule, "?OnEndItemList@UGameEngine@@UAEXXZ"), __OnEndItemList_hook
+		);
 	}
 
 	void GameEngineWrapper::Restore()
@@ -73,6 +78,7 @@ namespace Interlude
 		restore((void*&)__OnReceiveUpdateItemList);
 		restore((void*&)__OnExAutoSoulShot);
 		restore((void*&)__OnSay2);
+		restore((void*&)__OnEndItemList);
 	}
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
@@ -184,5 +190,10 @@ namespace Interlude
 		);
 
 		(*__OnSay2)(This, stack);
+	}
+	void __fastcall GameEngineWrapper::__OnEndItemList_hook(GameEngine* This, uint32_t)
+	{
+		EventDispatcher::GetInstance().Dispatch(OnEndItemListEvent());
+		(*__OnEndItemList)(This);
 	}
 }

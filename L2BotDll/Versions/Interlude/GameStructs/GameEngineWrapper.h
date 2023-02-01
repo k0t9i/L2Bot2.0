@@ -28,6 +28,7 @@ namespace Interlude
 		static void(__thiscall* __OnExAutoSoulShot)(GameEngine*, L2ParamStack&);
 		static void(__thiscall* __Tick)(GameEngine*, float_t);
 		static void(__thiscall* __OnSay2)(GameEngine*, L2ParamStack&);
+		static void(__thiscall* __OnEndItemList)(GameEngine*);
 
 		static void __fastcall __OnSkillListPacket_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
 		static int __fastcall __OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t /*edx*/, User* u1, User* u2, L2ParamStack& stack);
@@ -38,6 +39,7 @@ namespace Interlude
 		static void __fastcall __OnExAutoSoulShot_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
 		static void __fastcall __Tick_hook(GameEngine* This, uint32_t /*edx*/, float_t unk);
 		static void __fastcall __OnSay2_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
+		static void __fastcall __OnEndItemList_hook(GameEngine* This, uint32_t /*edx*/);
 		
 	private:
 		static GameEngine* _target;
