@@ -29,9 +29,9 @@ namespace Client.Domain.Entities
             IsActive = isActive;
             this.cost = cost;
             this.range = range;
-            Name = name;
+            this.name = name;
             this.description = description;
-            IconName = iconName;
+            this.iconName = iconName;
             this.isToggled = isToggled;
             this.isCasting = isCasting;
             this.isReloading = isReloading;
