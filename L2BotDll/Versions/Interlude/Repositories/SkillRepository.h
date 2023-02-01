@@ -145,7 +145,7 @@ namespace Interlude
 				}
 				else
 				{
-					m_Skills[skillId] = std::move(skill);
+					m_Skills[skillId]->Update(skill.get());
 				}
 				m_NewSkills[skillId] = skillId;
 			}
