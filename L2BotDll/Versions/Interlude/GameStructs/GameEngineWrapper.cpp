@@ -15,6 +15,7 @@
 #include "../../../Events/GameEngineTickedEvent.h"
 #include "../../../Events/ChatMessageCreatedEvent.h"
 #include "../../../Events/OnEndItemListEvent.h"
+#include "../../../Events/CreatureDiedEvent.h"
 #include "../../../DTO/ItemData.h"
 #include "FName.h"
 
@@ -32,6 +33,8 @@ namespace Interlude
 	void(__thiscall* GameEngineWrapper::__Tick)(GameEngine*, float_t) = 0;
 	void(__thiscall* GameEngineWrapper::__OnSay2)(GameEngine*, L2ParamStack&) = 0;
 	void(__thiscall* GameEngineWrapper::__OnEndItemList)(GameEngine*) = 0;
+	float(__thiscall* GameEngineWrapper::__GetMaxTickRate)(GameEngine*) = 0;
+	int(__thiscall* GameEngineWrapper::__OnDie)(GameEngine*, User*, L2ParamStack&) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
@@ -66,6 +69,12 @@ namespace Interlude
 		(FARPROC&)__OnEndItemList = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnEndItemList@UGameEngine@@UAEXXZ"), __OnEndItemList_hook
 		);
+		(FARPROC&)__GetMaxTickRate = (FARPROC)splice(
+			GetProcAddress(hModule, "?GetMaxTickRate@UGameEngine@@UAEMXZ"), __GetMaxTickRate_hook
+		);
+		(FARPROC&)__OnDie = (FARPROC)splice(
+			GetProcAddress(hModule, "?OnDie@UGameEngine@@UAEHPAUUser@@AAVL2ParamStack@@@Z"), __OnDie_hook
+		);
 	}
 
 	void GameEngineWrapper::Restore()
@@ -79,6 +88,8 @@ namespace Interlude
 		restore((void*&)__OnExAutoSoulShot);
 		restore((void*&)__OnSay2);
 		restore((void*&)__OnEndItemList);
+		restore((void*&)__GetMaxTickRate);
+		restore((void*&)__OnDie);
 	}
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
@@ -195,5 +206,19 @@ namespace Interlude
 	{
 		EventDispatcher::GetInstance().Dispatch(OnEndItemListEvent());
 		(*__OnEndItemList)(This);
+	}
+	// TODO ini
+	// 0 - фпс без ограничений
+	float __fastcall GameEngineWrapper::__GetMaxTickRate_hook(GameEngine* This, int)
+	{
+		float fps = (*__GetMaxTickRate)(This);
+		return 0.0f;
+	}
+
+	int __fastcall GameEngineWrapper::__OnDie_hook(GameEngine* This, int, User* creature, L2ParamStack& stack)
+	{
+		EventDispatcher::GetInstance().Dispatch(CreatureDiedEvent{ creature->objectId, stack.GetBufferAsVector<int32_t>() });
+
+		return (*__OnDie)(This, creature, stack);
 	}
 }

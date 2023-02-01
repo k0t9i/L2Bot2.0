@@ -25,16 +25,12 @@ namespace Interlude
 	private:
 
 		static void __fastcall __Init_hook(NetworkHandler* This, int /*edx*/, float unk);
-		static int __fastcall __AddNetworkQueue_hook(NetworkHandler* This, int /*edx*/, L2::NetworkPacket* packet);
-		static int __fastcall __OnDie_hook(NetworkHandler* This, int /*edx*/, User* creature, L2ParamStack& stack);
-		static float __fastcall __GetMaxTickRate_hook(NetworkHandler* This, int /*edx*/);
+		static int __fastcall __AddNetworkQueue_hook(NetworkHandler* This, int /*edx*/, L2::NetworkPacket* packet);;
 
 		static void(__thiscall* __Init)(NetworkHandler*, float);
 		static Item* (__thiscall* __GetNextItem)(NetworkHandler*, float, int);
 		static User* (__thiscall* __GetNextCreature)(NetworkHandler*, float, int);
-		static float(__thiscall* __GetMaxTickRate)(NetworkHandler*);
 		static int(__thiscall* __AddNetworkQueue)(NetworkHandler*, L2::NetworkPacket*);
-		static int(__thiscall* __OnDie)(NetworkHandler*, User*, L2ParamStack&);
 	private:
 		static void* originalInitAddress;
 		static NetworkHandler* _target;
