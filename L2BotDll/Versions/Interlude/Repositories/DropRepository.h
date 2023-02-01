@@ -2,6 +2,7 @@
 
 #include <map>
 #include <memory>
+#include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "Domain/DTO/EntityState.h"
 #include "../Factories/DropFactory.h"
@@ -18,6 +19,8 @@ namespace Interlude
 	public:
 		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
 		{
+			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
+
 			const std::map<uint32_t, Item*> items = FindAllObjects<Item*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextItem(radius, prevId);
 			});
@@ -37,6 +40,7 @@ namespace Interlude
 
 		void Reset() override
 		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			m_Container.Reset();
 		}
 
@@ -57,5 +61,6 @@ namespace Interlude
 		const DropFactory& m_Factory;
 		const uint16_t m_Radius;
 		EntityHandler& m_Container;
+		std::shared_timed_mutex m_Mutex;
 	};
 }

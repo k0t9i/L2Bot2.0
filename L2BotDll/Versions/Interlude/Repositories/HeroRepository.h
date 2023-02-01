@@ -1,5 +1,6 @@
 #pragma once
 
+#include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/HeroFactory.h"
 #include "../../../Events/EventDispatcher.h"
@@ -17,6 +18,7 @@ namespace Interlude
 	public:
 		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
 		{
+			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
 			auto hero = m_NetworkHandler.GetHero();
 
@@ -53,6 +55,7 @@ namespace Interlude
 
 		void Reset() override
 		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			m_EntityHandler.Reset();
 		}
 
@@ -72,5 +75,6 @@ namespace Interlude
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		User* m_PrevHero = nullptr;
 		EntityHandler& m_EntityHandler;
+		std::shared_timed_mutex m_Mutex;
 	};
 }

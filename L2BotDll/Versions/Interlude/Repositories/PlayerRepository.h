@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/PlayerFactory.h"
 #include "../../GameStructs/FindObjectsTrait.h"
@@ -15,6 +16,8 @@ namespace Interlude
 	public:
 		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
 		{
+			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
+
 			const auto creatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextCreature(radius, prevId);
 			});
@@ -44,6 +47,7 @@ namespace Interlude
 
 		void Reset() override
 		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			m_EntityHandler.Reset();
 		}
 
@@ -64,5 +68,6 @@ namespace Interlude
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const uint16_t m_Radius;
 		EntityHandler& m_EntityHandler;
+		std::shared_timed_mutex m_Mutex;
 	};
 }
