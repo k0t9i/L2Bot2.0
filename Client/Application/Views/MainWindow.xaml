@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-        xmlns:converters="clr-namespace:Client.Application.Converters"
+        xmlns:services="clr-namespace:Client.Application.Services"
         xmlns:components="clr-namespace:Client.Application.Components"
         xmlns:views="clr-namespace:Client.Application.Views"
         mc:Ignorable="d"
@@ -21,7 +21,7 @@
                 <scm:SortDescription PropertyName="Distance" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <services:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -39,6 +39,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <components:Map DataContext="{Binding Map}" />
         <TabControl Grid.Row="0" Grid.Column="1">
             <TabItem>
                 <TabItem.Header>Environment</TabItem.Header>
@@ -128,8 +129,8 @@
                                         <DataTemplate>
                                             <Button>
                                                 <Button.Resources>
-                                                    <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-                                                    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+                                                    <services:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                                                    <services:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
                                                     <DataTemplate x:Key="ToolTipContent">
                                                         <StackPanel MaxWidth="300">
                                                             <TextBlock TextWrapping="Wrap" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">

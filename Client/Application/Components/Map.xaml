@@ -1,0 +1,58 @@
+﻿<ContentControl x:Class="Client.Application.Components.Map"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Application.Components"
+        xmlns:services="clr-namespace:Client.Application.Services"
+        mc:Ignorable="d"
+        services:SizeObserver.Observe="True"
+        services:SizeObserver.ObservedWidth="{Binding ViewportWidth, Mode=OneWayToSource}"
+        services:SizeObserver.ObservedHeight="{Binding ViewportHeight, Mode=OneWayToSource}"
+        >
+    <Grid>
+        <ItemsControl ItemsSource="{Binding Path=Blocks}">
+            <ItemsControl.Resources>
+                <services:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            </ItemsControl.Resources>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="True"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Image
+                        Source="{Binding ImageSource,Mode=OneWay}"
+                        Width="{Binding Size,Mode=OneWay}"
+                        Height="{Binding Size,Mode=OneWay}"
+                        Visibility="{Binding Visible,Converter={StaticResource BooleanToVisibilityConverter}}"
+                        >
+                        <Image.RenderTransform>
+                            <TranslateTransform X="{Binding DeltaX}" Y="{Binding DeltaY}"/>
+                        </Image.RenderTransform>
+                    </Image>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="200" Height="20" Margin="0 0 5 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Background="White" CornerRadius="3" Margin="0 0 5 0">
+                <TextBlock Text="{Binding Scale, Mode=OneWay}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Border>
+            <Slider
+                TickFrequency="1"
+                IsSnapToTickEnabled="True"
+                Value="{Binding Scale}"
+                Maximum="32"
+                Minimum="1"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                />
+        </Grid>
+        <Ellipse Width="10" Height="10" Fill="White" Stroke="Black" StrokeThickness="2" VerticalAlignment="Center" HorizontalAlignment="Center"></Ellipse>
+    </Grid>
+</ContentControl>

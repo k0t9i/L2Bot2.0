@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Client.Application.Converters
+namespace Client.Application.Services
 {
     public class NullToVisibilityConverter : IValueConverter
     {

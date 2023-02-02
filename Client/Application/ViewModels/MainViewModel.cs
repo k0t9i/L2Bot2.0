@@ -34,14 +34,18 @@ namespace Client.Application.ViewModels
         {
             Hero = new HeroSummaryInfoViewModel(@event.Hero);
             hero = @event.Hero;
+            Map.Hero = hero;
             OnPropertyChanged("Hero");
+            OnPropertyChanged("Map");
         }
 
         public void Handle(HeroDeletedEvent @event)
         {
             Hero = null;
             hero = null;
+            Map.Hero = null;
             OnPropertyChanged("Hero");
+            OnPropertyChanged("Map");
         }
 
         public void Handle(CreatureCreatedEvent @event)
@@ -116,6 +120,7 @@ namespace Client.Application.ViewModels
         public ObservableCollection<SkillListViewModel> PassiveSkills { get; } = new ObservableCollection<SkillListViewModel>();
         public ObservableCollection<BaseItem> Items { get; } = new ObservableCollection<BaseItem>();
         public HeroSummaryInfoViewModel? Hero { get; private set; }
+        public MapViewModel Map { get; private set; } = new MapViewModel();
         public Hero? hero;
     }
 }
