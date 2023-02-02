@@ -116,6 +116,61 @@
                     </TabControl>
                 </TabItem.Content>
             </TabItem>
+            <TabItem>
+                <TabItem.Header>Inventory</TabItem.Header>
+                <TabItem.Content>
+                    <TabControl>
+                        <TabItem>
+                            <TabItem.Header>Items</TabItem.Header>
+                            <TabItem.Content>
+                                <ItemsControl ItemsSource="{Binding Path=Items}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button>
+                                                <Button.Resources>
+                                                    <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                                                    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+                                                    <DataTemplate x:Key="ToolTipContent">
+                                                        <StackPanel MaxWidth="300">
+                                                            <TextBlock TextWrapping="Wrap" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">
+                                                                <TextBlock.Text>
+                                                                    <MultiBinding StringFormat="{}{0} ({1})">
+                                                                        <Binding Path="Name" Mode="OneWay" />
+                                                                        <Binding Path="Amount" Mode="OneWay" />
+                                                                    </MultiBinding>
+                                                                </TextBlock.Text>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </Button.Resources>
+                                                <Button.Content>
+                                                    <Grid>
+                                                        <Image Source="{Binding Path=ImageSource}" Height="32" Width="32" />
+                                                    </Grid>
+                                                </Button.Content>
+                                                <Button.ToolTip >
+                                                    <ContentControl ContentTemplate="{StaticResource ToolTipContent}"/>
+                                                </Button.ToolTip>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>Quest Items</TabItem.Header>
+                            <TabItem.Content>
+                                <Label Content="Under construction" />
+                            </TabItem.Content>
+                        </TabItem>
+                    </TabControl>
+                </TabItem.Content>
+            </TabItem>
         </TabControl>
         <Grid Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
             <Grid.ColumnDefinitions>

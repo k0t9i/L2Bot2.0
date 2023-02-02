@@ -39,6 +39,9 @@ namespace Client.Infrastructure.Factories
                 case MessageTypeEnum.Skill:
                     result = serviceProvider.GetService<SkillHandler>();
                     break;
+                case MessageTypeEnum.Item:
+                    result = serviceProvider.GetService<ItemHander>();
+                    break;
             }
             
             if (result == null)

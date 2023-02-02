@@ -26,7 +26,9 @@ namespace Client.Application.ViewModels
         EventHandlerInterface<DropDeletedEvent>,
         EventHandlerInterface<ChatMessageCreatedEvent>,
         EventHandlerInterface<SkillCreatedEvent>,
-        EventHandlerInterface<SkillDeletedEvent>
+        EventHandlerInterface<SkillDeletedEvent>,
+        EventHandlerInterface<ItemCreatedEvent>,
+        EventHandlerInterface<ItemDeletedEvent>
     {
         public void Handle(HeroCreatedEvent @event)
         {
@@ -94,11 +96,25 @@ namespace Client.Application.ViewModels
             PassiveSkills.RemoveAll(x => x.Id == @event.Id);
         }
 
+        public void Handle(ItemCreatedEvent @event)
+        {
+            if (hero != null)
+            {
+                Items.Add(@event.Item);
+            }
+        }
+
+        public void Handle(ItemDeletedEvent @event)
+        {
+            Items.RemoveAll(x => x.Id == @event.Id);
+        }
+
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
         public ObservableCollection<CreatureListViewModel> Creatures { get; } = new ObservableCollection<CreatureListViewModel>();
         public ObservableCollection<DropListViewModel> Drops { get; } = new ObservableCollection<DropListViewModel>();
         public ObservableCollection<SkillListViewModel> ActiveSkills { get; } = new ObservableCollection<SkillListViewModel>();
         public ObservableCollection<SkillListViewModel> PassiveSkills { get; } = new ObservableCollection<SkillListViewModel>();
+        public ObservableCollection<BaseItem> Items { get; } = new ObservableCollection<BaseItem>();
         public HeroSummaryInfoViewModel? Hero { get; private set; }
         public Hero? hero;
     }
