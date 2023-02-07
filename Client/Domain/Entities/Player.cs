@@ -60,6 +60,8 @@ namespace Client.Domain.Entities
         }
 
         public VitalStats VitalStats { get => vitalStats; set => vitalStats = value; }
+        public CreatureTypeEnum Type { get => CreatureTypeEnum.Player; }
+        public uint AggroRadius { get; set; } = 0;
 
         public Player(uint id, Transform transform, FullName fullName, Phenotype phenotype)
         {

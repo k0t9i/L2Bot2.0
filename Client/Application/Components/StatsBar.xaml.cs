@@ -30,6 +30,8 @@ namespace Client.Application.Components
             DependencyProperty.Register("ForegroundWidth", typeof(double), typeof(StatsBar), new PropertyMetadata(0.0, null, OnCoerceForegroundWidth));
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(StatsBar), new PropertyMetadata("", null, OnCoerceText));
+        public static readonly DependencyProperty OnlyBarProperty =
+            DependencyProperty.Register("OnlyBar", typeof(bool), typeof(StatsBar), new PropertyMetadata(false, OnOnlyBarChanged));     
 
         private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -37,7 +39,13 @@ namespace Client.Application.Components
             model.CoerceValue(ForegroundWidthProperty);
             model.CoerceValue(TextProperty);
         }
-        
+
+        private static void OnOnlyBarChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var model = (StatsBar)d;
+            model.CoerceValue(TextProperty);
+        }
+
         private static void OnFormatChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var model = (StatsBar)d;
@@ -56,7 +64,7 @@ namespace Client.Application.Components
         {
             var model = (StatsBar)d;
 
-            return string.Format(model.Format, model.Current, model.Total, model.GetPercent());
+            return model.OnlyBar ? "" : string.Format(model.Format, model.Current, model.Total, model.GetPercent());
         }
 
         public StatsBar()
@@ -123,6 +131,11 @@ namespace Client.Application.Components
         {
             get { return (string)GetValue(FormatProperty); }
             set { SetValue(FormatProperty, value); }
+        }
+        public bool OnlyBar
+        {
+            get { return (bool)GetValue(OnlyBarProperty); }
+            set { SetValue(OnlyBarProperty, value); }
         }
     }
 }

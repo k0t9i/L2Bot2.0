@@ -35,12 +35,17 @@ namespace Client.Application.ViewModels
             Hero = new HeroSummaryInfoViewModel(@event.Hero);
             hero = @event.Hero;
             Map.Hero = hero;
+            AddCreature(hero);
             OnPropertyChanged("Hero");
             OnPropertyChanged("Map");
         }
 
         public void Handle(HeroDeletedEvent @event)
         {
+            if (hero != null)
+            {
+                RemoveCreature(hero.Id);
+            }
             Hero = null;
             hero = null;
             Map.Hero = null;
@@ -53,12 +58,14 @@ namespace Client.Application.ViewModels
             if (hero != null)
             {
                 Creatures.Add(new CreatureListViewModel(@event.Creature, hero));
+                AddCreature(@event.Creature);
             }
         }
 
         public void Handle(CreatureDeletedEvent @event)
         {
             Creatures.RemoveAll(x => x.Id == @event.Id);
+            RemoveCreature(@event.Id);
         }
 
         public void Handle(DropCreatedEvent @event)
@@ -66,12 +73,14 @@ namespace Client.Application.ViewModels
             if (hero != null)
             {
                 Drops.Add(new DropListViewModel(@event.Drop, hero));
+                Map.Drops.Add(new DropMapViewModel(@event.Drop, hero));
             }
         }
 
         public void Handle(DropDeletedEvent @event)
         {
             Drops.RemoveAll(x => x.Id == @event.Id);
+            Map.Drops.RemoveAll(x => x.Id == @event.Id);
         }
 
         public void Handle(ChatMessageCreatedEvent @event)
@@ -111,6 +120,19 @@ namespace Client.Application.ViewModels
         public void Handle(ItemDeletedEvent @event)
         {
             Items.RemoveAll(x => x.Id == @event.Id);
+        }
+
+        private void AddCreature(CreatureInterface creature)
+        {
+            if (hero != null)
+            {
+                Map.Creatures.Add(new CreatureMapViewModel(creature, hero));
+            }
+        }
+
+        private void RemoveCreature(uint id)
+        {
+            Map.Creatures.RemoveAll(x => x.Id == id);
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();

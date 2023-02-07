@@ -67,17 +67,17 @@ namespace Client.Domain.Entities
                 }
             }
         }
+        
         public string Name
         {
             get
             {
-                string result = "";
+                string result = FullName.Nickname;
 
                 if (IsDead())
                 {
-                    result += "Dead ";
+                    result += " (dead)";
                 }
-                result += FullName.Nickname + "[" + NpcId + "]";
 
                 return result;
             }
@@ -97,11 +97,12 @@ namespace Client.Domain.Entities
                         result += "*";
                     }
                 }
+                result += "<" + NpcId + ">";
                 result += " " + Level + "lvl";
                 return result;
             }
         }
-
+        public CreatureTypeEnum Type { get => CreatureTypeEnum.NPC; }
         public NPC(uint id, Transform transform, bool isHostile, uint npcId, SpoilStateEnum spoilState, FullName fullName, VitalStats vitalStats)
         {
             Id = id;

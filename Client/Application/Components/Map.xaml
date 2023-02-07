@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.Application.Components"
         xmlns:services="clr-namespace:Client.Application.Services"
+        xmlns:components="clr-namespace:Client.Application.Components"
         mc:Ignorable="d"
         services:SizeObserver.Observe="True"
         services:SizeObserver.ObservedWidth="{Binding ViewportWidth, Mode=OneWayToSource}"
@@ -35,6 +36,125 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Path=Creatures}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Path x:Name="CreatureAggroRadius" StrokeThickness="2" Visibility="Hidden" Fill="#11ff0000" Stroke="#33ff0000">
+                            <Path.Data>
+                                <EllipseGeometry 
+                                    RadiusX="{Binding AggroRadius,Mode=OneWay}" 
+                                    RadiusY="{Binding AggroRadius,Mode=OneWay}" />
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path x:Name="CreatureBody" StrokeThickness="2">
+                            <Path.Data>
+                                <EllipseGeometry 
+                                    RadiusX="{Binding Radius,Mode=OneWay}" 
+                                    RadiusY="{Binding Radius,Mode=OneWay}" />
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Line x:Name="CreatureDirection" X1="0" Y1="0" X2="{Binding Direction.X,Mode=OneWay}" Y2="{Binding Direction.Y,Mode=OneWay}" StrokeThickness="2">
+                            <Line.RenderTransform>
+                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                            </Line.RenderTransform>
+                        </Line>
+                        <Grid x:Name="CreatureName" Visibility="Hidden" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="-2" ScaleY="-1" />
+                                    <TranslateTransform
+                                        X="{Binding Path=ActualWidth,RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        Y="{Binding Path=ActualHeight,RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        />
+                                    <ScaleTransform ScaleX="-0.5" ScaleY="-1" />
+                                    <ScaleTransform ScaleY="-0.5" />
+                                    <TranslateTransform Y="{Binding Radius}" />
+                                    <ScaleTransform ScaleY="-2" />
+                                    <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name,Mode=OneWay}" Foreground="Black">
+                                <TextBlock.Effect>
+                                    <BlurEffect
+                                  Radius="2"
+                                  KernelType="Box"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Name,Mode=OneWay}" Foreground="White" />
+                            <components:StatsBar
+                                Grid.Row="1"
+                                BackgroundSource="/Assets/icons/ps_hpbar_back.png"
+                                ForegroundSource="/Assets/icons/ps_hpbar.png"
+                                Current="{Binding VitalStats.Hp}"
+                                Total="{Binding VitalStats.MaxHp}"
+                                Height="{Binding Radius}"
+                                OnlyBar="True"
+                                Margin="0 2 0 0"
+                            />
+                        </Grid>
+                    </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Type,Mode=OneWay}" Value="NPC">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="LimeGreen" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="LimeGreen" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type,Mode=OneWay}" Value="Player">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="Blue" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type,Mode=OneWay}" Value="Hero">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="Black" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="Black" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsTarget,Mode=OneWay}" Value="True">
+                            <Setter TargetName="CreatureName" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsAggressive,Mode=OneWay}" Value="True">
+                            <Setter TargetName="CreatureAggroRadius" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Path=Drops}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Path StrokeThickness="2" Stroke="Gold">
+                            <Path.Data>
+                                <EllipseGeometry 
+                                    RadiusX="{Binding Radius,Mode=OneWay}" 
+                                    RadiusY="{Binding Radius,Mode=OneWay}" />
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                            </Path.RenderTransform>
+                        </Path>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="200" Height="20" Margin="0 0 5 5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30"></ColumnDefinition>
@@ -53,6 +173,5 @@
                 VerticalAlignment="Center"
                 />
         </Grid>
-        <Ellipse Width="10" Height="10" Fill="White" Stroke="Black" StrokeThickness="2" VerticalAlignment="Center" HorizontalAlignment="Center"></Ellipse>
     </Grid>
 </ContentControl>

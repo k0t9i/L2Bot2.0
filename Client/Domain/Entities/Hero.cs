@@ -1,4 +1,5 @@
 ﻿using Client.Domain.Common;
+using Client.Domain.Enums;
 using Client.Domain.ValueObjects;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -18,6 +19,7 @@ namespace Client.Domain.Entities
         public uint TargetId { get => targetId; set { if (value != targetId) { targetId = value; OnPropertyChanged("TargetId"); } } }
         public CreatureInterface? Target { get => target; set { if (value != target) { target = value; OnPropertyChanged("Target"); } } }
         public bool IsStanding { get; set; }
+        public CreatureTypeEnum Type { get => CreatureTypeEnum.Hero; }
         public FullName FullName
         {
             get => fullName;
@@ -59,6 +61,7 @@ namespace Client.Domain.Entities
                 return Phenotype.Race.ToString() + ", " + Phenotype.Class.ToString();
             }
         }
+        public uint AggroRadius { get; set; } = 0;
 
         public Hero(uint id, Transform transform, FullName fullName, VitalStats vitalStats, Phenotype phenotype, ExperienceInfo experienceInfo, PermanentStats permanentStats, VariableStats variableStats, Reputation reputation, InventoryInfo inventoryInfo, uint targetId, bool isStanding)
         {

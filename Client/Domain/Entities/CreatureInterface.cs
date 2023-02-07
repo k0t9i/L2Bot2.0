@@ -1,4 +1,5 @@
-﻿using Client.Domain.ValueObjects;
+﻿using Client.Domain.Enums;
+using Client.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,8 @@ namespace Client.Domain.Entities
         Transform Transform { get; set; }
         string Name { get; }
         string BriefInfo { get; }
+        CreatureTypeEnum Type { get; }
+        uint AggroRadius { get; set; }
 
     }
 }
