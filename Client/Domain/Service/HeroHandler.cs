@@ -18,6 +18,7 @@ namespace Client.Domain.Service
             entity.ExperienceInfo.ExpToPrevLevel = experienceHelper.GetExperienceToLevel(entity.ExperienceInfo.Level);
             entity.PropertyChanged += Hero_PropertyChanged;
             eventBus.Publish(new HeroCreatedEvent(entity));
+            OnTargetChanged(entity);
         }
 
         public override void OnUpdate(Hero entity)
@@ -50,8 +51,7 @@ namespace Client.Domain.Service
             var hero = (Hero)sender;
             if (e.PropertyName == "TargetId")
             {
-                hero.Target = null;
-                eventBus.Publish(new TargetChangedEvent(hero));
+                OnTargetChanged(hero);
             }
         }
 
@@ -63,6 +63,12 @@ namespace Client.Domain.Service
                 return;
             }
             @event.Hero.Target = target;
+        }
+
+        private void OnTargetChanged(Hero hero)
+        {
+            hero.Target = null;
+            eventBus.Publish(new TargetChangedEvent(hero));
         }
 
         private readonly EventBusInterface eventBus;
