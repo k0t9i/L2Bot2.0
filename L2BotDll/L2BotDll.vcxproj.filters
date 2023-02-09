@@ -126,7 +126,7 @@
     <ClInclude Include="Serializers\JsonSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Services\EntityHandler.h">
+    <ClInclude Include="Services\EntityFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h">
@@ -199,6 +199,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\OnEndItemListEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Serializers\JsonIncomingMessageFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Versions\Interlude\Services\HeroService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,15 +9,15 @@
 
 namespace L2Bot::Domain::Services
 {
-	class EntityService
+	class EntityHandler
 	{
 	public:
-		EntityService(Repositories::EntityRepositoryInterface& repository) : m_Repository(repository)
+		EntityHandler(Repositories::EntityRepositoryInterface& repository) : m_Repository(repository)
 		{
 
 		}
-		EntityService() = delete;
-		virtual ~EntityService() = default;
+		EntityHandler() = delete;
+		virtual ~EntityHandler() = default;
 
 		virtual const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities()
 		{

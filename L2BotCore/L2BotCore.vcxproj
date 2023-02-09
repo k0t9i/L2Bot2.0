@@ -175,7 +175,10 @@
     <ClInclude Include="Domain\Enums\ItemTypeEnum.h" />
     <ClInclude Include="Domain\Enums\WeaponTypeEnum.h" />
     <ClInclude Include="Domain\Repositories\ChatMessageRepositoryInterface.h" />
-    <ClInclude Include="Domain\Services\ChatMessageService.h" />
+    <ClInclude Include="Domain\Serializers\IncomingMessageFactoryInterface.h" />
+    <ClInclude Include="Domain\Serializers\IncomingMessage.h" />
+    <ClInclude Include="Domain\Services\ChatMessageHandler.h" />
+    <ClInclude Include="Domain\Services\HeroServiceInterface.h" />
     <ClInclude Include="Domain\ValueObjects\ChatMessage.h" />
     <ClInclude Include="Domain\ValueObjects\Vector3.h" />
     <ClInclude Include="Domain\Enums\SpoilStateEnum.h" />
@@ -192,7 +195,7 @@
     <ClInclude Include="Domain\Serializers\Node.h" />
     <ClInclude Include="Domain\Serializers\Serializable.h" />
     <ClInclude Include="Domain\Serializers\SerializerInterface.h" />
-    <ClInclude Include="Domain\Services\EntityService.h" />
+    <ClInclude Include="Domain\Services\EntityHandler.h" />
     <ClInclude Include="Domain\ValueObjects\ExperienceInfo.h" />
     <ClInclude Include="Domain\ValueObjects\FullName.h" />
     <ClInclude Include="Domain\ValueObjects\InventoryInfo.h" />

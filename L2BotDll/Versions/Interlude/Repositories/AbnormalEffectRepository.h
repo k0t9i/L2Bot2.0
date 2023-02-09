@@ -9,7 +9,7 @@
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityHandler.h"
+#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -28,7 +28,7 @@ namespace Interlude
 				skillPtrs[kvp.first] = kvp.second.get();
 			}
 
-			const auto objects = m_EntityHandler.GetEntities<Entities::AbnormalEffect*>(skillPtrs, [this](Entities::AbnormalEffect* item) {
+			const auto objects = m_EntityFinder.FindEntities<Entities::AbnormalEffect*>(skillPtrs, [this](Entities::AbnormalEffect* item) {
 				return std::make_unique<Entities::AbnormalEffect>(item);
 			});
 
@@ -42,9 +42,9 @@ namespace Interlude
 			return result;
 		}
 
-		AbnormalEffectRepository(const AbnormalEffectFactory& factory, EntityHandler& handler) :
+		AbnormalEffectRepository(const AbnormalEffectFactory& factory, EntityFinder& finder) :
 			m_Factory(factory),
-			m_EntityHandler(handler)
+			m_EntityFinder(finder)
 		{
 			EventDispatcher::GetInstance().Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
 				OnEffectToggled(evt);
@@ -115,6 +115,6 @@ namespace Interlude
 		const AbnormalEffectFactory& m_Factory;
 		std::map<uint32_t, std::unique_ptr<Entities::AbnormalEffect>> m_Effects;
 		std::shared_timed_mutex m_Mutex;
-		EntityHandler& m_EntityHandler;
+		EntityFinder& m_EntityFinder;
 	};
 }

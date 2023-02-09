@@ -72,7 +72,7 @@
     <ClInclude Include="Domain\ValueObjects\VitalStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Services\EntityService.h">
+    <ClInclude Include="Domain\Services\EntityHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Repositories\EntityRepositoryInterface.h">
@@ -141,13 +141,22 @@
     <ClInclude Include="Domain\ValueObjects\ChatMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Services\ChatMessageService.h">
+    <ClInclude Include="Domain\Services\ChatMessageHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Repositories\ChatMessageRepositoryInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\DTO\Message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Serializers\IncomingMessageFactoryInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Serializers\IncomingMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Services\HeroServiceInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

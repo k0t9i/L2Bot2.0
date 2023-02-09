@@ -14,7 +14,7 @@
 #include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../../../Common/TimerMap.h"
-#include "../../../Services/EntityHandler.h"
+#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -33,7 +33,7 @@ namespace Interlude
 				skillPtrs[kvp.first] = kvp.second.get();
 			}
 
-			const auto objects = m_EntityHandler.GetEntities<Entities::Skill*>(skillPtrs, [this](Entities::Skill* item) {
+			const auto objects = m_EntityFinder.FindEntities<Entities::Skill*>(skillPtrs, [this](Entities::Skill* item) {
 				return std::make_unique<Entities::Skill>(item);
 			});
 
@@ -47,10 +47,10 @@ namespace Interlude
 			return result;
 		}
 
-		SkillRepository(const NetworkHandlerWrapper& networkHandler, const SkillFactory& factory, EntityHandler& handler) :
+		SkillRepository(const NetworkHandlerWrapper& networkHandler, const SkillFactory& factory, EntityFinder& finder) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_EntityHandler(handler)
+			m_EntityFinder(finder)
 		{
 			EventDispatcher::GetInstance().Subscribe(SkillCreatedEvent::name, [this](const Event& evt) {
 				OnSkillCreated(evt);
@@ -253,6 +253,6 @@ namespace Interlude
 		TimerMap m_ReloadingTimers;
 		TimerMap m_CastingTimers;
 		std::shared_timed_mutex m_Mutex;
-		EntityHandler& m_EntityHandler;
+		EntityFinder& m_EntityFinder;
 	};
 }

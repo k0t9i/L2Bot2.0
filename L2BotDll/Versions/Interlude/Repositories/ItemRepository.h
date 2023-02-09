@@ -6,7 +6,7 @@
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/ItemFactory.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityHandler.h"
+#include "../../../Services/EntityFinder.h"
 #include "../../../Events/ItemCreatedEvent.h"
 #include "../../../Events/ItemUpdatedEvent.h"
 #include "../../../Events/ItemDeletedEvent.h"
@@ -32,7 +32,7 @@ namespace Interlude
 				itemPtrs[kvp.first] = kvp.second.get();
 			}
 
-			const auto objects = m_EntityHandler.GetEntities<Entities::BaseItem*>(itemPtrs, [this](Entities::BaseItem* item) {
+			const auto objects = m_EntityFinder.FindEntities<Entities::BaseItem*>(itemPtrs, [this](Entities::BaseItem* item) {
 				return m_Factory.CreateFromPointer(item);
 			});
 
@@ -46,10 +46,19 @@ namespace Interlude
 			return result;
 		}
 
-		ItemRepository(const NetworkHandlerWrapper& networkHandler, const ItemFactory& factory, EntityHandler& handler) :
+		const Entities::BaseItem& GetItem(uint32_t objectId) const
+		{
+			if (m_Items.find(objectId) != m_Items.end())
+			{
+				return m_Items.at(objectId).get();
+			}
+			return Entities::BaseItem();
+		}
+
+		ItemRepository(const NetworkHandlerWrapper& networkHandler, const ItemFactory& factory, EntityFinder& finder) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_EntityHandler(handler)
+			m_EntityFinder(finder)
 		{
 			EventDispatcher::GetInstance().Subscribe(ItemCreatedEvent::name, [this](const Event& evt) {
 				OnItemCreated(evt);
@@ -208,6 +217,6 @@ namespace Interlude
 		uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		std::shared_timed_mutex m_Mutex;
-		EntityHandler& m_EntityHandler;
+		EntityFinder& m_EntityFinder;
 	};
 }

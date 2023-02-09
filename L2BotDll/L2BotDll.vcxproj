@@ -184,9 +184,12 @@
     <ClInclude Include="Events\SkillUsedEvent.h" />
     <ClInclude Include="Events\SpoiledEvent.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Serializers\JsonIncomingMessageFactory.h" />
     <ClInclude Include="Serializers\JsonSerializer.h" />
+    <ClInclude Include="Versions\Interlude\Services\HeroService.h" />
     <ClInclude Include="Services\WorldHandler.h" />
-    <ClInclude Include="Services\EntityHandler.h" />
+    <ClInclude Include="Services\EntityFinder.h" />
+    <ClInclude Include="ThirdParty\json.hpp" />
     <ClInclude Include="Versions\GameStructs\FNameInterface.h" />
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h" />
     <ClInclude Include="Versions\GameStructs\L2GameDataInterface.h" />

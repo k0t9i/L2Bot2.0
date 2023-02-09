@@ -9,7 +9,7 @@
 #include "../../../Events/SpoiledEvent.h"
 #include "../../../Events/CreatureDiedEvent.h"
 #include "../../GameStructs/FindObjectsTrait.h"
-#include "../../../Services/EntityHandler.h"
+#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -35,7 +35,7 @@ namespace Interlude
 				}
 			}
 
-			const auto objects = m_EntityHandler.GetEntities<User*>(items, [this](User* item) {
+			const auto objects = m_EntityFinder.FindEntities<User*>(items, [this](User* item) {
 				const auto spoilState = m_Spoiled.find(item->objectId) == m_Spoiled.end() ? Enums::SpoilStateEnum::none : m_Spoiled.at(item->objectId);
 				return m_Factory.Create(item, spoilState);
 			});
@@ -53,14 +53,14 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			m_EntityHandler.Reset();
+			m_EntityFinder.Reset();
 		}
 
-		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, EntityHandler& handler, const uint16_t radius) :
+		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, EntityFinder& finder, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
 			m_Radius(radius),
-			m_EntityHandler(handler)
+			m_EntityFinder(finder)
 		{
 			EventDispatcher::GetInstance().Subscribe(SpoiledEvent::name, [this](const Event& evt) {
 				OnSpoiled(evt);
@@ -115,7 +115,7 @@ namespace Interlude
 		std::map<uint32_t, Enums::SpoilStateEnum> m_Spoiled;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const uint16_t m_Radius = 0;
-		EntityHandler& m_EntityHandler;
+		EntityFinder& m_EntityFinder;
 		std::shared_timed_mutex m_Mutex;
 	};
 }

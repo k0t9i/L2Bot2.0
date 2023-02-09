@@ -5,6 +5,7 @@
 
 #include "Services/WorldHandler.h"
 #include "Serializers/JsonSerializer.h"
+#include "Serializers/JsonIncomingMessageFactory.h"
 #include "Transports/NamedPipeTransport.h"
 
 #include "Versions/VersionAbstractFactory.h"
@@ -28,6 +29,8 @@ public:
 			m_AbstractFactory.GetAbnormalEffectRepository(),
 			m_AbstractFactory.GetChatMessageRepository(),
 			m_Serializer,
+			m_MessageFactory,
+			m_AbstractFactory.GetHeroService(),
 			m_Transport
 		)
 	{
@@ -60,6 +63,7 @@ private:
 	const VersionAbstractFactory& m_AbstractFactory;
 	WorldHandler m_WorldHandler;
 	JsonSerializer m_Serializer;
+	JsonIncomingMessageFactory m_MessageFactory;
 	NamedPipeTransport m_Transport;
 
 	static const std::wstring PIPE_NAME;

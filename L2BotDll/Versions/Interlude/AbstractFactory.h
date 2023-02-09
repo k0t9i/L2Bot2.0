@@ -17,11 +17,12 @@
 #include "Repositories/ItemRepository.h"
 #include "Repositories/AbnormalEffectRepository.h"
 #include "Repositories/ChatMessageRepository.h"
+#include "Services/HeroService.h"
 #include "GameStructs/NetworkHandlerWrapper.h"
 #include "GameStructs/GameEngineWrapper.h"
 #include "GameStructs/L2GameDataWrapper.h"
 #include "GameStructs/FName.h"
-#include "../../Services/EntityHandler.h"
+#include "../../Services/EntityFinder.h"
 #include "Helpers/EnchantHelper.h"
 
 namespace Interlude
@@ -40,22 +41,22 @@ namespace Interlude
 		HeroRepository& GetHeroRepository() const override
 		{
 			static auto factory = HeroFactory();
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = HeroRepository(
 				GetNetworkHandler(),
 				factory,
-				handler
+				finder
 			);
 			return result;
 		}
 		DropRepository& GetDropRepository() const override
 		{
 			static auto factory = DropFactory(GetL2GameData(), GetFName());
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = DropRepository(
 				GetNetworkHandler(),
 				factory,
-				handler,
+				finder,
 				m_Radius
 			);
 			return result;
@@ -63,11 +64,11 @@ namespace Interlude
 		NPCRepository& GetNPCRepository() const override
 		{
 			static auto factory = NPCFactory();
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = NPCRepository(
 				GetNetworkHandler(),
 				factory,
-				handler,
+				finder,
 				m_Radius
 			);
 			return result;
@@ -75,11 +76,11 @@ namespace Interlude
 		PlayerRepository& GetPlayerRepository() const override
 		{
 			static auto factory = PlayerFactory();
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = PlayerRepository(
 				GetNetworkHandler(),
 				factory,
-				handler,
+				finder,
 				m_Radius
 			);
 			return result;
@@ -87,11 +88,11 @@ namespace Interlude
 		SkillRepository& GetSkillRepository() const override
 		{
 			static auto factory = SkillFactory(GetL2GameData(), GetFName());
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = SkillRepository(
 				GetNetworkHandler(),
 				factory,
-				handler
+				finder
 			);
 			return result;
 		}
@@ -99,21 +100,21 @@ namespace Interlude
 		{
 			static EnchantHelper enchantHelper;
 			static auto factory = ItemFactory(GetL2GameData(), GetFName(), enchantHelper);
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = ItemRepository(
 				GetNetworkHandler(),
 				factory,
-				handler
+				finder
 			);
 			return result;
 		}
 		AbnormalEffectRepository& GetAbnormalEffectRepository() const override
 		{
 			static auto factory = AbnormalEffectFactory(GetL2GameData(), GetFName());
-			static EntityHandler handler;
+			static EntityFinder finder;
 			static auto result = AbnormalEffectRepository(
 				factory,
-				handler
+				finder
 			);
 			return result;
 		}
@@ -122,6 +123,15 @@ namespace Interlude
 			static auto factory = ChatMessageFactory();
 			static auto result = ChatMessageRepository(
 				factory
+			);
+			return result;
+		}
+		Services::HeroServiceInterface& GetHeroService() const override
+		{
+			static auto result = HeroService(
+				GetNetworkHandler(),
+				GetItemRepository(),
+				GetL2GameData()
 			);
 			return result;
 		}

@@ -13,6 +13,10 @@ namespace L2Bot::Domain::Entities
 		{
 			m_IsAutoused = enabled;
 		}
+		const bool IsAutoused() const
+		{
+			return m_IsAutoused;
+		}
 
 		void Update(const EntityInterface* other) override
 		{

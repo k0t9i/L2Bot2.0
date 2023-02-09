@@ -2,6 +2,7 @@
 
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "Domain/Repositories/ChatMessageRepositoryInterface.h"
+#include "Domain/Services/HeroServiceInterface.h"
 #include "GameStructs/NetworkHandlerInterface.h"
 #include "GameStructs/GameEngineInterface.h"
 #include "GameStructs/L2GameDataInterface.h"
@@ -25,6 +26,7 @@ public:
 	virtual Repositories::EntityRepositoryInterface& GetItemRepository() const = 0;
 	virtual Repositories::EntityRepositoryInterface& GetAbnormalEffectRepository() const = 0;
 	virtual Repositories::ChatMessageRepositoryInterface& GetChatMessageRepository() const = 0;
+	virtual Services::HeroServiceInterface& GetHeroService() const = 0;
 	virtual NetworkHandlerInterface& GetNetworkHandler() const = 0;
 	virtual GameEngineInterface& GetGameEngine() const = 0;
 	virtual L2GameDataInterface& GetL2GameData() const = 0;

@@ -8,11 +8,11 @@
 
 using namespace L2Bot::Domain;
 
-class EntityHandler
+class EntityFinder
 {
 public:
 	template<typename T>
-	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>>& GetEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
+	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>>& FindEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
 	{
 		RemoveOutdatedStates();
 
@@ -58,8 +58,8 @@ public:
 		m_Objects.clear();
 	}
 
-	EntityHandler() = default;
-	virtual ~EntityHandler()
+	EntityFinder() = default;
+	virtual ~EntityFinder()
 	{
 		Reset();
 	}

@@ -5,15 +5,15 @@
 
 namespace L2Bot::Domain::Services
 {
-	class ChatMessageService
+	class ChatMessageHandler
 	{
 	public:
-		ChatMessageService(Repositories::ChatMessageRepositoryInterface& repository) : m_Repository(repository)
+		ChatMessageHandler(Repositories::ChatMessageRepositoryInterface& repository) : m_Repository(repository)
 		{
 
 		}
-		ChatMessageService() = delete;
-		virtual ~ChatMessageService() = default;
+		ChatMessageHandler() = delete;
+		virtual ~ChatMessageHandler() = default;
 
 		virtual const std::vector<ValueObjects::ChatMessage> GetMessages()
 		{

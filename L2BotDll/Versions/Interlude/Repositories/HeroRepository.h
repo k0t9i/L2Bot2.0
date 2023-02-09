@@ -7,7 +7,7 @@
 #include "../../../Events/HeroCreatedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityHandler.h"
+#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -39,7 +39,7 @@ namespace Interlude
 				items.emplace(hero->objectId, hero);
 			}
 
-			const auto objects = m_EntityHandler.GetEntities<User*>(items, [this](User* item) {
+			const auto objects = m_EntityFinder.FindEntities<User*>(items, [this](User* item) {
 				return m_Factory.Create(item);
 			});
 
@@ -56,13 +56,13 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			m_EntityHandler.Reset();
+			m_EntityFinder.Reset();
 		}
 
-		HeroRepository(const NetworkHandlerWrapper& networkHandler, const HeroFactory& factory, EntityHandler& handler) :
+		HeroRepository(const NetworkHandlerWrapper& networkHandler, const HeroFactory& factory, EntityFinder& finder) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_EntityHandler(handler)
+			m_EntityFinder(finder)
 		{
 
 		}
@@ -74,7 +74,7 @@ namespace Interlude
 		const HeroFactory& m_Factory;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		User* m_PrevHero = nullptr;
-		EntityHandler& m_EntityHandler;
+		EntityFinder& m_EntityFinder;
 		std::shared_timed_mutex m_Mutex;
 	};
 }

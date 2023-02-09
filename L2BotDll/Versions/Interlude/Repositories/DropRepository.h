@@ -8,7 +8,7 @@
 #include "../Factories/DropFactory.h"
 #include "../../GameStructs/FindObjectsTrait.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityHandler.h"
+#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -24,7 +24,7 @@ namespace Interlude
 			const std::map<uint32_t, Item*> items = FindAllObjects<Item*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextItem(radius, prevId);
 			});
-			const auto objects = m_Container.GetEntities<Item*>(items, [this](Item* item) {
+			const auto objects = m_EntityFinder.FindEntities<Item*>(items, [this](Item* item) {
 				return m_Factory.Create(item);
 			});
 
@@ -41,14 +41,14 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			m_Container.Reset();
+			m_EntityFinder.Reset();
 		}
 
-		DropRepository(const NetworkHandlerWrapper& networkHandler, const DropFactory& factory, EntityHandler& handler, const uint16_t radius) :
+		DropRepository(const NetworkHandlerWrapper& networkHandler, const DropFactory& factory, EntityFinder& finder, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
 			m_Radius(radius),
-			m_Container(handler)
+			m_EntityFinder(finder)
 		{
 
 		}
@@ -60,7 +60,7 @@ namespace Interlude
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const DropFactory& m_Factory;
 		const uint16_t m_Radius;
-		EntityHandler& m_Container;
+		EntityFinder& m_EntityFinder;
 		std::shared_timed_mutex m_Mutex;
 	};
 }
