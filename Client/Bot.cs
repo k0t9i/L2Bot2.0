@@ -78,6 +78,18 @@ namespace Client
             eventBus.Subscrbe((EventHandlerInterface<ItemCreatedEvent>)viewModel);
             eventBus.Subscrbe((EventHandlerInterface<ItemDeletedEvent>)viewModel);
 
+            var worldHandler = serviceProvider.GetRequiredService<WorldHandler>();
+            eventBus.Subscrbe((EventHandlerInterface<HeroCreatedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<HeroDeletedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<CreatureCreatedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<CreatureDeletedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<DropCreatedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<DropDeletedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<SkillCreatedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<SkillDeletedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<ItemCreatedEvent>)worldHandler);
+            eventBus.Subscrbe((EventHandlerInterface<ItemDeletedEvent>)worldHandler);
+
             eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<HeroHandler>());
             eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<NpcHandler>());
             eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<PlayerHandler>());

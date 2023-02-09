@@ -1,6 +1,8 @@
-﻿using Client.Domain.Common;
+﻿using Client.Application.Components;
+using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.Events;
+using Client.Domain.Service;
 using Client.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -57,7 +59,7 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Creatures.Add(new CreatureListViewModel(@event.Creature, hero));
+                Creatures.Add(new CreatureListViewModel(@event.Creature, hero, worldHandler));
                 AddCreature(@event.Creature);
             }
         }
@@ -72,8 +74,8 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Drops.Add(new DropListViewModel(@event.Drop, hero));
-                Map.Drops.Add(new DropMapViewModel(@event.Drop, hero));
+                Drops.Add(new DropListViewModel(@event.Drop, hero, worldHandler));
+                Map.Drops.Add(new DropMapViewModel(@event.Drop, hero, worldHandler));
             }
         }
 
@@ -94,11 +96,11 @@ namespace Client.Application.ViewModels
             {
                 if (@event.Skill.IsActive)
                 {
-                    ActiveSkills.Add(new SkillListViewModel(@event.Skill));
+                    ActiveSkills.Add(new SkillListViewModel(worldHandler, @event.Skill));
                 }
                 else
                 {
-                    PassiveSkills.Add(new SkillListViewModel(@event.Skill));
+                    PassiveSkills.Add(new SkillListViewModel(worldHandler, @event.Skill));
                 }
             }
         }
@@ -126,13 +128,19 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Map.Creatures.Add(new CreatureMapViewModel(creature, hero));
+                Map.Creatures.Add(new CreatureMapViewModel(creature, hero, worldHandler));
             }
         }
 
         private void RemoveCreature(uint id)
         {
             Map.Creatures.RemoveAll(x => x.Id == id);
+        }
+
+        public MainViewModel(WorldHandler worldHandler)
+        {
+            this.worldHandler = worldHandler;
+            Map = new MapViewModel(worldHandler);
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
@@ -142,7 +150,8 @@ namespace Client.Application.ViewModels
         public ObservableCollection<SkillListViewModel> PassiveSkills { get; } = new ObservableCollection<SkillListViewModel>();
         public ObservableCollection<BaseItem> Items { get; } = new ObservableCollection<BaseItem>();
         public HeroSummaryInfoViewModel? Hero { get; private set; }
-        public MapViewModel Map { get; private set; } = new MapViewModel();
+        public MapViewModel Map { get; private set; }
         public Hero? hero;
+        private readonly WorldHandler worldHandler;
     }
 }

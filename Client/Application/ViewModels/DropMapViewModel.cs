@@ -8,13 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using Client.Domain.Service;
+using System.Windows.Input;
+using Client.Application.Commands;
 
 namespace Client.Application.ViewModels
 {
     public class DropMapViewModel : ObservableObject
     {
         public uint Id => drop.Id;
-        public string Name => drop.Name;
+        public string Name => drop.Name + " (" + drop.Amount + ")";
         public Vector3 Position => new Vector3(
             (drop.Transform.Position.X - hero.Transform.Position.X) / scale + (VieportSize.X / 2),
             (drop.Transform.Position.Y - hero.Transform.Position.Y) / scale + (VieportSize.Y / 2),
@@ -47,13 +50,27 @@ namespace Client.Application.ViewModels
             }
         }
 
-        public DropMapViewModel(Drop drop, Hero hero)
+        public ICommand MouseLeftClickCommand { get; }
+        public ICommand MouseRightClickCommand { get; }
+        private void OnMouseLeftClick(object? obj)
+        {
+            worldHandler.RequestPickUp(Id);
+        }
+        private void OnMouseRightClick(object? obj)
+        {
+            worldHandler.RequestMoveToEntity(Id);
+        }
+
+        public DropMapViewModel(Drop drop, Hero hero, WorldHandler worldHandler)
         {
             this.drop = drop;
             this.hero = hero;
+            this.worldHandler = worldHandler;
             drop.PropertyChanged += Creature_PropertyChanged;
             drop.Transform.Position.PropertyChanged += Position_PropertyChanged;
             hero.Transform.Position.PropertyChanged += HeroPosition_PropertyChanged;
+            MouseLeftClickCommand = new RelayCommand(OnMouseLeftClick);
+            MouseRightClickCommand = new RelayCommand(OnMouseRightClick);
         }
 
         private void HeroPosition_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -68,7 +85,7 @@ namespace Client.Application.ViewModels
 
         private void Creature_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Name")
+            if (e.PropertyName == "Name" || e.PropertyName == "Amount")
             {
                 OnPropertyChanged("Name");
             }
@@ -76,6 +93,7 @@ namespace Client.Application.ViewModels
 
         private readonly Drop drop;
         private readonly Hero hero;
+        private readonly WorldHandler worldHandler;
         private float scale = 1;
         private static readonly float MAX_RADIUS = 8;
         private static readonly float MIN_RADIUS = 2;

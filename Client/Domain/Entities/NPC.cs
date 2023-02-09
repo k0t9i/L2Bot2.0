@@ -74,7 +74,7 @@ namespace Client.Domain.Entities
             {
                 string result = FullName.Nickname;
 
-                if (IsDead())
+                if (VitalStats.IsDead)
                 {
                     result += " (dead)";
                 }
@@ -124,15 +124,10 @@ namespace Client.Domain.Entities
 
         private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Hp" || e.PropertyName == "MaxHp")
+            if (e.PropertyName == "IsDead")
             {
                 OnPropertyChanged("Name");
             }
-        }
-
-        public bool IsDead()
-        {
-            return VitalStats.MaxHp > 0 && VitalStats.Hp <= 0;
         }
 
         private uint level;

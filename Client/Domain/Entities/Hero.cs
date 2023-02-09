@@ -62,6 +62,7 @@ namespace Client.Domain.Entities
             }
         }
         public uint AggroRadius { get; set; } = 0;
+        public bool IsHostile { get; set; } = false;
 
         public Hero(uint id, Transform transform, FullName fullName, VitalStats vitalStats, Phenotype phenotype, ExperienceInfo experienceInfo, PermanentStats permanentStats, VariableStats variableStats, Reputation reputation, InventoryInfo inventoryInfo, uint targetId, bool isStanding)
         {

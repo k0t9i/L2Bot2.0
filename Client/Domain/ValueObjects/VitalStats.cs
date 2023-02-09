@@ -12,12 +12,12 @@ namespace Client.Domain.ValueObjects
         private uint cp;
         private uint maxCp;
 
-        public uint Hp { get => hp; set { if (value != hp) { hp = value; OnPropertyChanged("Hp"); OnPropertyChanged("MaxHp"); } } }
-        public uint MaxHp { get => Math.Max(hp, maxHp); set { if (value != maxHp) { maxHp = value; OnPropertyChanged("MaxHp"); } } }
-        public uint Mp { get => mp; set { if (value != mp) { mp = value; OnPropertyChanged("Mp"); } } }
-        public uint MaxMp { get => maxMp; set { if (value != maxMp) { maxMp = value; OnPropertyChanged("MaxMp"); } } }
-        public uint Cp { get => cp; set { if (value != cp) { cp = value; OnPropertyChanged("Cp"); } } }
-        public uint MaxCp { get => maxCp; set { if (value != maxCp) { maxCp = value; OnPropertyChanged("MaxCp"); } } }
+        public uint Hp { get => hp; set { if (value != hp) { hp = value; OnPropertyChanged(); OnPropertyChanged("MaxHp"); OnPropertyChanged("IsDead"); } } }
+        public uint MaxHp { get => Math.Max(hp, maxHp); set { if (value != maxHp) { maxHp = value; OnPropertyChanged(); OnPropertyChanged("IsDead"); } } }
+        public uint Mp { get => mp; set { if (value != mp) { mp = value; OnPropertyChanged(); } } }
+        public uint MaxMp { get => maxMp; set { if (value != maxMp) { maxMp = value; OnPropertyChanged(); } } }
+        public uint Cp { get => cp; set { if (value != cp) { cp = value; OnPropertyChanged(); } } }
+        public uint MaxCp { get => maxCp; set { if (value != maxCp) { maxCp = value; OnPropertyChanged(); } } }
 
         public double HpPercent
         {
@@ -40,6 +40,8 @@ namespace Client.Domain.ValueObjects
                 return maxCp != 0 ? cp / (double)maxCp * 100 : 0;
             }
         }
+
+        public bool IsDead => MaxHp > 0 && hp == 0;
 
         public VitalStats(uint hp, uint maxHp, uint mp, uint maxMp, uint cp, uint maxCp)
         {

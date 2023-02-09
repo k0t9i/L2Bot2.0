@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Client.Application.Components"
         xmlns:services="clr-namespace:Client.Application.Services"
         xmlns:components="clr-namespace:Client.Application.Components"
         mc:Ignorable="d"
@@ -11,7 +10,10 @@
         services:SizeObserver.ObservedWidth="{Binding ViewportWidth, Mode=OneWayToSource}"
         services:SizeObserver.ObservedHeight="{Binding ViewportHeight, Mode=OneWayToSource}"
         >
-    <Grid>
+    <Grid Background="Transparent">
+        <Grid.InputBindings>
+            <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Grid}}" />
+        </Grid.InputBindings>
         <ItemsControl ItemsSource="{Binding Path=Blocks}">
             <ItemsControl.Resources>
                 <services:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -55,21 +57,46 @@
                                 <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
                             </Path.RenderTransform>
                         </Path>
-                        <Path x:Name="CreatureBody" StrokeThickness="2">
-                            <Path.Data>
-                                <EllipseGeometry 
-                                    RadiusX="{Binding Radius,Mode=OneWay}" 
-                                    RadiusY="{Binding Radius,Mode=OneWay}" />
-                            </Path.Data>
-                            <Path.RenderTransform>
-                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
-                            </Path.RenderTransform>
-                        </Path>
-                        <Line x:Name="CreatureDirection" X1="0" Y1="0" X2="{Binding Direction.X,Mode=OneWay}" Y2="{Binding Direction.Y,Mode=OneWay}" StrokeThickness="2">
-                            <Line.RenderTransform>
-                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
-                            </Line.RenderTransform>
-                        </Line>
+                    </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsAggressive,Mode=OneWay}" Value="True">
+                            <Setter TargetName="CreatureAggroRadius" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Path=Creatures}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid x:Name="CreatureMain">
+                            <Grid.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
+                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MouseLeftDoubleClickCommand}" />
+                                <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
+                            </Grid.InputBindings>
+                            <Path x:Name="CreatureBody" StrokeThickness="2" Fill="Transparent">
+                                <Path.Data>
+                                    <EllipseGeometry 
+                                        RadiusX="{Binding Radius,Mode=OneWay}" 
+                                        RadiusY="{Binding Radius,Mode=OneWay}" />
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                                </Path.RenderTransform>
+                            </Path>
+                            <Line x:Name="CreatureDirection" X1="0" Y1="0" X2="{Binding Direction.X,Mode=OneWay}" Y2="{Binding Direction.Y,Mode=OneWay}" StrokeThickness="2">
+                                <Line.RenderTransform>
+                                    <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                                </Line.RenderTransform>
+                            </Line>
+                        </Grid>
                         <Grid x:Name="CreatureName" Visibility="Hidden" VerticalAlignment="Top" HorizontalAlignment="Left">
                             <Grid.RenderTransform>
                                 <TransformGroup>
@@ -125,9 +152,9 @@
                         <DataTrigger Binding="{Binding IsTarget,Mode=OneWay}" Value="True">
                             <Setter TargetName="CreatureName" Property="Visibility" Value="Visible" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsAggressive,Mode=OneWay}" Value="True">
-                            <Setter TargetName="CreatureAggroRadius" Property="Visibility" Value="Visible" />
-                        </DataTrigger>
+                        <Trigger SourceName="CreatureMain" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CreatureName" Property="Visibility" Value="Visible"></Setter>
+                        </Trigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -141,17 +168,52 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <Path StrokeThickness="2" Stroke="Gold">
-                            <Path.Data>
-                                <EllipseGeometry 
-                                    RadiusX="{Binding Radius,Mode=OneWay}" 
-                                    RadiusY="{Binding Radius,Mode=OneWay}" />
-                            </Path.Data>
-                            <Path.RenderTransform>
-                                <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
-                            </Path.RenderTransform>
-                        </Path>
+                        <Grid x:Name="DropMain">
+                            <Grid.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
+                                <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
+                            </Grid.InputBindings>
+                            <Path StrokeThickness="2" Stroke="Gold" Fill="Transparent">
+                                <Path.Data>
+                                    <EllipseGeometry 
+                                        RadiusX="{Binding Radius,Mode=OneWay}" 
+                                        RadiusY="{Binding Radius,Mode=OneWay}" />
+                                </Path.Data>
+                                <Path.RenderTransform>
+                                    <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Grid>
+                        <Grid x:Name="DropName" Visibility="Hidden" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="-2" ScaleY="-1" />
+                                    <TranslateTransform
+                                        X="{Binding Path=ActualWidth,RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        Y="{Binding Path=ActualHeight,RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        />
+                                    <ScaleTransform ScaleX="-0.5" ScaleY="-1" />
+                                    <ScaleTransform ScaleY="-0.5" />
+                                    <TranslateTransform Y="{Binding Radius}" />
+                                    <ScaleTransform ScaleY="-2" />
+                                    <TranslateTransform X="{Binding Position.X,Mode=OneWay}" Y="{Binding Position.Y,Mode=OneWay}"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <TextBlock Text="{Binding Name,Mode=OneWay}" Foreground="Black" FontSize="11">
+                                <TextBlock.Effect>
+                                    <BlurEffect
+                                      Radius="2"
+                                      KernelType="Box"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Name,Mode=OneWay}" Foreground="White" FontSize="11"/>
+                        </Grid>
                     </Grid>
+                    <DataTemplate.Triggers>
+                        <Trigger SourceName="DropMain" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="DropName" Property="Visibility" Value="Visible"></Setter>
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

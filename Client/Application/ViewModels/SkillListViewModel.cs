@@ -1,10 +1,13 @@
 ﻿using Client.Domain.Common;
 using Client.Domain.Entities;
+using Client.Domain.Service;
+using System.Windows.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Client.Application.Commands;
 
 namespace Client.Application.ViewModels
 {
@@ -21,11 +24,19 @@ namespace Client.Application.ViewModels
         public uint? Cost => skill.Cost == 0 ? null : skill.Cost;
         public int? Range => skill.Range <= 0 ? null : skill.Range;
 
-        public SkillListViewModel(Skill skill)
+        public ICommand MouseLeftClickCommand { get; }
+        private void OnLeftMouseClick(object? obj)
         {
+            worldHandler.RequestUseSkill(Id, false, false);
+        }
+
+        public SkillListViewModel(WorldHandler worldHandler, Skill skill)
+        {
+            this.worldHandler = worldHandler;
             this.skill = skill;
 
             skill.PropertyChanged += Skill_PropertyChanged;
+            MouseLeftClickCommand = new RelayCommand(OnLeftMouseClick);
         }
 
         private void Skill_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -61,6 +72,7 @@ namespace Client.Application.ViewModels
             }
         }
 
+        private readonly WorldHandler worldHandler;
         private readonly Skill skill;
     }
 }

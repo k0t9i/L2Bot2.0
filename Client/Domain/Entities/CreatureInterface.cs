@@ -18,6 +18,6 @@ namespace Client.Domain.Entities
         string BriefInfo { get; }
         CreatureTypeEnum Type { get; }
         uint AggroRadius { get; set; }
-
+        bool IsHostile { get; set; }
     }
 }

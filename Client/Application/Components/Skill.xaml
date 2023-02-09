@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         IsEnabled="{Binding Path=IsButtonActive,ElementName=root,Mode=OneWay}"
         ToolTipService.ShowOnDisabled="True"
-        x:Name="root">
+        x:Name="root"
+        Command="{Binding MouseLeftClickCommand}">
     <Button.Resources>
         <services:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <services:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>

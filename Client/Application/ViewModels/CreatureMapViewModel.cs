@@ -1,12 +1,17 @@
 ﻿using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.Enums;
+using Client.Domain.Service;
 using Client.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows;
+using Client.Application.Commands;
+using System.Net.Http;
 
 namespace Client.Application.ViewModels
 {
@@ -56,20 +61,41 @@ namespace Client.Application.ViewModels
         }
         public CreatureTypeEnum Type => creature.Type;
         public bool IsTarget => Id == hero.TargetId;
-        public bool IsAggressive => creature.AggroRadius > 0;
+        public bool IsAggressive => creature.AggroRadius > 0 && !creature.VitalStats.IsDead && creature.IsHostile;
         public float AggroRadius => creature.AggroRadius / scale;
 
+        public ICommand MouseLeftClickCommand { get; }
+        public ICommand MouseLeftDoubleClickCommand { get; }
+        public ICommand MouseRightClickCommand { get; }
+        private void OnMouseLeftClick(object? obj)
+        {
+            worldHandler.RequestAcquireTarget(Id);
+        }
 
-        public CreatureMapViewModel(CreatureInterface creature, Hero hero)
+        private void OnMouseLeftDoubleClick(object? obj)
+        {
+            worldHandler.RequestAttackOrFollow(Id);
+        }
+        
+        private void OnMouseRightClick(object? obj)
+        {
+            worldHandler.RequestMoveToEntity(Id);
+        }
+
+        public CreatureMapViewModel(CreatureInterface creature, Hero hero, WorldHandler worldHandler)
         {
             this.creature = creature;
             this.hero = hero;
+            this.worldHandler = worldHandler;
             creature.PropertyChanged += Creature_PropertyChanged;
             creature.Transform.PropertyChanged += Transform_PropertyChanged;
             creature.Transform.Position.PropertyChanged += Position_PropertyChanged;
             creature.VitalStats.PropertyChanged += VitalStats_PropertyChanged;
             hero.Transform.Position.PropertyChanged += HeroPosition_PropertyChanged;
             hero.PropertyChanged += Hero_PropertyChanged;
+            MouseLeftClickCommand = new RelayCommand(OnMouseLeftClick);
+            MouseLeftDoubleClickCommand = new RelayCommand(OnMouseLeftDoubleClick);
+            MouseRightClickCommand = new RelayCommand(OnMouseRightClick);
         }
 
         private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -77,6 +103,10 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "Hp" || e.PropertyName == "MaxHp")
             {
                 OnPropertyChanged("VitalStats");
+            }
+            if (e.PropertyName == "IsDead")
+            {
+                OnPropertyChanged("IsAggressive");
             }
         }
 
@@ -118,6 +148,7 @@ namespace Client.Application.ViewModels
 
         private readonly CreatureInterface creature;
         private readonly Hero hero;
+        private readonly WorldHandler worldHandler;
         private float scale = 1;
         private static readonly float MAX_RADIUS = 10;
         private static readonly float MIN_RADIUS = 4;

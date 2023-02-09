@@ -12,12 +12,12 @@ namespace Client.Domain.Common
     {
         public static float Distance(this CreatureInterface creature, CreatureInterface other)
         {
-            return creature.Transform.Position.HorizontalDistance(other.Transform.Position) / 100;
+            return creature.Transform.Position.HorizontalDistance(other.Transform.Position);
         }
 
         public static float DeltaZ(this CreatureInterface creature, CreatureInterface other)
         {
-            return (creature.Transform.Position.Z - other.Transform.Position.Z) / 100;
+            return (creature.Transform.Position.Z - other.Transform.Position.Z);
         }
     }
 }

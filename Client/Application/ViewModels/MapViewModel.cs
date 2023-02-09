@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Collections.Specialized;
+using Client.Application.Commands;
+using System.Reflection.Metadata;
+using System.Windows;
 
 namespace Client.Application.ViewModels
 {
@@ -125,10 +128,33 @@ namespace Client.Application.ViewModels
             }
         }
 
-        public MapViewModel()
+        public ICommand MouseLeftClickCommand { get; }
+        private void OnLeftMouseClick(object? obj)
+        {
+            if (obj == null)
+            {
+                return;
+            }
+            if (hero == null)
+            {
+                return;
+            }
+
+            Point mousePos = Mouse.GetPosition((IInputElement)obj);
+            var location = new Vector3(
+                (float)(mousePos.X - ViewportWidth / 2) * scale + hero.Transform.Position.X,
+                (float)(mousePos.Y - ViewportHeight / 2) * scale + hero.Transform.Position.Y,
+                hero.Transform.Position.Z
+            );
+            worldHandler.RequestMoveToLocation(location);
+        }
+
+        public MapViewModel(WorldHandler worldHandler)
         {
             Creatures.CollectionChanged += Creatures_CollectionChanged;
             Drops.CollectionChanged += Drops_CollectionChanged;
+            this.worldHandler = worldHandler;
+            MouseLeftClickCommand = new RelayCommand(OnLeftMouseClick);
         }
 
         private void Drops_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -167,5 +193,6 @@ namespace Client.Application.ViewModels
         private float scale = 8;
         private double viewportWidth = 0;
         private double viewportHeight = 0;
+        private readonly WorldHandler worldHandler;
     }
 }

@@ -78,6 +78,7 @@ namespace Client
                     )
                 .AddSingleton(typeof(EntityHandlerFactoryInterface), typeof(EntityHandlerFactory))
                 .AddSingleton(typeof(MessageParserInterface), typeof(JsonMessageParser))
+                .AddSingleton(typeof(OutgoingMessageBuilderInterface), typeof(JsonOutgoingMessageBuilder))
                 .AddSingleton(
                     typeof(TransportInterface),
                     x => new NamedPipeTransport(
@@ -103,6 +104,7 @@ namespace Client
                 .AddSingleton<ChatMessageHandler>()
                 .AddSingleton<SkillHandler>()
                 .AddSingleton<ItemHander>()
+                .AddSingleton<WorldHandler>()
                 
                 .AddSingleton<MainViewModel>();
         }

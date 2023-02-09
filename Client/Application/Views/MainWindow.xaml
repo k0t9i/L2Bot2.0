@@ -53,10 +53,15 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="5">
+                                        <StackPanel.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MouseLeftDoubleClickCommand}" />
+                                            <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
+                                        </StackPanel.InputBindings>
                                         <TextBlock FontSize="16" Text="{Binding Path=Name,Mode=OneWay}" />
                                         <TextBlock FontSize="11">
                                             <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}; distance: {1:F2}m; delta z: {2:F2}m">
+                                                <MultiBinding StringFormat="{}{0}; distance: {1:F0}; delta z: {2:F0}">
                                                     <Binding Path="BriefInfo" Mode="OneWay"/>
                                                     <Binding Path="Distance" Mode="OneWay"/>
                                                     <Binding Path="DeltaZ" Mode="OneWay"/>
@@ -71,6 +76,10 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>
+                                        <DockPanel.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
+                                            <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
+                                        </DockPanel.InputBindings>
                                         <Image DockPanel.Dock="Left" Source="{Binding Path=IconName, FallbackValue=./Assets/icons/_fallback.png, Mode=OneWay}" Height="32" Width="32" />
                                         <StackPanel Margin="5">
                                             <TextBlock FontSize="16">
@@ -83,7 +92,7 @@
                                             </TextBlock>
                                             <TextBlock FontSize="11">
                                                 <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}Count {0}; distance: {1:F2}m; delta z: {2:F2}m">
+                                                    <MultiBinding StringFormat="{}Count {0}; distance: {1:F0}; delta z: {2:F0}">
                                                         <Binding Path="Amount" Mode="OneWay"/>
                                                         <Binding Path="Distance" Mode="OneWay"/>
                                                         <Binding Path="DeltaZ" Mode="OneWay"/>
@@ -146,7 +155,8 @@
                                                 </Button.Resources>
                                                 <Button.Content>
                                                     <Grid>
-                                                        <Image Source="{Binding Path=ImageSource}" Height="32" Width="32" />
+                                                        <!--Image Source="{Binding Path=ImageSource}" Height="32" Width="32" /-->
+                                                        <TextBlock Text="{Binding Name,Mode=OneWay}" />
                                                     </Grid>
                                                 </Button.Content>
                                                 <Button.ToolTip >
@@ -270,8 +280,8 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock Padding="0 0 0 3" Text="{Binding Distance,Mode=OneWay,StringFormat='{}{0:F2}m'}"></TextBlock>
-                    <TextBlock Padding="0 0 0 3" Text="{Binding DeltaZ,Mode=OneWay,StringFormat='{}{0:F2}m'}"></TextBlock>
+                    <TextBlock Padding="0 0 0 3" Text="{Binding Distance,Mode=OneWay,StringFormat='{}{0:F0}'}"></TextBlock>
+                    <TextBlock Padding="0 0 0 3" Text="{Binding DeltaZ,Mode=OneWay,StringFormat='{}{0:F0}'}"></TextBlock>
                 </StackPanel>
             </DockPanel>
         </Grid>
