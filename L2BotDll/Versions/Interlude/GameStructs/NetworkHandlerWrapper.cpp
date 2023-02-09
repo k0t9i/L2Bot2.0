@@ -136,6 +136,7 @@ namespace Interlude
 		(FARPROC&)__GetNextCreature = GetProcAddress(hModule, "?GetNextCreature@UNetworkHandler@@UAEPAUUser@@MH@Z");
 		(FARPROC&)__RequestItemList = GetProcAddress(hModule, "?RequestItemList@UNetworkHandler@@UAEHXZ");
 		(FARPROC&)__GetUser = GetProcAddress(hModule, "?GetUser@UNetworkHandler@@UAEPAUUser@@H@Z");
+		(FARPROC&)__GetItem = GetProcAddress(hModule, "?GetItem@UNetworkHandler@@UAEPAUItem@@H@Z");
 		(FARPROC&)__MTL = GetProcAddress(hModule, "?MTL@UNetworkHandler@@UAEXPAVAActor@@VFVector@@10H@Z");
 		(FARPROC&)__Action = GetProcAddress(hModule, "?Action@UNetworkHandler@@UAEXHVFVector@@H@Z");
 		(FARPROC&)__RequestMagicSkillUse = GetProcAddress(hModule, "?RequestMagicSkillUse@UNetworkHandler@@UAEXAAVL2ParamStack@@@Z");
