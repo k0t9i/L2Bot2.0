@@ -49,30 +49,37 @@
                             <RowDefinition Height="2*"></RowDefinition>
                             <RowDefinition Height="1*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ListBox ItemsSource="{Binding Source={StaticResource SortedCreatures}, Mode=OneWay}" Grid.Row="0">
+                        <ListBox ItemsSource="{Binding Source={StaticResource SortedCreatures}, Mode=OneWay}" HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Margin="5">
-                                        <StackPanel.InputBindings>
-                                            <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
-                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MouseLeftDoubleClickCommand}" />
-                                            <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
-                                        </StackPanel.InputBindings>
-                                        <TextBlock FontSize="16" Text="{Binding Path=Name,Mode=OneWay}" />
-                                        <TextBlock FontSize="11">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}; distance: {1:F0}; delta z: {2:F0}">
-                                                    <Binding Path="BriefInfo" Mode="OneWay"/>
-                                                    <Binding Path="Distance" Mode="OneWay"/>
-                                                    <Binding Path="DeltaZ" Mode="OneWay"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </StackPanel>
+                                    <Grid x:Name="Item">
+                                        <StackPanel Margin="5">
+                                            <StackPanel.InputBindings>
+                                                <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
+                                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding MouseLeftDoubleClickCommand}" />
+                                                <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
+                                            </StackPanel.InputBindings>
+                                            <TextBlock FontSize="16" Text="{Binding Path=Name,Mode=OneWay}" />
+                                            <TextBlock FontSize="11">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}; distance: {1:F0}; delta z: {2:F0}">
+                                                        <Binding Path="BriefInfo" Mode="OneWay"/>
+                                                        <Binding Path="Distance" Mode="OneWay"/>
+                                                        <Binding Path="DeltaZ" Mode="OneWay"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsTarget,Mode=OneWay}" Value="True">
+                                            <Setter TargetName="Item" Property="Background" Value="#110000ff" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <ListBox ItemsSource="{Binding Source={StaticResource SortedDrops}, Mode=OneWay}" Grid.Row="1">
+                        <ListBox ItemsSource="{Binding Source={StaticResource SortedDrops}, Mode=OneWay}" Grid.Row="1" HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>

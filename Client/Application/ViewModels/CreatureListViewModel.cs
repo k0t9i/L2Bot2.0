@@ -24,6 +24,8 @@ namespace Client.Application.ViewModels
 
         public float DeltaZ => creature.DeltaZ(hero);
 
+        public bool IsTarget => Id == hero.TargetId;
+
         public ICommand MouseLeftClickCommand { get; }
         public ICommand MouseLeftDoubleClickCommand { get; }
         public ICommand MouseRightClickCommand { get; }
@@ -47,6 +49,7 @@ namespace Client.Application.ViewModels
             creature.PropertyChanged += Creature_PropertyChanged;
             creature.Transform.Position.PropertyChanged += Position_PropertyChanged;
             hero.Transform.Position.PropertyChanged += HeroPosition_PropertyChanged;
+            hero.PropertyChanged += Hero_PropertyChanged;
             MouseLeftClickCommand = new RelayCommand(OnMouseLeftClick);
             MouseLeftDoubleClickCommand = new RelayCommand(OnMouseLeftDoubleClick);
             MouseRightClickCommand = new RelayCommand(OnMouseRightClick);
@@ -77,6 +80,14 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "BriefInfo")
             {
                 OnPropertyChanged("BriefInfo");
+            }
+        }
+
+        private void Hero_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "TargetId")
+            {
+                OnPropertyChanged("IsTarget");
             }
         }
 
