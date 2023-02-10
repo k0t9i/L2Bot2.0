@@ -9,6 +9,9 @@
         services:SizeObserver.Observe="True"
         services:SizeObserver.ObservedWidth="{Binding ViewportWidth, Mode=OneWayToSource}"
         services:SizeObserver.ObservedHeight="{Binding ViewportHeight, Mode=OneWayToSource}"
+        MouseWheel="ContentControl_MouseWheel"
+        MouseLeave="ContentControl_MouseLeave"
+        MouseMove="ContentControl_MouseMove"
         >
     <Grid Background="Transparent">
         <Grid.InputBindings>
@@ -217,23 +220,22 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="200" Height="20" Margin="0 0 5 5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Border Background="White" CornerRadius="3" Margin="0 0 5 0">
-                <TextBlock Text="{Binding Scale, Mode=OneWay}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Border>
-            <Slider
-                TickFrequency="1"
-                IsSnapToTickEnabled="True"
-                Value="{Binding Scale}"
-                Maximum="32"
-                Minimum="1"
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                />
-        </Grid>
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#66ffffff">
+            <Grid Margin="10 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90"></ColumnDefinition>
+                    <ColumnDefinition Width="30"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Padding="0 0 0 3">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:F0}, {1:F0}">
+                            <Binding Path="MousePosition.X" Mode="OneWay"/>
+                            <Binding Path="MousePosition.Y" Mode="OneWay"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="1" Text="{Binding Scale,Mode=OneWay,StringFormat='{}1:{0}'}" HorizontalAlignment="Right" />
+            </Grid>
+        </StackPanel>
     </Grid>
 </ContentControl>

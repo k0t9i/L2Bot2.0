@@ -30,7 +30,7 @@ namespace Client.Application.ViewModels
             0
         );
         public VitalStats VitalStats => creature.VitalStats;
-        public float Radius => MathF.Max(MAX_RADIUS / scale, MIN_RADIUS);
+        public float Radius => MAX_RADIUS - (1/MapViewModel.MIN_SCALE - 1/scale) / (1/MapViewModel.MIN_SCALE - 1/MapViewModel.MAX_SCALE) * (MAX_RADIUS - MIN_RADIUS);
         public float Scale
         {
             get => scale;
@@ -151,7 +151,7 @@ namespace Client.Application.ViewModels
         private readonly WorldHandler worldHandler;
         private float scale = 1;
         private static readonly float MAX_RADIUS = 10;
-        private static readonly float MIN_RADIUS = 4;
+        private static readonly float MIN_RADIUS = 2;
         private Vector3 vieportSize = new Vector3(0, 0, 0);
     }
 }

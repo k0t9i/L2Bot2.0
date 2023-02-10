@@ -49,6 +49,7 @@ namespace Client.Application.ViewModels
                 {
                     viewportWidth = value;
                     UpdateMap();
+                    OnPropertyChanged("MousePosition");
                 }
             }
         }
@@ -61,6 +62,7 @@ namespace Client.Application.ViewModels
                 {
                     viewportHeight = value;
                     UpdateMap();
+                    OnPropertyChanged("MousePosition");
                 }
             }
         }
@@ -75,13 +77,24 @@ namespace Client.Application.ViewModels
                     scale = value;
                     UpdateMap();
                     OnPropertyChanged();
+                    OnPropertyChanged("MousePosition");
                 }
             }
+        }
+
+        public Vector3 MousePosition
+        {
+            get => mousePosition;
+            set => mousePosition = value;
         }
 
         private void HeroPosition_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             UpdateMap();
+            if (e.PropertyName == "X" || e.PropertyName == "Y")
+            {
+                OnPropertyChanged("MousePosition");
+            }
         }
 
         private void UpdateMap()
@@ -149,12 +162,45 @@ namespace Client.Application.ViewModels
             worldHandler.RequestMoveToLocation(location);
         }
 
+        public void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var newScale = Scale - e.Delta / Mouse.MouseWheelDeltaForOneLine;
+            Scale = MathF.Max(MathF.Min(newScale, MAX_SCALE), MIN_SCALE);
+        }
+
+        public void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            mousePosition.X = 0;
+            mousePosition.Y = 0;
+        }
+
+        public void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (hero == null)
+            {
+                mousePosition.X = 0;
+                mousePosition.Y = 0;
+                return;
+            }
+            var el = (IInputElement)sender;
+            var mousePos = e.GetPosition(el);
+
+            mousePosition.X = (float)(mousePos.X - ViewportWidth / 2) * scale + hero.Transform.Position.X;
+            mousePosition.Y = (float)(mousePos.Y - ViewportHeight / 2) * scale + hero.Transform.Position.Y;
+        }
+
         public MapViewModel(WorldHandler worldHandler)
         {
             Creatures.CollectionChanged += Creatures_CollectionChanged;
             Drops.CollectionChanged += Drops_CollectionChanged;
             this.worldHandler = worldHandler;
             MouseLeftClickCommand = new RelayCommand(OnLeftMouseClick);
+            mousePosition.PropertyChanged += MousePosition_PropertyChanged;
+        }
+
+        private void MousePosition_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("MousePosition");
         }
 
         private void Drops_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -187,12 +233,15 @@ namespace Client.Application.ViewModels
         public ObservableCollection<CreatureMapViewModel> Creatures { get; } = new ObservableCollection<CreatureMapViewModel>();
         public ObservableCollection<DropMapViewModel> Drops { get; } = new ObservableCollection<DropMapViewModel>();
 
+        public readonly static float MIN_SCALE = 1;
+        public readonly static float MAX_SCALE = 64;
         private MapImageSelector selector = new MapImageSelector();
         private Dictionary<uint, MapBlockViewModel> blocks = new Dictionary<uint, MapBlockViewModel>();
         private Hero? hero;
         private float scale = 8;
         private double viewportWidth = 0;
         private double viewportHeight = 0;
+        private Vector3 mousePosition = new Vector3(0, 0, 0);
         private readonly WorldHandler worldHandler;
     }
 }

@@ -24,5 +24,32 @@ namespace Client.Application.Components
         {
             InitializeComponent();
         }
+
+        private void ContentControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (DataContext is MapViewModel)
+            {
+                var model = (MapViewModel)DataContext;
+                model.OnMouseWheel(sender, e);
+            }
+        }
+
+        private void ContentControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (DataContext is MapViewModel)
+            {
+                var model = (MapViewModel)DataContext;
+                model.OnMouseLeave(sender, e);
+            }
+        }
+
+        private void ContentControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (DataContext is MapViewModel)
+            {
+                var model = (MapViewModel)DataContext;
+                model.OnMouseMove(sender, e);
+            }
+        }
     }
 }
