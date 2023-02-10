@@ -24,7 +24,7 @@ namespace Interlude
 		SkillFactory() = delete;
 		virtual ~SkillFactory() = default;
 
-		std::unique_ptr<Entities::Skill> Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
+		std::shared_ptr<Entities::Skill> Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
@@ -34,7 +34,7 @@ namespace Interlude
 			const auto description = data && data->description ? data->description : L"";
 			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
 
-			return std::make_unique<Entities::Skill>(
+			return std::make_shared<Entities::Skill>(
 				skillId,
 				static_cast<uint8_t>(level),
 				isActive != 1,

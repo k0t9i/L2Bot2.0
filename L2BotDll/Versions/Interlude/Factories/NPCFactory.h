@@ -12,9 +12,9 @@ namespace Interlude
 		NPCFactory() = default;
 		virtual ~NPCFactory() = default;
 
-		std::unique_ptr<Entities::NPC> Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
+		std::shared_ptr<Entities::NPC> Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
 		{
-			return std::make_unique<Entities::NPC>(
+			return std::make_shared<Entities::NPC>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

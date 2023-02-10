@@ -10,7 +10,7 @@ namespace L2Bot::Domain::DTO
 	class EntityState
 	{
 	public:
-		const std::unique_ptr<Entities::EntityInterface>& GetEntity() const
+		const std::shared_ptr<Entities::EntityInterface>& GetEntity() const
 		{
 			return m_Entity;
 		}
@@ -23,8 +23,8 @@ namespace L2Bot::Domain::DTO
 			m_State = state;
 		}
 
-		EntityState(std::unique_ptr<Entities::EntityInterface> object, Enums::EntityStateEnum state) :
-			m_Entity(std::move(object)),
+		EntityState(std::shared_ptr<Entities::EntityInterface> object, Enums::EntityStateEnum state) :
+			m_Entity(object),
 			m_State(state)
 		{
 
@@ -33,7 +33,7 @@ namespace L2Bot::Domain::DTO
 		EntityState() = default;
 		virtual ~EntityState() = default;
 	private:
-		std::unique_ptr<Entities::EntityInterface> m_Entity = nullptr;
+		std::shared_ptr<Entities::EntityInterface> m_Entity = nullptr;
 		Enums::EntityStateEnum m_State = Enums::EntityStateEnum::none;
 	};
 }

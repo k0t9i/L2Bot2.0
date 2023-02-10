@@ -21,13 +21,13 @@ namespace Interlude
 		DropFactory() = delete;
 		virtual ~DropFactory() = default;
 
-		std::unique_ptr<Entities::Drop> Create(const Item* item) const
+		std::shared_ptr<Entities::Drop> Create(const Item* item) const
 		{
 			const auto itemData = m_L2GameData.GetItemData(item->itemId);
 			const auto nameEntry = itemData ? m_FName.GetEntry(itemData->nameIndex) : nullptr;
 			const auto iconEntry = itemData ? m_FName.GetEntry(itemData->iconNameIndex) : nullptr;
 
-			return std::make_unique<Entities::Drop>(
+			return std::make_shared<Entities::Drop>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

@@ -24,7 +24,7 @@ namespace Interlude
 		AbnormalEffectFactory() = delete;
 		virtual ~AbnormalEffectFactory() = default;
 
-		std::unique_ptr<Entities::AbnormalEffect> Create(const uint32_t skillId, const uint32_t level) const
+		std::shared_ptr<Entities::AbnormalEffect> Create(const uint32_t skillId, const uint32_t level) const
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
@@ -32,7 +32,7 @@ namespace Interlude
 			const auto description = data && data->description ? data->description : L"";
 			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
 
-			return std::make_unique<Entities::AbnormalEffect>(
+			return std::make_shared<Entities::AbnormalEffect>(
 				skillId,
 				static_cast<uint8_t>(level),
 				std::wstring(name),

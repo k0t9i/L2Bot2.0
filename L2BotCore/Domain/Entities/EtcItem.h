@@ -98,7 +98,8 @@ namespace L2Bot::Domain::Entities
 		EtcItem(const EtcItem* other) :
 			BaseItem(other),
 			m_Amount(other->m_Amount),
-			m_IsAutoused(other->m_IsAutoused)
+			m_IsAutoused(other->m_IsAutoused),
+			m_IsQuest(other->m_IsQuest)
 		{
 		}
 

@@ -22,14 +22,8 @@ namespace Interlude
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			std::map<uint32_t, Entities::AbnormalEffect*> skillPtrs;
-			for (const auto& kvp : m_Effects)
-			{
-				skillPtrs[kvp.first] = kvp.second.get();
-			}
-
-			const auto objects = m_EntityFinder.FindEntities<Entities::AbnormalEffect*>(skillPtrs, [this](Entities::AbnormalEffect* item) {
-				return std::make_unique<Entities::AbnormalEffect>(item);
+			const auto objects = m_EntityFinder.FindEntities<std::shared_ptr<Entities::AbnormalEffect>>(m_Effects, [this](std::shared_ptr<Entities::AbnormalEffect> item) {
+				return std::make_shared<Entities::AbnormalEffect>(item.get());
 			});
 
 			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
@@ -90,7 +84,7 @@ namespace Interlude
 					const auto level = skillInfo[i + 1];
 
 					auto effect = m_Factory.Create(effectId, level);
-					m_Effects.emplace(effect->GetId(), std::move(effect));
+					m_Effects.emplace(effect->GetId(), effect);
 
 					ids[effectId] = effectId;
 				}
@@ -113,7 +107,7 @@ namespace Interlude
 
 	private:
 		const AbnormalEffectFactory& m_Factory;
-		std::map<uint32_t, std::unique_ptr<Entities::AbnormalEffect>> m_Effects;
+		std::map<uint32_t, std::shared_ptr<Entities::AbnormalEffect>> m_Effects;
 		std::shared_timed_mutex m_Mutex;
 		EntityFinder& m_EntityFinder;
 	};

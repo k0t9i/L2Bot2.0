@@ -27,14 +27,8 @@ namespace Interlude
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			std::map<uint32_t, Entities::Skill*> skillPtrs;
-			for (const auto& kvp : m_Skills)
-			{
-				skillPtrs[kvp.first] = kvp.second.get();
-			}
-
-			const auto objects = m_EntityFinder.FindEntities<Entities::Skill*>(skillPtrs, [this](Entities::Skill* item) {
-				return std::make_unique<Entities::Skill>(item);
+			const auto objects = m_EntityFinder.FindEntities<std::shared_ptr<Entities::Skill>>(m_Skills, [this](std::shared_ptr<Entities::Skill> item) {
+				return std::make_shared<Entities::Skill>(item.get());
 			});
 
 			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
@@ -141,7 +135,7 @@ namespace Interlude
 				);
 				if (m_Skills.find(skillId) == m_Skills.end())
 				{
-					m_Skills.emplace(skill->GetId(), std::move(skill));
+					m_Skills.emplace(skill->GetId(), skill);
 				}
 				else
 				{
@@ -245,7 +239,7 @@ namespace Interlude
 
 	private:
 		const SkillFactory& m_Factory;
-		std::map<uint32_t, std::unique_ptr<Entities::Skill>> m_Skills;
+		std::map<uint32_t, std::shared_ptr<Entities::Skill>> m_Skills;
 		std::map<uint32_t, uint32_t> m_NewSkills;
 		bool m_IsNewCycle = true;
 		uint32_t m_UsedSkillId = 0;

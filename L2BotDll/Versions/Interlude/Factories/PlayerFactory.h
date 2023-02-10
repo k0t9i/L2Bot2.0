@@ -12,9 +12,9 @@ namespace Interlude
 		PlayerFactory() = default;
 		virtual ~PlayerFactory() = default;
 
-		std::unique_ptr<Entities::Player> Create(const User* item) const
+		std::shared_ptr<Entities::Player> Create(const User* item) const
 		{
-			return std::make_unique<Entities::Player>(
+			return std::make_shared<Entities::Player>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),

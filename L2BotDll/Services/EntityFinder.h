@@ -12,7 +12,7 @@ class EntityFinder
 {
 public:
 	template<typename T>
-	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>>& FindEntities(const std::map<uint32_t, T> items, std::function<std::unique_ptr<Entities::EntityInterface>(T)> callback)
+	const std::map<uint32_t, std::shared_ptr<DTO::EntityState>>& FindEntities(const std::map<uint32_t, T> items, std::function<std::shared_ptr<Entities::EntityInterface>(T)> callback)
 	{
 		RemoveOutdatedStates();
 
@@ -36,7 +36,7 @@ public:
 				const auto objectId = newObject->GetId();
 				m_Objects.emplace(
 					objectId,
-					std::make_shared<DTO::EntityState>(std::move(newObject), Enums::EntityStateEnum::created)
+					std::make_shared<DTO::EntityState>(newObject, Enums::EntityStateEnum::created)
 				);
 			}
 		}

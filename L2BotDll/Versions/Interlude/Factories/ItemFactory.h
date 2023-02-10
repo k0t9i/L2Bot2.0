@@ -30,7 +30,7 @@ namespace Interlude
 		ItemFactory() = delete;
 		virtual ~ItemFactory() = default;
 
-		std::unique_ptr<Entities::BaseItem> Create(const ItemData& itemInfo) const
+		std::shared_ptr<Entities::BaseItem> Create(const ItemData& itemInfo) const
 		{
 			//FIXME during first start data may be undefined
 			const auto data = m_L2GameData.GetItemData(itemInfo.itemId);
@@ -55,42 +55,43 @@ namespace Interlude
 			return CreateEtc(itemInfo, data, name, icon, description);
 		}
 
-		std::unique_ptr<Entities::BaseItem> CreateFromPointer(const Entities::BaseItem* other) const
+		std::shared_ptr<Entities::BaseItem> Copy(std::shared_ptr<Entities::BaseItem> other) const
 		{
+			auto otherPtr = other.get();
 			{
-				const auto object = dynamic_cast<const Entities::EtcItem*>(other);
+				const auto object = dynamic_cast<const Entities::EtcItem*>(otherPtr);
 				if (object)
 				{
-					return std::make_unique<Entities::EtcItem>(object);
+					return std::make_shared<Entities::EtcItem>(object);
 				}
 			}
 			{
-				const auto object = dynamic_cast<const Entities::ArmorItem*>(other);
+				const auto object = dynamic_cast<const Entities::ArmorItem*>(otherPtr);
 				if (object)
 				{
-					return std::make_unique<Entities::ArmorItem>(object);
+					return std::make_shared<Entities::ArmorItem>(object);
 				}
 			}
 			{
-				const auto object = dynamic_cast<const Entities::WeaponItem*>(other);
+				const auto object = dynamic_cast<const Entities::WeaponItem*>(otherPtr);
 				if (object)
 				{
-					return std::make_unique<Entities::WeaponItem>(object);
+					return std::make_shared<Entities::WeaponItem>(object);
 				}
 			}
 			{
-				const auto object = dynamic_cast<const Entities::ShieldItem*>(other);
+				const auto object = dynamic_cast<const Entities::ShieldItem*>(otherPtr);
 				if (object)
 				{
-					return std::make_unique<Entities::ShieldItem>(object);
+					return std::make_shared<Entities::ShieldItem>(object);
 				}
 			}
 
-			return std::make_unique<Entities::BaseItem>(other);
+			return std::make_shared<Entities::BaseItem>(otherPtr);
 		}
 
 	private:
-		std::unique_ptr<Entities::BaseItem> CreateEtc(
+		std::shared_ptr<Entities::BaseItem> CreateEtc(
 			const ItemData& itemInfo,
 			const FL2ItemDataBase* itemData,
 			const std::wstring& name,
@@ -98,7 +99,7 @@ namespace Interlude
 			const std::wstring& description
 		) const
 		{
-			return std::make_unique<Entities::EtcItem>(
+			return std::make_shared<Entities::EtcItem>(
 				itemInfo.objectId,
 				itemInfo.itemId,
 				itemInfo.mana,
@@ -111,7 +112,7 @@ namespace Interlude
 			);
 		}
 
-		std::unique_ptr<Entities::BaseItem> CreateArmor(
+		std::shared_ptr<Entities::BaseItem> CreateArmor(
 			const ItemData& itemInfo,
 			const FL2ItemDataBase* itemData,
 			const std::wstring& name,
@@ -125,7 +126,7 @@ namespace Interlude
 			const auto addSetEffect = casted && casted->setEffect ? std::wstring(casted->setEffect) : L"";
 			const auto enchantEffect = casted && casted->enchantEffect ? std::wstring(casted->enchantEffect) : L"";
 
-			return std::make_unique<Entities::ArmorItem>(
+			return std::make_shared<Entities::ArmorItem>(
 				itemInfo.objectId,
 				itemInfo.itemId,
 				itemInfo.mana,
@@ -145,7 +146,7 @@ namespace Interlude
 			);
 		}
 
-		std::unique_ptr<Entities::BaseItem> CreateWeaponOrShield(
+		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(
 			const ItemData& itemInfo,
 			const FL2ItemDataBase* itemData,
 			const std::wstring& name,
@@ -157,7 +158,7 @@ namespace Interlude
 
 			if (casted->weaponType != L2::WeaponType::SHIELD)
 			{
-				return std::make_unique<Entities::WeaponItem>(
+				return std::make_shared<Entities::WeaponItem>(
 					itemInfo.objectId,
 					itemInfo.itemId,
 					itemInfo.mana,
@@ -181,7 +182,7 @@ namespace Interlude
 				);
 			}
 
-			return std::make_unique<Entities::ShieldItem>(
+			return std::make_shared<Entities::ShieldItem>(
 				itemInfo.objectId,
 				itemInfo.itemId,
 				itemInfo.mana,

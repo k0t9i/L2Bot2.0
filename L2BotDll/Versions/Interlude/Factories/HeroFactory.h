@@ -13,11 +13,11 @@ namespace Interlude
 		HeroFactory() = default;
 		virtual ~HeroFactory() = default;
 
-		std::unique_ptr<Entities::Hero> Create(const User* item) const
+		std::shared_ptr<Entities::Hero> Create(const User* item) const
 		{
 			const auto playerController = item->pawn ? item->pawn->lineagePlayerController : nullptr;
 
-			return std::make_unique<Entities::Hero>(
+			return std::make_shared<Entities::Hero>(
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
