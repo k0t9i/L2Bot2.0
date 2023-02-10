@@ -59,7 +59,7 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Creatures.Add(new CreatureListViewModel(@event.Creature, hero, worldHandler));
+                Creatures.Add(new CreatureListViewModel(worldHandler, @event.Creature, hero));
                 AddCreature(@event.Creature);
             }
         }
@@ -74,8 +74,8 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Drops.Add(new DropListViewModel(@event.Drop, hero, worldHandler));
-                Map.Drops.Add(new DropMapViewModel(@event.Drop, hero, worldHandler));
+                Drops.Add(new DropListViewModel(worldHandler, @event.Drop, hero));
+                Map.Drops.Add(new DropMapViewModel(worldHandler, @event.Drop, hero));
             }
         }
 
@@ -115,20 +115,28 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Items.Add(@event.Item);
+                if (!@event.Item.IsQuest)
+                {
+                    Items.Add(new ItemListViewModel(worldHandler, @event.Item));
+                }
+                else
+                {
+                    QuestItems.Add(new ItemListViewModel(worldHandler, @event.Item));
+                }
             }
         }
 
         public void Handle(ItemDeletedEvent @event)
         {
             Items.RemoveAll(x => x.Id == @event.Id);
+            QuestItems.RemoveAll(x => x.Id == @event.Id);
         }
 
         private void AddCreature(CreatureInterface creature)
         {
             if (hero != null)
             {
-                Map.Creatures.Add(new CreatureMapViewModel(creature, hero, worldHandler));
+                Map.Creatures.Add(new CreatureMapViewModel(worldHandler, creature, hero));
             }
         }
 
@@ -148,7 +156,8 @@ namespace Client.Application.ViewModels
         public ObservableCollection<DropListViewModel> Drops { get; } = new ObservableCollection<DropListViewModel>();
         public ObservableCollection<SkillListViewModel> ActiveSkills { get; } = new ObservableCollection<SkillListViewModel>();
         public ObservableCollection<SkillListViewModel> PassiveSkills { get; } = new ObservableCollection<SkillListViewModel>();
-        public ObservableCollection<BaseItem> Items { get; } = new ObservableCollection<BaseItem>();
+        public ObservableCollection<ItemListViewModel> Items { get; } = new ObservableCollection<ItemListViewModel>();
+        public ObservableCollection<ItemListViewModel> QuestItems { get; } = new ObservableCollection<ItemListViewModel>();
         public HeroSummaryInfoViewModel? Hero { get; private set; }
         public MapViewModel Map { get; private set; }
         public Hero? hero;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Entities
 {
-    public abstract class BaseItem : EntityInterface
+    public abstract class BaseItem
     {
         public uint Id { get; set; }
         public uint ItemId { get; set; }

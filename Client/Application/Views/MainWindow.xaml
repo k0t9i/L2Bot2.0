@@ -140,50 +140,13 @@
                         <TabItem>
                             <TabItem.Header>Items</TabItem.Header>
                             <TabItem.Content>
-                                <ItemsControl ItemsSource="{Binding Path=Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Button>
-                                                <Button.Resources>
-                                                    <services:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-                                                    <services:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-                                                    <DataTemplate x:Key="ToolTipContent">
-                                                        <StackPanel MaxWidth="300">
-                                                            <TextBlock TextWrapping="Wrap" FontWeight="Bold" FontSize="14" Margin="0,0,0,5">
-                                                                <TextBlock.Text>
-                                                                    <MultiBinding StringFormat="{}{0} ({1})">
-                                                                        <Binding Path="Name" Mode="OneWay" />
-                                                                        <Binding Path="Amount" Mode="OneWay" />
-                                                                    </MultiBinding>
-                                                                </TextBlock.Text>
-                                                            </TextBlock>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </Button.Resources>
-                                                <Button.Content>
-                                                    <Grid>
-                                                        <!--Image Source="{Binding Path=ImageSource}" Height="32" Width="32" /-->
-                                                        <TextBlock Text="{Binding Name,Mode=OneWay}" />
-                                                    </Grid>
-                                                </Button.Content>
-                                                <Button.ToolTip >
-                                                    <ContentControl ContentTemplate="{StaticResource ToolTipContent}"/>
-                                                </Button.ToolTip>
-                                            </Button>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
+                                <views:ItemPanel ItemsSource="{Binding Items,Mode=OneWay}" />
                             </TabItem.Content>
                         </TabItem>
                         <TabItem>
                             <TabItem.Header>Quest Items</TabItem.Header>
                             <TabItem.Content>
-                                <Label Content="Under construction" />
+                                <views:ItemPanel ItemsSource="{Binding QuestItems,Mode=OneWay}" />
                             </TabItem.Content>
                         </TabItem>
                     </TabControl>

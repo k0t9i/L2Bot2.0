@@ -61,7 +61,7 @@ namespace Client.Application.ViewModels
             worldHandler.RequestMoveToEntity(Id);
         }
 
-        public DropMapViewModel(Drop drop, Hero hero, WorldHandler worldHandler)
+        public DropMapViewModel(WorldHandler worldHandler, Drop drop, Hero hero)
         {
             this.drop = drop;
             this.hero = hero;

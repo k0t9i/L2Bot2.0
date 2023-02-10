@@ -268,7 +268,7 @@ namespace Client.Domain.Service
 
         public void Handle(ItemDeletedEvent @event)
         {
-            items.Remove(@event.Id, out BaseItem? value);
+            items.Remove(@event.Id, out ItemInterface? value);
         }
         #endregion
 
@@ -282,7 +282,7 @@ namespace Client.Domain.Service
         private ConcurrentDictionary<uint, CreatureInterface> creatures = new ConcurrentDictionary<uint, CreatureInterface>();
         private ConcurrentDictionary<uint, Drop> drops = new ConcurrentDictionary<uint, Drop>();
         private ConcurrentDictionary<uint, Skill> skills = new ConcurrentDictionary<uint, Skill>();
-        private ConcurrentDictionary<uint, BaseItem> items = new ConcurrentDictionary<uint, BaseItem>();
+        private ConcurrentDictionary<uint, ItemInterface> items = new ConcurrentDictionary<uint, ItemInterface>();
         private readonly OutgoingMessageBuilderInterface outgoingMessageBuilder;
         private readonly TransportInterface transport;
     }

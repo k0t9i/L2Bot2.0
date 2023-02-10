@@ -1,0 +1,23 @@
+﻿<ItemsControl x:Class="Client.Application.Views.ItemPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Application.Views"
+        xmlns:components="clr-namespace:Client.Application.Components"
+        mc:Ignorable="d">
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <components:Item
+                ImageSource="{Binding Path=IconName,Mode=OneWay}"
+                ItemName="{Binding Path=Name,Mode=OneWay}"
+                Description="{Binding Path=Description,Mode=OneWay}"
+            />
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+    <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+            <WrapPanel/>
+        </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+</ItemsControl>

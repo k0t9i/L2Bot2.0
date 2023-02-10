@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Client.Infrastructure.Factories
 {
-    public class ItemFactory : EntityFactoryInterface<BaseItem>
+    public class ItemFactory : EntityFactoryInterface<ItemInterface>
     {
-        public BaseItem? Create(string data)
+        public ItemInterface? Create(string data)
         {
             var type = JsonConvert.DeserializeObject<ItemType>(data, settings);
 
@@ -33,7 +33,7 @@ namespace Client.Infrastructure.Factories
             throw new ArgumentException("Invalid item type " + type.Type.ToString());
         }
 
-        public void Update(BaseItem entity, string data)
+        public void Update(ItemInterface entity, string data)
         {
             JsonConvert.PopulateObject(data, entity, settings);
         }

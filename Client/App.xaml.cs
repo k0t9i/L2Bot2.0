@@ -95,7 +95,7 @@ namespace Client
                 .AddTransient(typeof(EntityFactoryInterface<Player>), typeof(EntityFactory<Player>))
                 .AddTransient(typeof(EntityFactoryInterface<ChatMessage>), typeof(EntityFactory<ChatMessage>))
                 .AddTransient(typeof(EntityFactoryInterface<Skill>), typeof(EntityFactory<Skill>))
-                .AddTransient(typeof(EntityFactoryInterface<BaseItem>), typeof(ItemFactory))
+                .AddTransient(typeof(EntityFactoryInterface<ItemInterface>), typeof(ItemFactory))
 
                 .AddSingleton<HeroHandler>()
                 .AddSingleton<DropHandler>()

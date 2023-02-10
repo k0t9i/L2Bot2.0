@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Service
 {
-    public class ItemHander : EntityHandler<BaseItem>
+    public class ItemHander : EntityHandler<ItemInterface>
     {
-        public override void OnCreate(BaseItem entity)
+        public override void OnCreate(ItemInterface entity)
         {
             eventBus.Publish(new ItemCreatedEvent(entity));
         }
-        public override void OnDelete(BaseItem entity)
+        public override void OnDelete(ItemInterface entity)
         {
             eventBus.Publish(new ItemDeletedEvent(entity.Id));
         }
 
-        public ItemHander(EntityFactoryInterface<BaseItem> factory, EventBusInterface eventBus) : base(factory)
+        public ItemHander(EntityFactoryInterface<ItemInterface> factory, EventBusInterface eventBus) : base(factory)
         {
             this.eventBus = eventBus;
         }

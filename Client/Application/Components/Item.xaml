@@ -1,0 +1,36 @@
+﻿<Button x:Class="Client.Application.Components.Item"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Application.Components"
+        xmlns:services="clr-namespace:Client.Application.Services"
+        mc:Ignorable="d"
+        ToolTipService.ShowOnDisabled="True"
+        x:Name="root">
+    <Button.InputBindings>
+        <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" />
+        <MouseBinding Gesture="RightClick" Command="{Binding MouseRightClickCommand}" />
+    </Button.InputBindings>
+    <Button.Resources>
+        <services:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <services:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <DataTemplate x:Key="ToolTipContent">
+            <StackPanel MaxWidth="300">
+                <TextBlock Text="{Binding ItemName,Mode=OneWay}" TextWrapping="Wrap" FontWeight="Bold" FontSize="14" Margin="0,0,0,5" />
+                <TextBlock
+                    TextWrapping="Wrap"
+                    Text="{Binding Source={x:Reference root},Path=Description,Mode=OneWay}"
+                />
+            </StackPanel>
+        </DataTemplate>
+    </Button.Resources>
+    <Button.Content>
+        <Grid>
+            <Image Source="{Binding Path=ImageSource,ElementName=root}" Height="32" Width="32" />
+        </Grid>
+    </Button.Content>
+    <Button.ToolTip >
+        <ContentControl ContentTemplate="{StaticResource ToolTipContent}"/>
+    </Button.ToolTip>
+</Button>

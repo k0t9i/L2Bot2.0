@@ -82,7 +82,7 @@ namespace Client.Application.ViewModels
             worldHandler.RequestMoveToEntity(Id);
         }
 
-        public CreatureMapViewModel(CreatureInterface creature, Hero hero, WorldHandler worldHandler)
+        public CreatureMapViewModel(WorldHandler worldHandler, CreatureInterface creature, Hero hero)
         {
             this.creature = creature;
             this.hero = hero;

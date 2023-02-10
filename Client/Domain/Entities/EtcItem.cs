@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.Entities
 {
-    public class EtcItem : BaseItem
+    public class EtcItem : BaseItem, ItemInterface
     {
         public uint Amount { get => amount; set => amount = value; }
         public bool IsQuest { get; set; }
         public bool IsAutoused { get => isAutoused; set => isAutoused = value; }
+        public string FullDescription { get => Description; }
+
         public EtcItem(uint id, uint itemId, ItemTypeEnum type, string name, string iconName, string description, int mana, uint weight, uint amount, bool isQuest, bool isAutoused) :
             base(id, itemId, type, name, iconName, description, mana, weight)
         {

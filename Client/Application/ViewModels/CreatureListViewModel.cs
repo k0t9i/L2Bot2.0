@@ -44,7 +44,7 @@ namespace Client.Application.ViewModels
             worldHandler.RequestMoveToEntity(Id);
         }
 
-        public CreatureListViewModel(CreatureInterface creature, Hero hero, WorldHandler worldHandler)
+        public CreatureListViewModel(WorldHandler worldHandler, CreatureInterface creature, Hero hero)
         {
             creature.PropertyChanged += Creature_PropertyChanged;
             creature.Transform.Position.PropertyChanged += Position_PropertyChanged;

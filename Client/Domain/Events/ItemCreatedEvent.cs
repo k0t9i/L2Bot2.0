@@ -9,9 +9,9 @@ namespace Client.Domain.Events
 {
     public class ItemCreatedEvent : EventInterface
     {
-        public readonly BaseItem Item;
+        public readonly ItemInterface Item;
 
-        public ItemCreatedEvent(BaseItem item)
+        public ItemCreatedEvent(ItemInterface item)
         {
             Item = item;
         }

@@ -100,13 +100,13 @@ namespace Interlude
 		void ToggleAutouseSoulshot(int objectId) const override
 		{
 			const auto item = m_ItemRespository.GetItem(objectId);
-			if (item.GetId())
+			if (item)
 			{
-				const auto etcItem = static_cast<const Entities::EtcItem&>(item);
+				const auto etcItem = static_cast<const Entities::EtcItem*>(item.get());
 
 				L2ParamStack* stack = new L2ParamStack(2);
-				stack->PushBack((void*)etcItem.GetItemId());
-				stack->PushBack((void*)(etcItem.IsAutoused() ? 0 : 1));
+				stack->PushBack((void*)etcItem->GetItemId());
+				stack->PushBack((void*)(etcItem->IsAutoused() ? 0 : 1));
 
 				m_NetworkHandler.RequestAutoSoulShot(*stack);
 

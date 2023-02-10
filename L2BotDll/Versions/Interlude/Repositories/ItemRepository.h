@@ -40,13 +40,15 @@ namespace Interlude
 			return result;
 		}
 
-		const Entities::BaseItem& GetItem(uint32_t objectId) const
+		const std::shared_ptr<Entities::BaseItem> GetItem(uint32_t objectId) const
 		{
+			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
+
 			if (m_Items.find(objectId) != m_Items.end())
 			{
-				return m_Items.at(objectId).get();
+				return m_Items.at(objectId);
 			}
-			return Entities::BaseItem();
+			return nullptr;
 		}
 
 		ItemRepository(const NetworkHandlerWrapper& networkHandler, const ItemFactory& factory, EntityFinder& finder) :
