@@ -35,6 +35,11 @@ namespace Interlude
 					item->gender == L2::Gender::MALE,
 					(Enums::ClassEnum)item->classId,
 					(Enums::ClassEnum)item->activeClassId
+				),
+				ValueObjects::VitalStats(
+					item->maxHp, item->hp,
+					item->maxMp, item->mp,
+					item->maxCp, item->cp
 				)
 			);
 		}

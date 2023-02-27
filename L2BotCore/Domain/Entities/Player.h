@@ -15,6 +15,7 @@ namespace L2Bot::Domain::Entities
 			WorldObject::Update(other);
 			m_FullName = casted->m_FullName;
 			m_Phenotype = casted->m_Phenotype;
+			m_VitalStats = casted->m_VitalStats;
 		}
 		void SaveState() override
 		{
@@ -23,6 +24,7 @@ namespace L2Bot::Domain::Entities
 			{
 				m_FullName,
 				m_Phenotype,
+				m_VitalStats,
 				false
 			};
 		}
@@ -31,7 +33,8 @@ namespace L2Bot::Domain::Entities
 			const Player* casted = static_cast<const Player*>(other);
 			return WorldObject::IsEqual(other) &&
 				m_FullName.IsEqual(&casted->m_FullName) &&
-				m_Phenotype.IsEqual(&casted->m_Phenotype);
+				m_Phenotype.IsEqual(&casted->m_Phenotype) &&
+				m_VitalStats.IsEqual(&casted->m_VitalStats);
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -46,6 +49,10 @@ namespace L2Bot::Domain::Entities
 			{
 				result.push_back({ L"phenotype", m_Phenotype.BuildSerializationNodes() });
 			}
+			if (m_PrevState.isNewState || !m_VitalStats.IsEqual(&m_PrevState.vitalStats))
+			{
+				result.push_back({ L"vitalStats", m_VitalStats.BuildSerializationNodes() });
+			}
 
 			return result;
 		}
@@ -54,11 +61,13 @@ namespace L2Bot::Domain::Entities
 			const uint32_t id,
 			const ValueObjects::Transform transform,
 			const ValueObjects::FullName fullName,
-			const ValueObjects::Phenotype phenotype
+			const ValueObjects::Phenotype phenotype,
+			const ValueObjects::VitalStats vitalStats
 		) :
 			WorldObject(id, transform),
 			m_FullName(fullName),
-			m_Phenotype(phenotype)
+			m_Phenotype(phenotype),
+			m_VitalStats(vitalStats)
 		{
 		}
 
@@ -70,6 +79,7 @@ namespace L2Bot::Domain::Entities
 		{
 			ValueObjects::FullName fullName = ValueObjects::FullName();
 			ValueObjects::Phenotype phenotype = ValueObjects::Phenotype();
+			ValueObjects::VitalStats vitalStats = ValueObjects::VitalStats();
 
 			bool isNewState = true;
 		};
@@ -77,6 +87,7 @@ namespace L2Bot::Domain::Entities
 	private:
 		ValueObjects::FullName m_FullName = ValueObjects::FullName();
 		ValueObjects::Phenotype m_Phenotype = ValueObjects::Phenotype();
+		ValueObjects::VitalStats m_VitalStats = ValueObjects::VitalStats();
 		GetState m_PrevState = GetState();
 	};
 }
