@@ -15,7 +15,7 @@ namespace Client.Domain.Entities
     {
         private FullName fullName;
         private Phenotype phenotype;
-        private VitalStats vitalStats = new VitalStats(0, 0, 0, 0, 0, 0);
+        private VitalStats vitalStats;
 
         public uint Id { get; set; }
         public Transform Transform { get; set; }
@@ -64,12 +64,13 @@ namespace Client.Domain.Entities
         public uint AggroRadius { get; set; } = 0;
         public bool IsHostile { get; set; } = false;
 
-        public Player(uint id, Transform transform, FullName fullName, Phenotype phenotype)
+        public Player(uint id, Transform transform, FullName fullName, Phenotype phenotype, VitalStats vitalStats)
         {
             Id = id;
             Transform = transform;
             this.fullName = FullName = fullName;
             this.phenotype = Phenotype = phenotype;
+            this.vitalStats = vitalStats;
         }
 
         private void Phenotype_PropertyChanged(object? sender, PropertyChangedEventArgs e)
