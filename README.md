@@ -1,5 +1,5 @@
 # Yet another ingame bot for Lineage 2.
-![image_2023-08-09_00-43-10](https://github.com/k0t9i/L2Bot2.0/assets/7733997/59c57585-720a-4588-aa94-ee3d6d78a39f)
+![image_2023-08-09_00-43-10](https://github.com/k0t9i/L2Bot2.0/assets/7733997/8b4356b0-f362-4ba8-8ca2-8c5cb949d873)
 
 ## Project components
 #### L2BotCore (C++)
