@@ -26,6 +26,17 @@ namespace Interlude
 
 		std::shared_ptr<Entities::Skill> Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
+			return std::make_shared<Entities::Skill>(BuildSkillData(skillId, level, isActive));
+		}
+
+		void Update(std::shared_ptr<Entities::Skill>& skill, const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
+		{
+			skill->Update(BuildSkillData(skillId, level, isActive));
+		}
+
+	private:
+		const Entities::Skill::Data BuildSkillData(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
+		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
 			const auto cost = data ? data->mpCost : 0;
@@ -34,7 +45,7 @@ namespace Interlude
 			const auto description = data && data->description ? data->description : L"";
 			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
 
-			return std::make_shared<Entities::Skill>(
+			return {
 				skillId,
 				static_cast<uint8_t>(level),
 				isActive != 1,
@@ -43,10 +54,7 @@ namespace Interlude
 				std::wstring(name),
 				std::wstring(description),
 				iconEntry ? std::wstring(iconEntry->value) : L"",
-				false,
-				false,
-				false
-			);
+			};
 		}
 
 	private:

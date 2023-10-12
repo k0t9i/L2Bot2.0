@@ -128,18 +128,23 @@ namespace Interlude
 				const auto skillInfo = casted.GetSkillInfo();
 				const auto skillId = skillInfo[2];
 
-				auto skill = m_Factory.Create(
-					skillInfo[2],
-					skillInfo[1],
-					skillInfo[0]
-				);
 				if (m_Skills.find(skillId) == m_Skills.end())
 				{
-					m_Skills.emplace(skill->GetId(), skill);
+					auto skill = m_Factory.Create(
+						skillInfo[2],
+						skillInfo[1],
+						skillInfo[0]
+					);
+					m_Skills[skill->GetId()] = skill;
 				}
 				else
 				{
-					m_Skills[skillId]->Update(skill.get());
+					m_Factory.Update(
+						m_Skills[skillId],
+						skillInfo[2],
+						skillInfo[1],
+						skillInfo[0]
+					);
 				}
 				m_NewSkills[skillId] = skillId;
 			}
@@ -161,18 +166,18 @@ namespace Interlude
 
 				const auto& skill = m_Skills[skillId];
 
-				skill->UpdateReloadingState(true);
-				skill->UpdateCastingState(true);
+				skill->StartReloading();
+				skill->StartCasting();
 
 				m_UsedSkillId = skill->GetId();
 
 				m_ReloadingTimers.StartTimer(skill->GetId(), skillInfo[3], [this] (uint32_t skillId) {
 					std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-					m_Skills[skillId]->UpdateReloadingState(false);
+					m_Skills[skillId]->StopReloading();
 				});
 				m_CastingTimers.StartTimer(skill->GetId(), skillInfo[2], [this] (uint32_t skillId) {
 					std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-					m_Skills[skillId]->UpdateCastingState(false);
+					m_Skills[skillId]->StopCasting();
 				});
 			}
 		}
@@ -195,7 +200,7 @@ namespace Interlude
 
 					const auto& skill = m_Skills[m_UsedSkillId];
 
-					skill->UpdateCastingState(false);
+					skill->StopCasting();
 					m_CastingTimers.StopTimer(skill->GetId());
 
 					m_UsedSkillId = 0;
@@ -227,11 +232,11 @@ namespace Interlude
 
 					if (skill->IsToggled() && !needToToggle)
 					{
-						skill->UpdateToggle(false);
+						skill->ToggleOff();
 					}
 					else if (!skill->IsToggled() && needToToggle && isAura)
 					{
-						skill->UpdateToggle(true);
+						skill->ToggleOn();
 					}
 				}
 			}

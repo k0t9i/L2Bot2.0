@@ -9,6 +9,19 @@ namespace L2Bot::Domain::Entities
 	class Skill : public EntityInterface
 	{
 	public:
+		struct Data
+		{
+			uint32_t skillId;
+			uint8_t level;
+			bool isActive;
+			uint8_t cost;
+			int16_t range;
+			std::wstring name;
+			std::wstring description;
+			std::wstring iconName;
+		};
+
+	public:
 		const uint32_t GetId() const override
 		{
 			return m_SkillId;
@@ -22,19 +35,43 @@ namespace L2Bot::Domain::Entities
 			return m_IsToggled;
 		}
 
-		void UpdateReloadingState(const bool isReloading)
+		void StartReloading()
 		{
-			m_IsReloading = isReloading;
+			m_IsReloading = true;
 		}
-		void UpdateCastingState(const bool isCasting)
+		void StopReloading()
 		{
-			m_IsCasting = isCasting;
+			m_IsReloading = false;
 		}
-		void UpdateToggle(const bool isToggled)
+		void StartCasting()
 		{
-			m_IsToggled = isToggled;
+			m_IsCasting = true;
+		}
+		void StopCasting()
+		{
+			m_IsCasting = false;
+		}
+		void ToggleOn()
+		{
+			m_IsToggled = true;
+		}
+		void ToggleOff()
+		{
+			m_IsToggled = false;
+		}
+		void Update(const Data &data) {
+			m_Level = data.level;
+			m_IsActive = data.isActive;
+			m_Cost = data.cost;
+			m_Range = data.range;
+			m_Name = data.name;
+			m_Description = data.description;
+			m_IconName = data.iconName;
 		}
 
+		/**
+		* @deprecated
+		**/
 		void Update(const EntityInterface* other) override
 		{
 			const Skill* casted = static_cast<const Skill*>(other);
@@ -52,6 +89,9 @@ namespace L2Bot::Domain::Entities
 			m_IsCasting = casted->m_IsCasting;
 			m_IsReloading = casted->m_IsReloading;
 		}
+		/**
+		* @deprecated
+		**/
 		void SaveState() override
 		{
 			m_PrevState =
@@ -68,6 +108,9 @@ namespace L2Bot::Domain::Entities
 				false
 			};
 		}
+		/**
+		* @deprecated
+		**/
 		const bool IsEqual(const EntityInterface* other) const override
 		{
 			const Skill* casted = static_cast<const Skill*>(other);
@@ -83,7 +126,9 @@ namespace L2Bot::Domain::Entities
 				m_IsCasting == casted->m_IsCasting &&
 				m_IsReloading == casted->m_IsReloading;
 		}
-
+		/**
+		* @deprecated
+		**/
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
 			std::vector<Serializers::Node> result;
@@ -136,34 +181,22 @@ namespace L2Bot::Domain::Entities
 			return result;
 		}
 
-		Skill(
-			const uint32_t skillId,
-			const uint8_t level,
-			const bool isActive,
-			const uint8_t cost,
-			const int16_t range,
-			const std::wstring& name,
-			const std::wstring& description,
-			const std::wstring& iconName,
-			const bool isToggled,
-			const bool isCasting,
-			const bool isReloading
-		) :
-			m_SkillId(skillId),
-			m_Level(level),
-			m_IsActive(isActive),
-			m_Cost(cost),
-			m_Range(range),
-			m_Name(name),
-			m_Description(description),
-			m_IconName(iconName),
-			m_IsToggled(isToggled),
-			m_IsCasting(isCasting),
-			m_IsReloading(isReloading)
+		Skill(const Data &data) :
+			m_SkillId(data.skillId),
+			m_Level(data.level),
+			m_IsActive(data.isActive),
+			m_Cost(data.cost),
+			m_Range(data.range),
+			m_Name(data.name),
+			m_Description(data.description),
+			m_IconName(data.iconName)
 		{
 			
 		}
 
+		/**
+		* @deprecated
+		**/
 		Skill(const Skill* other) :
 			m_SkillId(other->m_SkillId),
 			m_Level(other->m_Level),
@@ -179,10 +212,12 @@ namespace L2Bot::Domain::Entities
 		{
 		}
 
-		Skill() = default;
 		virtual ~Skill() = default;
 
 	private:
+		/**
+		* @deprecated
+		**/
 		struct GetState
 		{
 			std::wstring name = L"";
