@@ -19,6 +19,64 @@ namespace Interlude
 {
 	class ItemFactory
 	{
+	private:
+		struct BaseData
+		{
+			uint32_t objectId;
+			uint32_t itemId;
+			int32_t mana;
+			std::wstring name;
+			std::wstring iconName;
+			std::wstring description;
+			uint16_t weight;
+		};
+
+		struct EtcData : public BaseData
+		{
+			uint32_t amount;
+			bool isQuest;
+		};
+
+		struct ArmorData : public BaseData
+		{
+			bool isEquipped;
+			uint16_t enchantLevel;
+			Enums::ArmorTypeEnum armorType;
+			Enums::CrystalTypeEnum crystalType;
+			uint32_t pDefense;
+			uint32_t mDefense;
+			std::wstring setEffect;
+			std::wstring addSetEffect;
+			std::wstring enchantEffect;
+		};
+
+		struct ShieldData : public BaseData
+		{
+			bool isEquipped;
+			uint16_t enchantLevel;
+			Enums::CrystalTypeEnum crystalType;
+			int16_t evasion;
+			uint32_t pDefense;
+			uint16_t defRate;
+		};
+
+		struct WeaponData : public BaseData
+		{
+			bool isEquipped;
+			uint16_t enchantLevel;
+			Enums::WeaponTypeEnum weaponType;
+			Enums::CrystalTypeEnum crystalType;
+			uint8_t rndDamage;
+			uint32_t pAttack;
+			uint32_t mAttack;
+			uint16_t critical;
+			int8_t hitModify;
+			uint16_t atkSpd;
+			uint8_t mpConsume;
+			uint8_t soulshotCount;
+			uint8_t spiritshotCount;
+		};
+
 	public:
 		ItemFactory(const L2GameDataWrapper& l2GameData, const FName& fName, const EnchantHelper& enchantHelper) :
 			m_L2GameData(l2GameData),
@@ -33,7 +91,237 @@ namespace Interlude
 		std::shared_ptr<Entities::BaseItem> Create(const ItemData& itemInfo) const
 		{
 			//FIXME during first start data may be undefined
-			const auto data = m_L2GameData.GetItemData(itemInfo.itemId);
+			const auto data = GetItemData(itemInfo.itemId);
+
+			if (data)
+			{
+				switch (data->dataType)
+				{
+				case L2::ItemDataType::ARMOR:
+					return CreateArmor(itemInfo);
+				case L2::ItemDataType::WEAPON:
+					return CreateWeaponOrShield(itemInfo);
+				}
+
+				return CreateEtc(itemInfo);
+			}
+
+			return nullptr;
+		}
+
+		void Update(std::shared_ptr<Entities::BaseItem>& item, const ItemData& itemInfo) const
+		{
+			//FIXME during first start data may be undefined
+			const auto data = GetItemData(itemInfo.itemId);
+
+			if (data)
+			{
+				switch (data->dataType)
+				{
+				case L2::ItemDataType::ARMOR:
+					UpdateArmor(item, itemInfo);
+					return;
+				case L2::ItemDataType::WEAPON:
+					UpdateWeaponOrShield(item, itemInfo);
+					return;
+				}
+			}
+
+			UpdateEtc(item, itemInfo);
+		}
+
+	private:
+		std::shared_ptr<Entities::BaseItem> CreateEtc(const ItemData& itemInfo) const
+		{
+			const auto& data = GetEtcData(itemInfo);
+
+			return std::make_shared<Entities::EtcItem>(
+				data.objectId,
+				data.itemId,
+				data.mana,
+				data.name,
+				data.iconName,
+				data.description,
+				data.weight,
+				data.amount,
+				data.isQuest
+			);
+		}
+
+		void UpdateEtc(std::shared_ptr<Entities::BaseItem> &item, const ItemData& itemInfo) const
+		{
+			auto etcItem = std::dynamic_pointer_cast<Entities::EtcItem>(item);
+
+			const auto& data = GetEtcData(itemInfo);
+
+			etcItem->Update(
+				data.itemId,
+				data.mana,
+				data.name,
+				data.iconName,
+				data.description,
+				data.weight,
+				data.amount,
+				data.isQuest
+			);
+		}
+
+		std::shared_ptr<Entities::BaseItem> CreateArmor(const ItemData& itemInfo) const
+		{
+			const auto& data = GetArmorData(itemInfo);
+
+			return std::make_shared<Entities::ArmorItem>(
+				data.objectId,
+				data.itemId,
+				data.mana,
+				data.name,
+				data.iconName,
+				data.description,
+				data.weight,
+				data.isEquipped,
+				data.enchantLevel,
+				data.armorType,
+				data.crystalType,
+				data.pDefense,
+				data.mDefense,
+				data.setEffect,
+				data.addSetEffect,
+				data.enchantEffect
+			);
+		}
+
+		void UpdateArmor(std::shared_ptr<Entities::BaseItem>& item, const ItemData& itemInfo) const
+		{
+			auto armorItem = std::dynamic_pointer_cast<Entities::ArmorItem>(item);
+
+			const auto& data = GetArmorData(itemInfo);
+
+			armorItem->Update(
+				data.itemId,
+				data.mana,
+				data.name,
+				data.iconName,
+				data.description,
+				data.weight,
+				data.isEquipped,
+				data.enchantLevel,
+				data.armorType,
+				data.crystalType,
+				data.pDefense,
+				data.mDefense,
+				data.setEffect,
+				data.addSetEffect,
+				data.enchantEffect
+			);
+		}
+
+		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(const ItemData& itemInfo) const
+		{
+			const auto itemData = static_cast<const FL2WeaponItemData*>(GetItemData(itemInfo.itemId));
+
+			if (itemData->weaponType != L2::WeaponType::SHIELD)
+			{
+				const auto& data = GetWeaponData(itemInfo, itemData);
+
+				return std::make_shared<Entities::WeaponItem>(
+					data.objectId,
+					data.itemId,
+					data.mana,
+					data.name,
+					data.iconName,
+					data.description,
+					data.weight,
+					data.isEquipped,
+					data.enchantLevel,
+					data.weaponType,
+					data.crystalType,
+					data.rndDamage,
+					data.pAttack,
+					data.mAttack,
+					data.critical,
+					data.hitModify,
+					data.atkSpd,
+					data.mpConsume,
+					data.soulshotCount,
+					data.spiritshotCount
+				);
+			}
+
+			const auto& data = GetShieldData(itemInfo, itemData);
+
+			return std::make_shared<Entities::ShieldItem>(
+				data.objectId,
+				data.itemId,
+				data.mana,
+				data.name,
+				data.iconName,
+				data.description,
+				data.weight,
+				data.isEquipped,
+				data.enchantLevel,
+				data.crystalType,
+				data.evasion,
+				data.pDefense,
+				data.defRate
+			);
+		}
+
+		void UpdateWeaponOrShield(std::shared_ptr<Entities::BaseItem>& item, const ItemData& itemInfo) const
+		{
+			const auto itemData = static_cast<const FL2WeaponItemData*>(GetItemData(itemInfo.itemId));
+
+			if (itemData->weaponType != L2::WeaponType::SHIELD)
+			{
+				auto weaponItem = std::dynamic_pointer_cast<Entities::WeaponItem>(item);
+				const auto& data = GetWeaponData(itemInfo, itemData);
+
+				weaponItem->Update(
+					data.itemId,
+					data.mana,
+					data.name,
+					data.iconName,
+					data.description,
+					data.weight,
+					data.isEquipped,
+					data.enchantLevel,
+					data.weaponType,
+					data.crystalType,
+					data.rndDamage,
+					data.pAttack,
+					data.mAttack,
+					data.critical,
+					data.hitModify,
+					data.atkSpd,
+					data.mpConsume,
+					data.soulshotCount,
+					data.spiritshotCount
+				);
+
+				return;
+			}
+
+			auto shieldItem = std::dynamic_pointer_cast<Entities::ShieldItem>(item);
+			const auto& data = GetShieldData(itemInfo, itemData);
+
+			shieldItem->Update(
+				data.itemId,
+				data.mana,
+				data.name,
+				data.iconName,
+				data.description,
+				data.weight,
+				data.isEquipped,
+				data.enchantLevel,
+				data.crystalType,
+				data.evasion,
+				data.pDefense,
+				data.defRate
+			);
+		}
+
+		const BaseData GetBaseData(const ItemData& itemInfo) const
+		{
+			const auto data = GetItemData(itemInfo.itemId);
 
 			const auto nameEntry = data ? m_FName.GetEntry(data->nameIndex) : nullptr;
 			const auto name = nameEntry ? std::wstring(nameEntry->value) : L"";
@@ -41,99 +329,52 @@ namespace Interlude
 			const auto icon = iconEntry ? std::wstring(iconEntry->value) : L"";
 			const auto description = data && data->description ? std::wstring(data->description) : L"";
 
-			if (data)
-			{
-				switch (data->dataType)
-				{
-				case L2::ItemDataType::ARMOR:
-					return CreateArmor(itemInfo, data, name, icon, description);
-				case L2::ItemDataType::WEAPON:
-					return CreateWeaponOrShield(itemInfo, data, name, icon, description);
-				}
-			}
-
-			return CreateEtc(itemInfo, data, name, icon, description);
-		}
-
-		std::shared_ptr<Entities::BaseItem> Copy(std::shared_ptr<Entities::BaseItem> other) const
-		{
-			auto otherPtr = other.get();
-			{
-				const auto object = dynamic_cast<const Entities::EtcItem*>(otherPtr);
-				if (object)
-				{
-					return std::make_shared<Entities::EtcItem>(object);
-				}
-			}
-			{
-				const auto object = dynamic_cast<const Entities::ArmorItem*>(otherPtr);
-				if (object)
-				{
-					return std::make_shared<Entities::ArmorItem>(object);
-				}
-			}
-			{
-				const auto object = dynamic_cast<const Entities::WeaponItem*>(otherPtr);
-				if (object)
-				{
-					return std::make_shared<Entities::WeaponItem>(object);
-				}
-			}
-			{
-				const auto object = dynamic_cast<const Entities::ShieldItem*>(otherPtr);
-				if (object)
-				{
-					return std::make_shared<Entities::ShieldItem>(object);
-				}
-			}
-
-			return std::make_shared<Entities::BaseItem>(otherPtr);
-		}
-
-	private:
-		std::shared_ptr<Entities::BaseItem> CreateEtc(
-			const ItemData& itemInfo,
-			const FL2ItemDataBase* itemData,
-			const std::wstring& name,
-			const std::wstring& icon,
-			const std::wstring& description
-		) const
-		{
-			return std::make_shared<Entities::EtcItem>(
+			return {
 				itemInfo.objectId,
 				itemInfo.itemId,
 				itemInfo.mana,
 				name,
 				icon,
 				description,
-				itemData ? itemData->weight : 0,
-				itemInfo.amount,
-				itemInfo.isQuest
-			);
+				(uint16_t)(data ? data->weight : 0)
+			};
 		}
 
-		std::shared_ptr<Entities::BaseItem> CreateArmor(
-			const ItemData& itemInfo,
-			const FL2ItemDataBase* itemData,
-			const std::wstring& name,
-			const std::wstring& icon,
-			const std::wstring& description
-		) const
+		const EtcData GetEtcData(const ItemData& itemInfo) const
 		{
-			const auto casted = static_cast<const FL2ArmorItemData*>(itemData);
+			const auto& baseData = GetBaseData(itemInfo);
+
+			return {
+				baseData.objectId,
+				baseData.itemId,
+				baseData.mana,
+				baseData.name,
+				baseData.iconName,
+				baseData.description,
+				baseData.weight,
+				itemInfo.amount,
+				itemInfo.isQuest
+			};
+		}
+
+		const ArmorData GetArmorData(const ItemData& itemInfo) const
+		{
+			const auto& baseData = GetBaseData(itemInfo);
+
+			const auto casted = static_cast<const FL2ArmorItemData*>(GetItemData(itemInfo.itemId));
 
 			const auto setEffect = casted && casted->setEffect ? std::wstring(casted->setEffect) : L"";
 			const auto addSetEffect = casted && casted->setEffect ? std::wstring(casted->setEffect) : L"";
 			const auto enchantEffect = casted && casted->enchantEffect ? std::wstring(casted->enchantEffect) : L"";
 
-			return std::make_shared<Entities::ArmorItem>(
-				itemInfo.objectId,
-				itemInfo.itemId,
-				itemInfo.mana,
-				name,
-				icon,
-				description,
-				itemData ? itemData->weight : 0,
+			return {
+				baseData.objectId,
+				baseData.itemId,
+				baseData.mana,
+				baseData.name,
+				baseData.iconName,
+				baseData.description,
+				baseData.weight,
 				itemInfo.isEquipped > 0,
 				itemInfo.enchantLevel,
 				casted ? static_cast<Enums::ArmorTypeEnum>(casted->armorType) : Enums::ArmorTypeEnum::none,
@@ -143,60 +384,61 @@ namespace Interlude
 				setEffect,
 				addSetEffect,
 				enchantEffect
-			);
+			};
 		}
 
-		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(
-			const ItemData& itemInfo,
-			const FL2ItemDataBase* itemData,
-			const std::wstring& name,
-			const std::wstring& icon,
-			const std::wstring& description
-		) const
+		const ShieldData GetShieldData(const ItemData& itemInfo, const FL2WeaponItemData* itemData) const
 		{
-			const auto casted = static_cast<const FL2WeaponItemData*>(itemData);
+			const auto& baseData = GetBaseData(itemInfo);
 
-			if (casted->weaponType != L2::WeaponType::SHIELD)
-			{
-				return std::make_shared<Entities::WeaponItem>(
-					itemInfo.objectId,
-					itemInfo.itemId,
-					itemInfo.mana,
-					name,
-					icon,
-					description,
-					itemData ? itemData->weight : 0,
-					itemInfo.isEquipped > 0,
-					itemInfo.enchantLevel,
-					casted ? static_cast<Enums::WeaponTypeEnum>(casted->weaponType) : Enums::WeaponTypeEnum::none,
-					casted ? static_cast<Enums::CrystalTypeEnum>(casted->crystalType) : Enums::CrystalTypeEnum::none,
-					casted ? casted->rndDamage : 0,
-					m_EnchantHelper.GetPAttackEnchantValue(casted->weaponType, itemInfo.isTwoHanded, casted->crystalType, casted ? casted->pAttack : 0, itemInfo.enchantLevel),
-					m_EnchantHelper.GetMAttackEnchantValue(casted->crystalType, casted ? casted->mAttack : 0, itemInfo.enchantLevel),
-					casted ? casted->critical : 0,
-					casted ? casted->hitModify : 0,
-					casted ? casted->atkSpd : 0,
-					casted ? casted->mpConsume : 0,
-					casted ? casted->soulshotCount : 0,
-					casted ? casted->spiritshotCount : 0
-				);
-			}
-
-			return std::make_shared<Entities::ShieldItem>(
-				itemInfo.objectId,
-				itemInfo.itemId,
-				itemInfo.mana,
-				name,
-				icon,
-				description,
-				itemData ? itemData->weight : 0,
+			return {
+				baseData.objectId,
+				baseData.itemId,
+				baseData.mana,
+				baseData.name,
+				baseData.iconName,
+				baseData.description,
+				baseData.weight,
 				itemInfo.isEquipped > 0,
 				itemInfo.enchantLevel,
-				casted ? static_cast<Enums::CrystalTypeEnum>(casted->crystalType) : Enums::CrystalTypeEnum::none,
-				casted ? casted->shieldEvasion : 0,
-				m_EnchantHelper.GetDefenseEnchantValue(casted ? casted->shieldPdef : 0, itemInfo.enchantLevel),
-				casted ? casted->shieldDefRate : 0
-			);
+				itemData ? static_cast<Enums::CrystalTypeEnum>(itemData->crystalType) : Enums::CrystalTypeEnum::none,
+				(int16_t)(itemData ? itemData->shieldEvasion : 0),
+				m_EnchantHelper.GetDefenseEnchantValue(itemData ? itemData->shieldPdef : 0, itemInfo.enchantLevel),
+				(uint16_t)(itemData ? itemData->shieldDefRate : 0)
+			};
+		}
+
+		const WeaponData GetWeaponData(const ItemData& itemInfo, const FL2WeaponItemData* itemData) const
+		{
+			const auto& baseData = GetBaseData(itemInfo);
+
+			return {
+				baseData.objectId,
+				baseData.itemId,
+				baseData.mana,
+				baseData.name,
+				baseData.iconName,
+				baseData.description,
+				baseData.weight,
+				itemInfo.isEquipped > 0,
+				itemInfo.enchantLevel,
+				itemData ? static_cast<Enums::WeaponTypeEnum>(itemData->weaponType) : Enums::WeaponTypeEnum::none,
+				itemData ? static_cast<Enums::CrystalTypeEnum>(itemData->crystalType) : Enums::CrystalTypeEnum::none,
+				(uint8_t)(itemData ? itemData->rndDamage : 0),
+				m_EnchantHelper.GetPAttackEnchantValue(itemData->weaponType, itemInfo.isTwoHanded, itemData->crystalType, itemData ? itemData->pAttack : 0, itemInfo.enchantLevel),
+				m_EnchantHelper.GetMAttackEnchantValue(itemData->crystalType, itemData ? itemData->mAttack : 0, itemInfo.enchantLevel),
+				(uint16_t)(itemData ? itemData->critical : 0),
+				(int8_t)(itemData ? itemData->hitModify : 0),
+				(uint16_t)(itemData ? itemData->atkSpd : 0),
+				(uint8_t)(itemData ? itemData->mpConsume : 0),
+				(uint8_t)(itemData ? itemData->soulshotCount : 0),
+				(uint8_t)(itemData ? itemData->spiritshotCount : 0)
+			};
+		}
+
+		const FL2ItemDataBase* GetItemData(const uint32_t itemId) const
+		{
+			return m_L2GameData.GetItemData(itemId);
 		}
 
 	private:

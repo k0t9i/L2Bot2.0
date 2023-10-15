@@ -188,7 +188,6 @@
     <ClInclude Include="Serializers\JsonSerializer.h" />
     <ClInclude Include="Versions\Interlude\Services\HeroService.h" />
     <ClInclude Include="Services\WorldHandler.h" />
-    <ClInclude Include="Services\EntityFinder.h" />
     <ClInclude Include="ThirdParty\json.hpp" />
     <ClInclude Include="Versions\GameStructs\FNameInterface.h" />
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h" />

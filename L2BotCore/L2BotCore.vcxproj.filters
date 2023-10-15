@@ -72,9 +72,6 @@
     <ClInclude Include="Domain\ValueObjects\VitalStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Services\EntityHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Domain\Repositories\EntityRepositoryInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,13 +135,7 @@
     <ClInclude Include="Domain\Enums\ChatChannelEnum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\ValueObjects\ChatMessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Services\ChatMessageHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Repositories\ChatMessageRepositoryInterface.h">
+    <ClInclude Include="Domain\Entities\ChatMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Domain\DTO\Message.h">
@@ -159,9 +150,24 @@
     <ClInclude Include="Domain\Services\HeroServiceInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Domain\Entities\Hashable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Helpers\HashCombiner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Services\UnitOfWork.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Helpers\HashCombiner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Entities\ChatMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <chrono>
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
@@ -9,7 +9,6 @@
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -18,27 +17,15 @@ namespace Interlude
 	class AbnormalEffectRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
+		const std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			const auto objects = m_EntityFinder.FindEntities<std::shared_ptr<Entities::AbnormalEffect>>(m_Effects, [this](std::shared_ptr<Entities::AbnormalEffect> item) {
-				return std::make_shared<Entities::AbnormalEffect>(item.get());
-			});
-
-			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
-
-			for (const auto kvp : objects)
-			{
-				result.push_back(kvp.second);
-			}
-
-			return result;
+			return m_Effects;
 		}
 
-		AbnormalEffectRepository(const AbnormalEffectFactory& factory, EntityFinder& finder) :
-			m_Factory(factory),
-			m_EntityFinder(finder)
+		AbnormalEffectRepository(const AbnormalEffectFactory& factory) :
+			m_Factory(factory)
 		{
 			EventDispatcher::GetInstance().Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
 				OnEffectToggled(evt);
@@ -75,40 +62,48 @@ namespace Interlude
 			if (evt.GetName() == AbnormalEffectChangedEvent::name)
 			{
 				const auto casted = static_cast<const AbnormalEffectChangedEvent&>(evt);
-				const auto skillInfo = casted.GetSkillInfo();
+				
+				const auto &actualIds = Create(casted.GetSkillInfo());
+				Delete(actualIds);
+			}
+		}
 
-				std::map<uint32_t, int32_t> ids;
-				for (size_t i = 0; i < skillInfo.size(); i += 3)
+	private:
+		const std::unordered_map<uint32_t, int32_t> Create(const std::vector<int32_t> &skillInfo)
+		{
+			std::unordered_map<uint32_t, int32_t> ids;
+
+			for (size_t i = 0; i < skillInfo.size(); i += 3)
+			{
+				const auto effectId = skillInfo[i];
+				const auto level = skillInfo[i + 1];
+
+				m_Effects[effectId] = m_Factory.Create(effectId, level);
+
+				ids[effectId] = effectId;
+			}
+
+			return ids;
+		}
+
+		void Delete(const std::unordered_map<uint32_t, int32_t> &actualIds)
+		{
+			for (auto it = m_Effects.begin(); it != m_Effects.end();)
+			{
+				if (actualIds.find(it->second->GetId()) == actualIds.end())
 				{
-					const auto effectId = skillInfo[i];
-					const auto level = skillInfo[i + 1];
-
-					auto effect = m_Factory.Create(effectId, level);
-					m_Effects.emplace(effect->GetId(), effect);
-
-					ids[effectId] = effectId;
+					it = m_Effects.erase(it);
 				}
-
-				for (auto it = m_Effects.begin(); it != m_Effects.end();)
+				else
 				{
-					const auto& effect = it->second;
-
-					if (ids.find(effect->GetId()) == ids.end())
-					{
-						it = m_Effects.erase(it);
-					}
-					else
-					{
-						++it;
-					}
+					++it;
 				}
 			}
 		}
 
 	private:
 		const AbnormalEffectFactory& m_Factory;
-		std::map<uint32_t, std::shared_ptr<Entities::AbnormalEffect>> m_Effects;
+		std::unordered_map<uint32_t, std::shared_ptr<Entities::EntityInterface>> m_Effects;
 		std::shared_timed_mutex m_Mutex;
-		EntityFinder& m_EntityFinder;
 	};
 }

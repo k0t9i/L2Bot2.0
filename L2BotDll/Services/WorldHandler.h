@@ -4,14 +4,13 @@
 #include <thread>
 #include <memory>
 #include <Windows.h>
-#include "Domain/Services/EntityHandler.h"
-#include "Domain/Services/ChatMessageHandler.h"
 #include "Domain/Services/HeroServiceInterface.h"
 #include "Domain/Serializers/SerializerInterface.h"
 #include "Domain/Serializers/IncomingMessageFactoryInterface.h"
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "Domain/Transports/TransportInterface.h"
 #include "Domain/DTO/Message.h"
+#include "Domain/Services/UnitOfWork.h"
 
 using namespace L2Bot::Domain;
 
@@ -26,20 +25,20 @@ public:
 		Repositories::EntityRepositoryInterface& skillRepository,
 		Repositories::EntityRepositoryInterface& itemRepository,
 		Repositories::EntityRepositoryInterface& abnormalEffectRepository,
-		Repositories::ChatMessageRepositoryInterface& chatMessageRepository,
+		Repositories::EntityRepositoryInterface& chatMessageRepository,
 		const Serializers::SerializerInterface& serializer,
 		const Serializers::IncomingMessageFactoryInterface& incomingMessageFactory,
 		Services::HeroServiceInterface& heroService,
 		Transports::TransportInterface& transport
 	) :
-		m_HeroHandler(Services::EntityHandler(heroRepository)),
-		m_DropHandler(Services::EntityHandler(dropRepository)),
-		m_NPCHandler(Services::EntityHandler(npcRepository)),
-		m_PlayerHandler(Services::EntityHandler(playerRepository)),
-		m_SkillHandler(Services::EntityHandler(skillRepository)),
-		m_ItemHandler(Services::EntityHandler(itemRepository)),
-		m_AbnormalEffectHandler(Services::EntityHandler(abnormalEffectRepository)),
-		m_ChatMessageHandler(Services::ChatMessageHandler(chatMessageRepository)),
+		m_HeroRepository(heroRepository),
+		m_DropRepository(dropRepository),
+		m_NPCRepository(npcRepository),
+		m_PlayerRepository(playerRepository),
+		m_SkillRepository(skillRepository),
+		m_ItemRepository(itemRepository),
+		m_AbnormalEffectRepository(abnormalEffectRepository),
+		m_ChatMessageRepository(chatMessageRepository),
 		m_Serializer(serializer),
 		m_IncomingMessageFactory(incomingMessageFactory),
 		m_HeroService(heroService),
@@ -157,34 +156,56 @@ private:
 
 	const std::vector<std::vector<Serializers::Node>> GetData()
 	{
-		std::map<std::wstring, Services::EntityHandler> handlers
+		std::map<std::wstring, Repositories::EntityRepositoryInterface&> handlers
 		{
-			{L"hero", m_HeroHandler},
-			{L"drop", m_DropHandler},
-			{L"npc", m_NPCHandler},
-			{L"player", m_PlayerHandler},
-			{L"skill", m_SkillHandler},
-			{L"item", m_ItemHandler},
-			{L"abnormalEffect", m_AbnormalEffectHandler}
+			{L"hero", m_HeroRepository},
+			{L"drop", m_DropRepository},
+			{L"npc", m_NPCRepository},
+			{L"player", m_PlayerRepository},
+			{L"skill", m_SkillRepository},
+			{L"item", m_ItemRepository},
+			{L"abnormalEffect", m_AbnormalEffectRepository},
+			{L"chat", m_ChatMessageRepository}
 		};
 
 		std::vector<std::vector<Serializers::Node>> result;
 
-		for (auto& kvp : handlers)
+		for (const auto& kvp : handlers)
 		{
-			for (const auto& entity : kvp.second.GetEntities())
-			{
-				if (entity->GetState() != Enums::EntityStateEnum::none)
+			auto& entities = kvp.second.GetEntities();
+			const auto& changes = m_UnitOfWork.ConnectEntities(kvp.first, entities);
+
+			for (const auto &changeKvp : changes) {
+				const auto id = changeKvp.first;
+
+				std::wstring operation = L"none";
+				switch (changeKvp.second)
 				{
-					const auto message = DTO::Message{ kvp.first, entity->GetState(), *entity->GetEntity().get() };
-					result.push_back(message.BuildSerializationNodes());
+				case Enums::EntityStateEnum::created:
+					operation = L"create";
+					break;
+				case Enums::EntityStateEnum::updated:
+					operation = L"update";
+					break;
+				case Enums::EntityStateEnum::deleted:
+					operation = L"delete";
 				}
-			};
-		}
-		for (const auto& chatMessage : m_ChatMessageHandler.GetMessages())
-		{
-			const auto message = DTO::Message{ L"chat", Enums::EntityStateEnum::created, chatMessage };
-			result.push_back(message.BuildSerializationNodes());
+
+				if (entities.find(id) != entities.end()) {
+					result.push_back({
+						Serializers::Node{ L"type", kvp.first },
+						Serializers::Node{ L"operation", operation },
+						Serializers::Node{ L"content", entities.at(id)->BuildSerializationNodes()}
+					});
+				}
+				else {
+					result.push_back({
+						Serializers::Node{ L"type", kvp.first },
+						Serializers::Node{ L"operation", operation },
+						Serializers::Node{ L"content", {Serializers::Node{ L"id", std::to_wstring(id) }}}
+					});
+				}
+			}
 		}
 		
 		return result;
@@ -192,24 +213,24 @@ private:
 
 	void Invalidate()
 	{
-		m_DropHandler.Invalidate();
-		m_HeroHandler.Invalidate();
-		m_NPCHandler.Invalidate();
-		m_PlayerHandler.Invalidate();
-		m_SkillHandler.Invalidate();
-		m_ItemHandler.Invalidate();
-		m_AbnormalEffectHandler.Invalidate();
+		m_DropRepository.Reset();
+		m_HeroRepository.Reset();
+		m_NPCRepository.Reset();
+		m_PlayerRepository.Reset();
+		m_SkillRepository.Reset();
+		m_ItemRepository.Reset();
+		m_AbnormalEffectRepository.Reset();
 	}
 
 private:
-	Services::EntityHandler m_DropHandler;
-	Services::EntityHandler m_HeroHandler;
-	Services::EntityHandler m_NPCHandler;
-	Services::EntityHandler m_PlayerHandler;
-	Services::EntityHandler m_SkillHandler;
-	Services::EntityHandler m_ItemHandler;
-	Services::EntityHandler m_AbnormalEffectHandler;
-	Services::ChatMessageHandler m_ChatMessageHandler;
+	Repositories::EntityRepositoryInterface& m_DropRepository;
+	Repositories::EntityRepositoryInterface& m_HeroRepository;
+	Repositories::EntityRepositoryInterface& m_NPCRepository;
+	Repositories::EntityRepositoryInterface& m_PlayerRepository;
+	Repositories::EntityRepositoryInterface& m_SkillRepository;
+	Repositories::EntityRepositoryInterface& m_ItemRepository;
+	Repositories::EntityRepositoryInterface& m_AbnormalEffectRepository;
+	Repositories::EntityRepositoryInterface& m_ChatMessageRepository;
 	const Serializers::SerializerInterface& m_Serializer;
 	const Serializers::IncomingMessageFactoryInterface& m_IncomingMessageFactory;
 	Services::HeroServiceInterface& m_HeroService;
@@ -218,4 +239,6 @@ private:
 	std::thread m_ConnectingThread;
 	std::thread m_SendingThread;
 	std::thread m_ReceivingThread;
+
+	Services::UnitOfWork m_UnitOfWork;
 };

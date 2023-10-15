@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Domain/ValueObjects/ChatMessage.h"
+#include "Domain/Entities/ChatMessage.h"
 #include "../../../DTO/ChatMessage.h"
 
 using namespace L2Bot::Domain;
@@ -13,14 +13,14 @@ namespace Interlude
 		ChatMessageFactory() = default;
 		virtual ~ChatMessageFactory() = default;
 
-		ValueObjects::ChatMessage Create(const ChatMessage& message) const
+		std::shared_ptr<Entities::ChatMessage> Create(const ChatMessage& message) const
 		{
-			return ValueObjects::ChatMessage{
+			return std::make_shared<Entities::ChatMessage>(
 				message.objectId,
 				static_cast<Enums::ChatChannelEnum>(message.channel),
 				message.name,
 				message.text
-			};
+			);
 		}
 	};
 }

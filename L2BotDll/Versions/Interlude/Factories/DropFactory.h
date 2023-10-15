@@ -11,6 +11,17 @@ namespace Interlude
 {
 	class DropFactory
 	{
+	private:
+		struct Data
+		{
+			uint32_t id;
+			ValueObjects::Transform transform;
+			uint32_t itemId;
+			uint32_t amount;
+			std::wstring name;
+			std::wstring iconName;
+		};
+
 	public:
 		DropFactory(const L2GameDataWrapper& l2GameData, const FName& fName) :
 			m_L2GameData(l2GameData),
@@ -23,11 +34,39 @@ namespace Interlude
 
 		std::shared_ptr<Entities::Drop> Create(const Item* item) const
 		{
+			const auto &data = GetData(item);
+
+			return std::make_shared<Entities::Drop>(
+				data.id,
+				data.transform,
+				data.itemId,
+				data.amount,
+				data.name,
+				data.iconName
+			);
+		}
+
+		void Update(std::shared_ptr<Entities::Drop>& drop, const Item* item) const
+		{
+			const auto& data = GetData(item);
+
+			drop->Update(
+				data.transform,
+				data.itemId,
+				data.amount,
+				data.name,
+				data.iconName
+			);
+		}
+
+	private:
+		const Data GetData(const Item* item) const
+		{
 			const auto itemData = m_L2GameData.GetItemData(item->itemId);
 			const auto nameEntry = itemData ? m_FName.GetEntry(itemData->nameIndex) : nullptr;
 			const auto iconEntry = itemData ? m_FName.GetEntry(itemData->iconNameIndex) : nullptr;
 
-			return std::make_shared<Entities::Drop>(
+			return {
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -43,7 +82,7 @@ namespace Interlude
 				item->amount,
 				nameEntry ? std::wstring(nameEntry->value) : L"",
 				iconEntry ? std::wstring(iconEntry->value) : L""
-			);
+			};
 		}
 
 	private:

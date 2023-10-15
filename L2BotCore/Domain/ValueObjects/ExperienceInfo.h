@@ -1,10 +1,13 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class ExperienceInfo : public Serializers::Serializable
+	class ExperienceInfo : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const uint8_t GetLevel() const
@@ -19,9 +22,13 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Sp;
 		}
-		const bool IsEqual(const ExperienceInfo* other) const
+		const size_t GetHash() const override
 		{
-			return m_Level == other->m_Level && m_Exp == other->m_Exp && m_Sp == other->m_Sp;
+			return Helpers::CombineHashes({
+				std::hash<uint8_t>{}(m_Level),
+				std::hash<uint32_t>{}(m_Exp),
+				std::hash<uint32_t>{}(m_Sp)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

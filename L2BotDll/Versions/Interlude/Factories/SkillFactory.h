@@ -14,6 +14,19 @@ namespace Interlude
 {
 	class SkillFactory
 	{
+	private:
+		struct Data
+		{
+			uint32_t skillId;
+			uint8_t level;
+			bool isActive;
+			uint8_t cost;
+			int16_t range;
+			std::wstring name;
+			std::wstring description;
+			std::wstring iconName;
+		};
+
 	public:
 		SkillFactory(const L2GameDataWrapper& l2GameData, const FName& fName) :
 			m_L2GameData(l2GameData),
@@ -26,16 +39,37 @@ namespace Interlude
 
 		std::shared_ptr<Entities::Skill> Create(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
-			return std::make_shared<Entities::Skill>(BuildSkillData(skillId, level, isActive));
+			const auto& data = GetData(skillId, level, isActive);
+
+			return std::make_shared<Entities::Skill>(
+				data.skillId,
+				data.level,
+				data.isActive,
+				data.cost,
+				data.range,
+				data.name,
+				data.description,
+				data.iconName
+			);
 		}
 
 		void Update(std::shared_ptr<Entities::Skill>& skill, const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
-			skill->Update(BuildSkillData(skillId, level, isActive));
+			const auto& data = GetData(skillId, level, isActive);
+
+			skill->Update(
+				data.level,
+				data.isActive,
+				data.cost,
+				data.range,
+				data.name,
+				data.description,
+				data.iconName
+			);
 		}
 
 	private:
-		const Entities::Skill::Data BuildSkillData(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
+		const Data GetData(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 

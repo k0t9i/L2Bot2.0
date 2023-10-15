@@ -1,10 +1,13 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class PermanentStats : public Serializers::Serializable
+	class PermanentStats : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const uint16_t GetStr() const
@@ -31,14 +34,16 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Wit;
 		}
-		const bool IsEqual(const PermanentStats* other) const
+		const size_t GetHash() const override
 		{
-			return m_Str == other->m_Str &&
-				m_Dex == other->m_Dex &&
-				m_Con == other->m_Con &&
-				m_Int == other->m_Int &&
-				m_Men == other->m_Men &&
-				m_Wit == other->m_Wit;
+			return Helpers::CombineHashes({
+				std::hash<uint16_t>{}(m_Str),
+				std::hash<uint16_t>{}(m_Dex),
+				std::hash<uint16_t>{}(m_Con),
+				std::hash<uint16_t>{}(m_Int),
+				std::hash<uint16_t>{}(m_Men),
+				std::hash<uint16_t>{}(m_Wit)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

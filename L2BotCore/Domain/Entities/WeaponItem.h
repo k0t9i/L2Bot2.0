@@ -2,99 +2,91 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <functional>
 #include "BaseItem.h"
 #include "../Enums/WeaponTypeEnum.h"
 #include "../Enums/CrystalTypeEnum.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::Entities
 {
 	class WeaponItem : public BaseItem
 	{
 	public:
-		void Update(const EntityInterface* other) override
-		{
-			const WeaponItem* casted = static_cast<const WeaponItem*>(other);
+		void Update(
+			const uint32_t itemId,
+			const int32_t mana,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
+			const uint16_t weight,
+			const bool isEquipped,
+			const uint16_t enchantLevel,
+			const Enums::WeaponTypeEnum weaponType,
+			const Enums::CrystalTypeEnum crystalType,
+			const uint8_t rndDamage,
+			const uint32_t pAttack,
+			const uint32_t mAttack,
+			const uint16_t critical,
+			const int8_t hitModify,
+			const uint16_t attackSpeed,
+			const uint8_t mpConsume,
+			const uint8_t soulshotCount,
+			const uint8_t spiritshotCount
+		) {
+			BaseItem::Update(itemId, mana, name, iconName, description, weight);
 
-			BaseItem::Update(other);
-
-			m_IsEquipped = casted->m_IsEquipped;
-			m_EnchantLevel = casted->m_EnchantLevel;
-			m_WeaponType = casted->m_WeaponType;
-			m_CrystalType = casted->m_CrystalType;
-			m_PAttack = casted->m_PAttack;
-			m_MAttack = casted->m_MAttack;
-			m_RndDamage = casted->m_RndDamage;
-			m_Critical = casted->m_Critical;
-			m_HitModify = casted->m_HitModify;
-			m_AttackSpeed = casted->m_AttackSpeed;
-			m_MpConsume = casted->m_MpConsume;
-			m_SoulshotCount = casted->m_SoulshotCount;
-			m_SpiritshotCount = casted->m_SpiritshotCount;
+			m_IsEquipped = isEquipped;
+			m_EnchantLevel = enchantLevel;
+			m_WeaponType = weaponType;
+			m_CrystalType = crystalType;
+			m_RndDamage = rndDamage;
+			m_PAttack = pAttack;
+			m_MAttack = mAttack;
+			m_Critical = critical;
+			m_HitModify = hitModify;
+			m_AttackSpeed = attackSpeed;
+			m_MpConsume = mpConsume;
+			m_SoulshotCount = soulshotCount;
+			m_SpiritshotCount = spiritshotCount;
 		}
-		void SaveState() override
+		const size_t GetHash() const override
 		{
-			BaseItem::SaveState();
-			m_PrevState =
-			{
-				m_IsEquipped,
-				m_EnchantLevel,
-				m_PAttack,
-				m_MAttack,
-				false
-			};
-		}
-		const bool IsEqual(const EntityInterface* other) const override
-		{
-			const WeaponItem* casted = static_cast<const WeaponItem*>(other);
-			return BaseItem::IsEqual(other) &&
-				m_IsEquipped == casted->m_IsEquipped &&
-				m_EnchantLevel == casted->m_EnchantLevel &&
-				m_WeaponType == casted->m_WeaponType &&
-				m_CrystalType == casted->m_CrystalType &&
-				m_PAttack == casted->m_PAttack &&
-				m_MAttack == casted->m_MAttack &&
-				m_RndDamage == casted->m_RndDamage &&
-				m_Critical == casted->m_Critical &&
-				m_HitModify == casted->m_HitModify &&
-				m_AttackSpeed == casted->m_AttackSpeed &&
-				m_MpConsume == casted->m_MpConsume &&
-				m_SoulshotCount == casted->m_SoulshotCount &&
-				m_SpiritshotCount == casted->m_SpiritshotCount;
+			return Helpers::CombineHashes({
+				BaseItem::GetHash(),
+				std::hash<bool>{}(m_IsEquipped),
+				std::hash<uint16_t>{}(m_EnchantLevel),
+				std::hash<Enums::WeaponTypeEnum>{}(m_WeaponType),
+				std::hash<Enums::CrystalTypeEnum>{}(m_CrystalType),
+				std::hash<uint8_t>{}(m_RndDamage),
+				std::hash<uint32_t>{}(m_PAttack),
+				std::hash<uint32_t>{}(m_MAttack),
+				std::hash<uint16_t>{}(m_Critical),
+				std::hash<int8_t>{}(m_HitModify),
+				std::hash<uint16_t>{}(m_AttackSpeed),
+				std::hash<uint8_t>{}(m_MpConsume),
+				std::hash<uint8_t>{}(m_SoulshotCount),
+				std::hash<uint8_t>{}(m_SpiritshotCount)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
 			std::vector<Serializers::Node> result = BaseItem::BuildSerializationNodes();
 
-			if (m_PrevState.isNewState)
-			{
-				result.push_back({ L"weaponType", std::to_wstring(static_cast<uint8_t>(m_WeaponType)) });
-				result.push_back({ L"crystalType", std::to_wstring(static_cast<int8_t>(m_CrystalType)) });
-				result.push_back({ L"rndDamage", std::to_wstring(m_RndDamage) });
-				result.push_back({ L"critical", std::to_wstring(m_Critical) });
-				result.push_back({ L"hitModify", std::to_wstring(m_HitModify) });
-				result.push_back({ L"attackSpeed", std::to_wstring(m_AttackSpeed) });
-				result.push_back({ L"mpConsume", std::to_wstring(m_MpConsume) });
-				result.push_back({ L"soulshotCount", std::to_wstring(m_SoulshotCount) });
-				result.push_back({ L"spiritshotCount", std::to_wstring(m_SpiritshotCount) });
-			}
-
-			if (m_PrevState.isNewState || m_IsEquipped != m_PrevState.isEquipped)
-			{
-				result.push_back({ L"isEquipped", std::to_wstring(m_IsEquipped) });
-			}
-			if (m_PrevState.isNewState || m_EnchantLevel != m_PrevState.enchantLevel)
-			{
-				result.push_back({ L"enchantLevel", std::to_wstring(m_EnchantLevel) });
-			}
-			if (m_PrevState.isNewState || m_PAttack != m_PrevState.pAttack)
-			{
-				result.push_back({ L"pAttack", std::to_wstring(m_PAttack) });
-			}
-			if (m_PrevState.isNewState || m_MAttack != m_PrevState.mAttack)
-			{
-				result.push_back({ L"mAttack", std::to_wstring(m_MAttack) });
-			}
+			result.push_back({ L"weaponType", std::to_wstring(static_cast<uint8_t>(m_WeaponType)) });
+			result.push_back({ L"crystalType", std::to_wstring(static_cast<int8_t>(m_CrystalType)) });
+			result.push_back({ L"rndDamage", std::to_wstring(m_RndDamage) });
+			result.push_back({ L"critical", std::to_wstring(m_Critical) });
+			result.push_back({ L"hitModify", std::to_wstring(m_HitModify) });
+			result.push_back({ L"attackSpeed", std::to_wstring(m_AttackSpeed) });
+			result.push_back({ L"mpConsume", std::to_wstring(m_MpConsume) });
+			result.push_back({ L"soulshotCount", std::to_wstring(m_SoulshotCount) });
+			result.push_back({ L"spiritshotCount", std::to_wstring(m_SpiritshotCount) });
+			result.push_back({ L"isEquipped", std::to_wstring(m_IsEquipped) });
+			result.push_back({ L"enchantLevel", std::to_wstring(m_EnchantLevel) });
+			result.push_back({ L"pAttack", std::to_wstring(m_PAttack) });
+			result.push_back({ L"mAttack", std::to_wstring(m_MAttack) });
 
 			return result;
 		}
@@ -116,7 +108,7 @@ namespace L2Bot::Domain::Entities
 			const uint32_t mAttack,
 			const uint16_t critical,
 			const int8_t hitModify,
-			const uint16_t atkSpd,
+			const uint16_t attackSpeed,
 			const uint8_t mpConsume,
 			const uint8_t soulshotCount,
 			const uint8_t spiritshotCount
@@ -141,45 +133,15 @@ namespace L2Bot::Domain::Entities
 			m_MAttack(mAttack),
 			m_Critical(critical),
 			m_HitModify(hitModify),
-			m_AttackSpeed(atkSpd),
+			m_AttackSpeed(attackSpeed),
 			m_MpConsume(mpConsume),
 			m_SoulshotCount(soulshotCount),
 			m_SpiritshotCount(spiritshotCount)
 		{
 		}
 
-		WeaponItem(const WeaponItem* other) :
-			BaseItem(other),
-			m_IsEquipped(other->m_IsEquipped),
-			m_EnchantLevel(other->m_EnchantLevel),
-			m_WeaponType(other->m_WeaponType),
-			m_CrystalType(other->m_CrystalType),
-			m_RndDamage(other->m_RndDamage),
-			m_PAttack(other->m_PAttack),
-			m_MAttack(other->m_MAttack),
-			m_Critical(other->m_Critical),
-			m_HitModify(other->m_HitModify),
-			m_AttackSpeed(other->m_AttackSpeed),
-			m_MpConsume(other->m_MpConsume),
-			m_SoulshotCount(other->m_SoulshotCount),
-			m_SpiritshotCount(other->m_SpiritshotCount)
-
-		{
-		}
-
 		WeaponItem() = default;
 		virtual ~WeaponItem() = default;
-
-	private:
-		struct GetState
-		{
-			bool isEquipped = 0;
-			uint16_t enchantLevel = 0;
-			uint32_t pAttack = 0;
-			uint32_t mAttack = 0;
-
-			bool isNewState = true;
-		};
 
 	private:
 		bool m_IsEquipped = 0;
@@ -195,7 +157,5 @@ namespace L2Bot::Domain::Entities
 		uint8_t m_MpConsume = 0;
 		uint8_t m_SoulshotCount = 0;
 		uint8_t m_SpiritshotCount = 0;
-
-		GetState m_PrevState = GetState();
 	};
 }

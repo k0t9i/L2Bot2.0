@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <chrono>
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
@@ -14,7 +14,6 @@
 #include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../../../Common/TimerMap.h"
-#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -23,28 +22,17 @@ namespace Interlude
 	class SkillRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
+		const std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			const auto objects = m_EntityFinder.FindEntities<std::shared_ptr<Entities::Skill>>(m_Skills, [this](std::shared_ptr<Entities::Skill> item) {
-				return std::make_shared<Entities::Skill>(item.get());
-			});
-
-			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
-
-			for (const auto kvp : objects)
-			{
-				result.push_back(kvp.second);
-			}
-
+			std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> result(m_Skills.begin(), m_Skills.end());
 			return result;
 		}
 
-		SkillRepository(const NetworkHandlerWrapper& networkHandler, const SkillFactory& factory, EntityFinder& finder) :
+		SkillRepository(const NetworkHandlerWrapper& networkHandler, const SkillFactory& factory) :
 			m_NetworkHandler(networkHandler),
-			m_Factory(factory),
-			m_EntityFinder(finder)
+			m_Factory(factory)
 		{
 			EventDispatcher::GetInstance().Subscribe(SkillCreatedEvent::name, [this](const Event& evt) {
 				OnSkillCreated(evt);
@@ -130,17 +118,17 @@ namespace Interlude
 
 				if (m_Skills.find(skillId) == m_Skills.end())
 				{
-					auto skill = m_Factory.Create(
+					m_Skills[skillId] = m_Factory.Create(
 						skillInfo[2],
 						skillInfo[1],
 						skillInfo[0]
 					);
-					m_Skills[skill->GetId()] = skill;
 				}
 				else
 				{
+					auto skill = m_Skills[skillId];
 					m_Factory.Update(
-						m_Skills[skillId],
+						skill,
 						skillInfo[2],
 						skillInfo[1],
 						skillInfo[0]
@@ -198,10 +186,8 @@ namespace Interlude
 						return;
 					}
 
-					const auto& skill = m_Skills[m_UsedSkillId];
-
-					skill->StopCasting();
-					m_CastingTimers.StopTimer(skill->GetId());
+					m_Skills[m_UsedSkillId]->StopCasting();
+					m_CastingTimers.StopTimer(m_UsedSkillId);
 
 					m_UsedSkillId = 0;
 				}
@@ -215,7 +201,7 @@ namespace Interlude
 				const auto casted = static_cast<const AbnormalEffectChangedEvent&>(evt);
 				const auto skillInfo = casted.GetSkillInfo();
 
-				std::map<uint32_t, int32_t> ids;
+				std::unordered_map<uint32_t, int32_t> ids;
 
 				for (size_t i = 0; i < skillInfo.size(); i += 3)
 				{
@@ -244,14 +230,13 @@ namespace Interlude
 
 	private:
 		const SkillFactory& m_Factory;
-		std::map<uint32_t, std::shared_ptr<Entities::Skill>> m_Skills;
-		std::map<uint32_t, uint32_t> m_NewSkills;
+		std::unordered_map<std::uint32_t, std::shared_ptr<Entities::Skill>> m_Skills;
+		std::unordered_map<std::uint32_t, std::uint32_t> m_NewSkills;
 		bool m_IsNewCycle = true;
 		uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		TimerMap m_ReloadingTimers;
 		TimerMap m_CastingTimers;
 		std::shared_timed_mutex m_Mutex;
-		EntityFinder& m_EntityFinder;
 	};
 }

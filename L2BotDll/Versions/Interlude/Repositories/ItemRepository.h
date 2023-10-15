@@ -1,12 +1,11 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <chrono>
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/ItemFactory.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityFinder.h"
 #include "../../../Events/ItemCreatedEvent.h"
 #include "../../../Events/ItemUpdatedEvent.h"
 #include "../../../Events/ItemDeletedEvent.h"
@@ -22,21 +21,11 @@ namespace Interlude
 	class ItemRepository : public Repositories::EntityRepositoryInterface
 	{
 	public:
-		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
+		const std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			const auto objects = m_EntityFinder.FindEntities<std::shared_ptr<Entities::BaseItem>>(m_Items, [this](std::shared_ptr<Entities::BaseItem> item) {
-				return m_Factory.Copy(item);
-			});
-
-			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
-
-			for (const auto kvp : objects)
-			{
-				result.push_back(kvp.second);
-			}
-
+			std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> result(m_Items.begin(), m_Items.end());
 			return result;
 		}
 
@@ -51,10 +40,9 @@ namespace Interlude
 			return nullptr;
 		}
 
-		ItemRepository(const NetworkHandlerWrapper& networkHandler, const ItemFactory& factory, EntityFinder& finder) :
+		ItemRepository(const NetworkHandlerWrapper& networkHandler, const ItemFactory& factory) :
 			m_NetworkHandler(networkHandler),
-			m_Factory(factory),
-			m_EntityFinder(finder)
+			m_Factory(factory)
 		{
 			EventDispatcher::GetInstance().Subscribe(ItemCreatedEvent::name, [this](const Event& evt) {
 				OnItemCreated(evt);
@@ -121,10 +109,13 @@ namespace Interlude
 				{
 					if (kvp.second->GetItemId() == itemId)
 					{
-						auto ptr = dynamic_cast<Entities::EtcItem*>(kvp.second.get());
-						if (ptr)
+						auto casted = std::dynamic_pointer_cast<Entities::EtcItem>(kvp.second);
+						if (isEnabled) {
+							casted->StartAutouse();
+						}
+						else
 						{
-							ptr->Autouse(isEnabled);
+							casted->StopAutouse();
 						}
 					}
 				}
@@ -145,15 +136,18 @@ namespace Interlude
 				const auto casted = static_cast<const ItemCreatedEvent&>(evt);
 				const auto& data = casted.GetItemData();
 
-				auto item = m_Factory.Create(data);
+				
 				if (m_Items.find(data.objectId) == m_Items.end())
 				{
-					m_Items.emplace(data.objectId, item);
+					auto item = m_Factory.Create(data);
+					if (item) {
+						m_Items[data.objectId] = item;
+					}
 				}
 				else
 				{
 					// When equip/unequip accessories
-					m_Items[data.objectId]->Update(item.get());
+					m_Factory.Update(m_Items[data.objectId], data);
 				}
 				m_NewItems[data.objectId] = data.objectId;
 			}
@@ -173,8 +167,7 @@ namespace Interlude
 					return;
 				}
 
-				auto item = m_Factory.Create(data);
-				m_Items[data.objectId]->Update(item.get());
+				m_Factory.Update(m_Items[data.objectId], data);
 			}
 		}
 
@@ -207,12 +200,11 @@ namespace Interlude
 
 	private:
 		const ItemFactory& m_Factory;
-		std::map<uint32_t, std::shared_ptr<Entities::BaseItem>> m_Items;
-		std::map<uint32_t, uint32_t> m_NewItems;
+		std::unordered_map<std::uint32_t, std::shared_ptr<Entities::BaseItem>> m_Items;
+		std::unordered_map<std::uint32_t, std::uint32_t> m_NewItems;
 		bool m_IsNewCycle = true;
-		uint32_t m_UsedSkillId = 0;
+		std::uint32_t m_UsedSkillId = 0;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		std::shared_timed_mutex m_Mutex;
-		EntityFinder& m_EntityFinder;
 	};
 }

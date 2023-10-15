@@ -1,11 +1,14 @@
 #pragma once
+#include <functional>
 #include "../Enums/RaceEnum.h"
 #include "../Enums/ClassEnum.h"
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class Phenotype : public Serializers::Serializable
+	class Phenotype : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const bool IsSubClass() const
@@ -28,12 +31,14 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_ActiveClass;
 		}
-		const bool IsEqual(const Phenotype* other) const
+		const size_t GetHash() const override
 		{
-			return m_Race == other->m_Race &&
-				m_IsMale == other->m_IsMale &&
-				m_Class == other->m_Class &&
-				m_ActiveClass == other->m_ActiveClass;
+			return Helpers::CombineHashes({
+				std::hash<Enums::RaceEnum>{}(m_Race),
+				std::hash<bool>{}(m_IsMale),
+				std::hash<Enums::ClassEnum>{}(m_Class),
+				std::hash<Enums::ClassEnum>{}(m_ActiveClass)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

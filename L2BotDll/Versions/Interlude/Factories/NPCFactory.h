@@ -8,13 +8,52 @@ namespace Interlude
 {
 	class NPCFactory
 	{
+	private:
+		struct Data
+		{
+			uint32_t id;
+			ValueObjects::Transform transform;
+			bool isHostile;
+			uint32_t npcId;
+			ValueObjects::FullName fullName;
+			ValueObjects::VitalStats vitalStats;
+		};
+
 	public:
 		NPCFactory() = default;
 		virtual ~NPCFactory() = default;
 
-		std::shared_ptr<Entities::NPC> Create(const User* item, const Enums::SpoilStateEnum spoiledState) const
+		std::shared_ptr<Entities::NPC> Create(const User* item) const
 		{
+			const auto& data = GetData(item);
+
 			return std::make_shared<Entities::NPC>(
+				data.id,
+				data.transform,
+				data.isHostile,
+				data.npcId,
+				data.fullName,
+				data.vitalStats
+			);
+		}
+
+		void Update(std::shared_ptr<Entities::NPC>& npc, const User* item) const
+		{
+			const auto& data = GetData(item);
+
+			npc->Update(
+				data.transform,
+				data.isHostile,
+				data.npcId,
+				data.fullName,
+				data.vitalStats
+			);
+		}
+
+	private:
+		const Data GetData(const User* item) const
+		{
+			return {
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -28,7 +67,6 @@ namespace Interlude
 				),
 				item->isMob != 0,
 				item->npcId,
-				spoiledState,
 				ValueObjects::FullName(
 					std::wstring(item->nickname),
 					std::wstring(item->title)
@@ -38,7 +76,7 @@ namespace Interlude
 					item->maxMp, item->mp,
 					item->maxCp, item->cp
 				)
-			);
+			};
 		}
 	};
 }

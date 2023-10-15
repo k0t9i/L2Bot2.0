@@ -1,10 +1,13 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class InventoryInfo : public Serializers::Serializable
+	class InventoryInfo : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const uint32_t GetMaxWeight() const
@@ -19,11 +22,13 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Slots;
 		}
-		const bool IsEqual(const InventoryInfo* other) const
+		const size_t GetHash() const override
 		{
-			return m_MaxWeight == other->m_MaxWeight &&
-				m_Weight == other->m_Weight &&
-				m_Slots == other->m_Slots;
+			return Helpers::CombineHashes({
+				std::hash<uint32_t>{}(m_MaxWeight),
+				std::hash<uint32_t>{}(m_Weight),
+				std::hash<uint16_t>{}(m_Slots)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

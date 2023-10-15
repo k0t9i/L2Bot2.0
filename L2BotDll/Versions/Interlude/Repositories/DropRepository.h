@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
@@ -8,7 +8,6 @@
 #include "../Factories/DropFactory.h"
 #include "../../GameStructs/FindObjectsTrait.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -17,22 +16,25 @@ namespace Interlude
 	class DropRepository : public Repositories::EntityRepositoryInterface, public FindObjectsTrait
 	{
 	public:
-		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
+		const std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			const std::map<uint32_t, Item*> items = FindAllObjects<Item*>(m_Radius, [this](float_t radius, int32_t prevId) {
+			const auto allItems = FindAllObjects<Item*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextItem(radius, prevId);
 			});
-			const auto objects = m_EntityFinder.FindEntities<Item*>(items, [this](Item* item) {
-				return m_Factory.Create(item);
-			});
 
-			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
-
-			for (const auto kvp : objects)
-			{
-				result.push_back(kvp.second);
+			std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> result;
+			for (const auto kvp : allItems) {
+				const auto item = kvp.second;
+				if (m_Drops.find(item->objectId) == m_Drops.end()) {
+					m_Drops[item->objectId] = m_Factory.Create(item);
+				}
+				else
+				{
+					m_Factory.Update(m_Drops[item->objectId], item);
+				}
+				result[item->objectId] = m_Drops[item->objectId];
 			}
 
 			return result;
@@ -41,14 +43,13 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			m_EntityFinder.Reset();
+			m_Drops.clear();
 		}
 
-		DropRepository(const NetworkHandlerWrapper& networkHandler, const DropFactory& factory, EntityFinder& finder, const uint16_t radius) :
+		DropRepository(const NetworkHandlerWrapper& networkHandler, const DropFactory& factory, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_Radius(radius),
-			m_EntityFinder(finder)
+			m_Radius(radius)
 		{
 
 		}
@@ -60,7 +61,7 @@ namespace Interlude
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const DropFactory& m_Factory;
 		const uint16_t m_Radius;
-		EntityFinder& m_EntityFinder;
 		std::shared_timed_mutex m_Mutex;
+		std::unordered_map<uint32_t, std::shared_ptr<Entities::Drop>> m_Drops;
 	};
 }

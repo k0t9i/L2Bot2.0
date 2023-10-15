@@ -1,10 +1,13 @@
 #pragma once
 #include <math.h>
+#include <functional>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class Vector3 : public Serializers::Serializable
+	class Vector3 : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const float_t GetX() const
@@ -19,12 +22,17 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Z;
 		}
-		const bool IsEqual(const Vector3* other) const
+		const size_t GetHash() const override
 		{
-			float_t epsilon = 0.0001f;
-			return fabsf(m_X - other->m_X) < epsilon &&
-				fabsf(m_Y - other->m_Y) < epsilon &&
-				fabsf(m_Z - other->m_Z) < epsilon;
+			const auto x = std::round(m_X * 10000.0f) / 10000.0f;
+			const auto y = std::round(m_Y * 10000.0f) / 10000.0f;
+			const auto z = std::round(m_Z * 10000.0f) / 10000.0f;
+
+			return Helpers::CombineHashes({
+				std::hash<float_t>{}(m_X),
+				std::hash<float_t>{}(m_Y),
+				std::hash<float_t>{}(m_Z)
+			});
 		}
 		const float_t GetSqrDistance(const Vector3& other) const
 		{

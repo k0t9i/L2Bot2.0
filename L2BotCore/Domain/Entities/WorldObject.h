@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include "../ValueObjects/Transform.h"
 #include "EntityInterface.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::Entities
 {
@@ -12,22 +14,16 @@ namespace L2Bot::Domain::Entities
 		{
 			return m_Id;
 		}
-		virtual void Update(const EntityInterface* other) override
+		virtual void Update(const ValueObjects::Transform& transform)
 		{
-			SaveState();
-
-			const WorldObject* casted = static_cast<const WorldObject*>(other);
-			m_Id = casted->m_Id;
-			m_Transform = casted->m_Transform;
+			m_Transform = transform;
 		}
-		virtual void SaveState() override
+		virtual const size_t GetHash() const override
 		{
-			m_PrevState = { m_Transform, false };
-		}
-		virtual const bool IsEqual(const EntityInterface* other) const override
-		{
-			const WorldObject* casted = static_cast<const WorldObject*>(other);
-			return m_Id == casted->m_Id && m_Transform.IsEqual(&casted->m_Transform);
+			return Helpers::CombineHashes({
+				std::hash<uint32_t>{}(m_Id),
+				m_Transform.GetHash()
+			});
 		}
 
 		virtual const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -35,15 +31,12 @@ namespace L2Bot::Domain::Entities
 			std::vector<Serializers::Node> result;
 
 			result.push_back({ L"id", std::to_wstring(GetId()) });
-			if (m_PrevState.isNewState || !m_Transform.IsEqual(&m_PrevState.transform))
-			{
-				result.push_back({ L"transform", m_Transform.BuildSerializationNodes() });
-			}
+			result.push_back({ L"transform", m_Transform.BuildSerializationNodes() });
 
 			return result;
 		}
 
-		WorldObject(const uint32_t id, const ValueObjects::Transform transform) :
+		WorldObject(const uint32_t id, const ValueObjects::Transform& transform) :
 			m_Id(id), m_Transform(transform)
 		{
 
@@ -51,18 +44,9 @@ namespace L2Bot::Domain::Entities
 
 		WorldObject() = default;
 		virtual ~WorldObject() = default;
-	private:
-	private:
-		struct GetState
-		{
-			ValueObjects::Transform transform = ValueObjects::Transform();
-
-			bool isNewState = true;
-		};
 
 	private:
 		uint32_t m_Id = 0;
 		ValueObjects::Transform m_Transform = ValueObjects::Transform();
-		GetState m_PrevState = GetState();
 	};
 }

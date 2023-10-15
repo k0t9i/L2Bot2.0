@@ -1,11 +1,9 @@
 #pragma once
-#include <map>
-#include <shared_mutex>
+#include <unordered_map>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/PlayerFactory.h"
 #include "../../GameStructs/FindObjectsTrait.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -14,32 +12,29 @@ namespace Interlude
 	class PlayerRepository : public Repositories::EntityRepositoryInterface, public FindObjectsTrait
 	{
 	public:
-		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
+		const std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> GetEntities() override
 		{
-			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
-
-			const auto creatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
+			const auto allCreatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextCreature(radius, prevId);
 			});
 
-			std::map<uint32_t, User*> items;
-			for (const auto& kvp : creatures)
+			std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> result;
+			for (const auto& kvp : allCreatures)
 			{
-				const auto creature = kvp.second;
-				if (creature->userType == L2::UserType::USER && creature->lvl == 0) {
-					items.emplace(creature->objectId, creature);
+				const auto &creature = kvp.second;
+				if (creature->userType != L2::UserType::USER || creature->lvl != 0) {
+					continue;
 				}
-			}
 
-			const auto objects = m_EntityFinder.FindEntities<User*>(items, [this](User* item) {
-				return m_Factory.Create(item);
-			});
+				if (m_Players.find(creature->objectId) == m_Players.end()) {
+					m_Players[creature->objectId] = m_Factory.Create(creature);
+				}
+				else
+				{
+					m_Factory.Update(m_Players[creature->objectId], creature);
+				}
 
-			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
-
-			for (const auto kvp : objects)
-			{
-				result.push_back(kvp.second);
+				result[creature->objectId] = m_Players[creature->objectId];
 			}
 
 			return result;
@@ -48,14 +43,13 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			m_EntityFinder.Reset();
+			m_Players.clear();
 		}
 
-		PlayerRepository(const NetworkHandlerWrapper& networkHandler, const PlayerFactory& factory, EntityFinder& finder, const uint16_t radius) :
+		PlayerRepository(const NetworkHandlerWrapper& networkHandler, const PlayerFactory& factory, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_Radius(radius),
-			m_EntityFinder(finder)
+			m_Radius(radius)
 		{
 
 		}
@@ -67,7 +61,6 @@ namespace Interlude
 		const PlayerFactory& m_Factory;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const uint16_t m_Radius;
-		EntityFinder& m_EntityFinder;
-		std::shared_timed_mutex m_Mutex;
+		std::unordered_map<uint32_t, std::shared_ptr<Entities::Player>> m_Players;
 	};
 }

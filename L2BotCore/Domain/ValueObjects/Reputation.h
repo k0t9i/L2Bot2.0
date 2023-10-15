@@ -1,10 +1,13 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class Reputation : public Serializers::Serializable
+	class Reputation : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const bool IsPlayerKiller() const
@@ -31,13 +34,15 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_EvalScore;
 		}
-		const bool IsEqual(const Reputation* other) const
+		const size_t GetHash() const override
 		{
-			return m_Karma == other->m_Karma &&
-				m_PkKills == other->m_PkKills &&
-				m_PvpKills == other->m_PvpKills &&
-				m_RecRemaining == other->m_RecRemaining &&
-				m_EvalScore == other->m_EvalScore;
+			return Helpers::CombineHashes({
+				std::hash<uint16_t>{}(m_Karma),
+				std::hash<uint16_t>{}(m_PkKills),
+				std::hash<uint16_t>{}(m_PvpKills),
+				std::hash<uint8_t>{}(m_RecRemaining),
+				std::hash<uint8_t>{}(m_EvalScore)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

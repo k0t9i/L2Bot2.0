@@ -9,7 +9,6 @@
 #include "../../../Events/SpoiledEvent.h"
 #include "../../../Events/CreatureDiedEvent.h"
 #include "../../GameStructs/FindObjectsTrait.h"
-#include "../../../Services/EntityFinder.h"
 
 using namespace L2Bot::Domain;
 
@@ -18,33 +17,33 @@ namespace Interlude
 	class NPCRepository : public Repositories::EntityRepositoryInterface, public FindObjectsTrait
 	{
 	public:
-		const std::vector<std::shared_ptr<DTO::EntityState>> GetEntities() override
+		const std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> GetEntities() override
 		{
 			std::unique_lock<std::shared_timed_mutex>(m_Mutex);
 
-			const auto creatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
+			const auto allCreatures = FindAllObjects<User*>(m_Radius, [this](float_t radius, int32_t prevId) {
 				return m_NetworkHandler.GetNextCreature(radius, prevId);
 			});
 
-			std::map<uint32_t, User*> items;
-			for (const auto& kvp : creatures)
-			{
+			std::unordered_map<std::uint32_t, std::shared_ptr<Entities::EntityInterface>> result;
+			for (const auto kvp : allCreatures) {
 				const auto creature = kvp.second;
-				if (creature->userType == L2::UserType::NPC) {
-					items.emplace(creature->objectId, creature);
+				if (creature->userType != L2::UserType::NPC) {
+					continue;
 				}
-			}
 
-			const auto objects = m_EntityFinder.FindEntities<User*>(items, [this](User* item) {
-				const auto spoilState = m_Spoiled.find(item->objectId) == m_Spoiled.end() ? Enums::SpoilStateEnum::none : m_Spoiled.at(item->objectId);
-				return m_Factory.Create(item, spoilState);
-			});
+				if (m_Npcs.find(creature->objectId) == m_Npcs.end()) {
+					m_Npcs[creature->objectId] = m_Factory.Create(creature);
+				}
+				else
+				{
+					m_Factory.Update(m_Npcs[creature->objectId], creature);
+				}
 
-			auto result = std::vector<std::shared_ptr<DTO::EntityState>>();
+				const auto spoilState = m_Spoiled.find(creature->objectId) == m_Spoiled.end() ? Enums::SpoilStateEnum::none : m_Spoiled[creature->objectId];
+				m_Npcs[creature->objectId]->UpdateSpoilState(spoilState);
 
-			for (const auto kvp : objects)
-			{
-				result.push_back(kvp.second);
+				result[creature->objectId] = m_Npcs[creature->objectId];
 			}
 
 			return result;
@@ -53,14 +52,13 @@ namespace Interlude
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			m_EntityFinder.Reset();
+			m_Npcs.clear();
 		}
 
-		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, EntityFinder& finder, const uint16_t radius) :
+		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
-			m_Radius(radius),
-			m_EntityFinder(finder)
+			m_Radius(radius)
 		{
 			EventDispatcher::GetInstance().Subscribe(SpoiledEvent::name, [this](const Event& evt) {
 				OnSpoiled(evt);
@@ -75,6 +73,7 @@ namespace Interlude
 
 		void OnSpoiled(const Event& evt)
 		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			if (evt.GetName() == SpoiledEvent::name)
 			{
 				const auto casted = static_cast<const SpoiledEvent&>(evt);
@@ -92,6 +91,7 @@ namespace Interlude
 
 		void OnCreatureDied(const Event& evt)
 		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			if (evt.GetName() == CreatureDiedEvent::name)
 			{
 				const auto casted = static_cast<const CreatureDiedEvent&>(evt);
@@ -115,7 +115,7 @@ namespace Interlude
 		std::map<uint32_t, Enums::SpoilStateEnum> m_Spoiled;
 		const NetworkHandlerWrapper& m_NetworkHandler;
 		const uint16_t m_Radius = 0;
-		EntityFinder& m_EntityFinder;
 		std::shared_timed_mutex m_Mutex;
+		std::unordered_map<uint32_t, std::shared_ptr<Entities::NPC>> m_Npcs;
 	};
 }

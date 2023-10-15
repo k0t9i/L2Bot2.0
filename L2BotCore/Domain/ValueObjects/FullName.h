@@ -1,10 +1,13 @@
 #pragma once
 #include <string>
+#include <functional>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class FullName : public Serializers::Serializable
+	class FullName : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const std::wstring& GetNickname() const
@@ -15,9 +18,12 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Title;
 		}
-		const bool IsEqual(const FullName* other) const
+		const size_t GetHash() const override
 		{
-			return m_Nickname == other->m_Nickname && m_Title == other->m_Title;
+			return Helpers::CombineHashes({
+				std::hash<std::wstring>{}(m_Nickname),
+				std::hash<std::wstring>{}(m_Title)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

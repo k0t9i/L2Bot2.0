@@ -1,10 +1,13 @@
 #pragma once
+#include <functional>
 #include <cstdint>
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class VariableStats : public Serializers::Serializable
+	class VariableStats : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const uint16_t GetAccuracy() const
@@ -43,17 +46,19 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_CastingSpeed;
 		}
-		const bool IsEqual(const VariableStats* other) const
+		const size_t GetHash() const override
 		{
-			return m_Accuracy == other->m_Accuracy &&
-				m_CritRate == other->m_CritRate &&
-				m_PAttack == other->m_PAttack &&
-				m_AttackSpeed == other->m_AttackSpeed &&
-				m_PDefense == other->m_PDefense &&
-				m_Evasion == other->m_Evasion &&
-				m_MAttack == other->m_MAttack &&
-				m_MDefense == other->m_MDefense &&
-				m_CastingSpeed == other->m_CastingSpeed;
+			return Helpers::CombineHashes({
+				std::hash<uint16_t>{}(m_Accuracy),
+				std::hash<uint16_t>{}(m_CritRate),
+				std::hash<uint32_t>{}(m_PAttack),
+				std::hash<uint16_t>{}(m_AttackSpeed),
+				std::hash<uint32_t>{}(m_PDefense),
+				std::hash<uint16_t>{}(m_Evasion),
+				std::hash<uint32_t>{}(m_MAttack),
+				std::hash<uint32_t>{}(m_MDefense),
+				std::hash<uint16_t>{}(m_CastingSpeed)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

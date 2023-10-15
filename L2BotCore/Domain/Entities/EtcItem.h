@@ -2,68 +2,59 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <functional>
 #include "BaseItem.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::Entities
 {
 	class EtcItem : public BaseItem
 	{
 	public:
-		void Autouse(bool enabled)
+		void StartAutouse()
 		{
-			m_IsAutoused = enabled;
+			m_IsAutoused = true;
+		}
+		void StopAutouse()
+		{
+			m_IsAutoused = true;
 		}
 		const bool IsAutoused() const
 		{
 			return m_IsAutoused;
 		}
 
-		void Update(const EntityInterface* other) override
-		{
-			const EtcItem* casted = static_cast<const EtcItem*>(other);
-			
-			BaseItem::Update(other);
+		void Update(
+			const uint32_t itemId,
+			const int32_t mana,
+			const std::wstring& name,
+			const std::wstring& iconName,
+			const std::wstring& description,
+			const uint16_t weight,
+			const uint32_t amount,
+			const bool isQuest
+		) {
+			BaseItem::Update(itemId, mana, name, iconName, description, weight);
 
-			m_Amount = casted->m_Amount;
-			m_IsQuest = casted->m_IsQuest;
-			m_IsAutoused = casted->m_IsAutoused;
+			m_Amount = amount;
+			m_IsQuest = isQuest;
 		}
-		void SaveState() override
+		const size_t GetHash() const override
 		{
-			BaseItem::SaveState();
-			m_PrevState =
-			{
-				m_Amount,
-				m_IsAutoused,
-				false
-			};
-		}
-		const bool IsEqual(const EntityInterface* other) const override
-		{
-			const EtcItem* casted = static_cast<const EtcItem*>(other);
-			return BaseItem::IsEqual(other) &&
-				m_IsQuest == casted->m_IsQuest &&
-				m_Amount == casted->m_Amount &&
-				m_IsAutoused == casted->m_IsAutoused;
+			return Helpers::CombineHashes({
+				BaseItem::GetHash(),
+				std::hash<uint32_t>{}(m_Amount),
+				std::hash<bool>{}(m_IsQuest)
+			});
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
 			std::vector<Serializers::Node> result = BaseItem::BuildSerializationNodes();
 
-			if (m_PrevState.isNewState)
-			{
-				result.push_back({ L"isQuest", std::to_wstring(m_IsQuest) });
-			}
-
-			if (m_PrevState.isNewState || m_Amount != m_PrevState.amount)
-			{
-				result.push_back({ L"amount", std::to_wstring(m_Amount) });
-			}
-			if (m_PrevState.isNewState || m_IsAutoused != m_PrevState.isAutoused)
-			{
-				result.push_back({ L"isAutoused", std::to_wstring(m_IsAutoused) });
-			}
+			result.push_back({ L"isQuest", std::to_wstring(m_IsQuest) });
+			result.push_back({ L"amount", std::to_wstring(m_Amount) });
+			result.push_back({ L"isAutoused", std::to_wstring(m_IsAutoused) });
 
 			return result;
 		}
@@ -95,30 +86,12 @@ namespace L2Bot::Domain::Entities
 		{
 		}
 
-		EtcItem(const EtcItem* other) :
-			BaseItem(other),
-			m_Amount(other->m_Amount),
-			m_IsAutoused(other->m_IsAutoused),
-			m_IsQuest(other->m_IsQuest)
-		{
-		}
-
 		EtcItem() = default;
 		virtual ~EtcItem() = default;
-
-	private:
-		struct GetState
-		{
-			uint32_t amount = 0;
-			bool isAutoused = false;
-
-			bool isNewState = true;
-		};
 
 	private:
 		uint32_t m_Amount = 0;
 		bool m_IsQuest = false;
 		bool m_IsAutoused = false;
-		GetState m_PrevState = GetState();
 	};
 }

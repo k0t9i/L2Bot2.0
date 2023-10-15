@@ -126,9 +126,6 @@
     <ClInclude Include="Serializers\JsonSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Services\EntityFinder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\Interlude\Factories\HeroFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>

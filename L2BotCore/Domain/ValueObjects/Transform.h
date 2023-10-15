@@ -1,10 +1,12 @@
 #pragma once
 #include "../ValueObjects/Vector3.h"
 #include "../Serializers/Serializable.h"
+#include "../Entities/Hashable.h"
+#include "../Helpers/HashCombiner.h"
 
 namespace L2Bot::Domain::ValueObjects
 {
-	class Transform : public Serializers::Serializable
+	class Transform : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
 		const Vector3& GetPosition() const
@@ -23,12 +25,14 @@ namespace L2Bot::Domain::ValueObjects
 		{
 			return m_Acceleration;
 		}
-		const bool IsEqual(const Transform* other) const
+		const size_t GetHash() const override
 		{
-			return m_Position.IsEqual(&other->m_Position) &&
-				m_Rotation.IsEqual(&other->m_Rotation) &&
-				m_Velocity.IsEqual(&other->m_Velocity) &&
-				m_Acceleration.IsEqual(&other->m_Acceleration);
+			return Helpers::CombineHashes({
+				m_Position.GetHash(),
+				m_Rotation.GetHash(),
+				m_Velocity.GetHash(),
+				m_Acceleration.GetHash()
+			});
 		}
 		const float_t GetSqrDistance(const Transform& other) const
 		{

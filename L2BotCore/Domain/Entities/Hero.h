@@ -15,114 +15,82 @@ namespace L2Bot::Domain::Entities
 	class Hero : public WorldObject
 	{
 	public:
-		void Update(const EntityInterface* other) override
-		{
-			const Hero* casted = static_cast<const Hero*>(other);
-			WorldObject::Update(other);
-			m_FullName = casted->m_FullName;
-			m_VitalStats = casted->m_VitalStats;
-			m_Phenotype = casted->m_Phenotype;
-			m_ExperienceInfo = casted->m_ExperienceInfo;
-			m_PermanentStats = casted->m_PermanentStats;
-			m_VariableStats = casted->m_VariableStats;
-			m_Reputation = casted->m_Reputation;
-			m_InventoryInfo = casted->m_InventoryInfo;
-			m_TargetId = casted->m_TargetId;
-			m_IsStanding = casted->m_IsStanding;
+		void Update(
+			const ValueObjects::Transform& transform,
+			const ValueObjects::FullName& fullName,
+			const ValueObjects::VitalStats& vitalStats,
+			const ValueObjects::Phenotype& phenotype,
+			const ValueObjects::ExperienceInfo& experienceInfo,
+			const ValueObjects::PermanentStats& permanentStats,
+			const ValueObjects::VariableStats& variableStats,
+			const ValueObjects::Reputation& reputation,
+			const ValueObjects::InventoryInfo& inventoryInfo,
+			const uint32_t targetId,
+			const bool isStanding
+		) {
+			WorldObject::Update(transform);
+
+			m_FullName = fullName;
+			m_VitalStats = vitalStats;
+			m_Phenotype = phenotype;
+			m_ExperienceInfo = experienceInfo;
+			m_PermanentStats = permanentStats;
+			m_VariableStats = variableStats;
+			m_Reputation = reputation;
+			m_InventoryInfo = inventoryInfo;
+			m_TargetId = targetId;
+			m_IsStanding = isStanding;
 		}
-		void SaveState() override
+		const size_t GetHash() const override
 		{
-			WorldObject::SaveState();
-			m_PrevState =
-			{
-				m_FullName,
-				m_VitalStats,
-				m_Phenotype,
-				m_ExperienceInfo,
-				m_PermanentStats,
-				m_VariableStats,
-				m_Reputation,
-				m_InventoryInfo,
-				m_TargetId,
-				m_IsStanding,
-				false
-			};
+			return Helpers::CombineHashes({
+				WorldObject::GetHash(),
+				m_FullName.GetHash(),
+				m_VitalStats.GetHash(),
+				m_Phenotype.GetHash(),
+				m_ExperienceInfo.GetHash(),
+				m_PermanentStats.GetHash(),
+				m_VariableStats.GetHash(),
+				m_Reputation.GetHash(),
+				m_InventoryInfo.GetHash(),
+				std::hash<uint32_t>{}(m_TargetId),
+				std::hash<uint32_t>{}(m_IsStanding)
+			});
 		}
-		const bool IsEqual(const EntityInterface* other) const override
+		const std::string GetEntityName() const override
 		{
-			const Hero* casted = static_cast<const Hero*>(other);
-			return WorldObject::IsEqual(other) &&
-				m_FullName.IsEqual(&casted->m_FullName) &&
-				m_VitalStats.IsEqual(&casted->m_VitalStats) &&
-				m_Phenotype.IsEqual(&casted->m_Phenotype) &&
-				m_ExperienceInfo.IsEqual(&casted->m_ExperienceInfo) &&
-				m_PermanentStats.IsEqual(&casted->m_PermanentStats) &&
-				m_VariableStats.IsEqual(&casted->m_VariableStats) &&
-				m_Reputation.IsEqual(&casted->m_Reputation) &&
-				m_InventoryInfo.IsEqual(&casted->m_InventoryInfo) &&
-				m_TargetId == casted->m_TargetId &&
-				m_IsStanding == casted->m_IsStanding;
+			return "hero";
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
 			std::vector<Serializers::Node> result = WorldObject::BuildSerializationNodes();
 
-			if (m_PrevState.isNewState || !m_FullName.IsEqual(&m_PrevState.fullName))
-			{
-				result.push_back({ L"fullName", m_FullName.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_VitalStats.IsEqual(&m_PrevState.vitalStats))
-			{
-				result.push_back({ L"vitalStats", m_VitalStats.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_Phenotype.IsEqual(&m_PrevState.phenotype))
-			{
-				result.push_back({ L"phenotype", m_Phenotype.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_ExperienceInfo.IsEqual(&m_PrevState.experienceInfo))
-			{
-				result.push_back({ L"experienceInfo", m_ExperienceInfo.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_PermanentStats.IsEqual(&m_PrevState.permanentStats))
-			{
-				result.push_back({ L"permanentStats", m_PermanentStats.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_VariableStats.IsEqual(&m_PrevState.variableStats))
-			{
-				result.push_back({ L"variableStats", m_VariableStats.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_Reputation.IsEqual(&m_PrevState.reputation))
-			{
-				result.push_back({ L"reputation", m_Reputation.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || !m_InventoryInfo.IsEqual(&m_PrevState.inventoryInfo))
-			{
-				result.push_back({ L"inventoryInfo", m_InventoryInfo.BuildSerializationNodes() });
-			}
-			if (m_PrevState.isNewState || m_TargetId != m_PrevState.targetId)
-			{
-				result.push_back({ L"targetId", std::to_wstring(m_TargetId) });
-			}
-			if (m_PrevState.isNewState || m_IsStanding != m_PrevState.isStanding)
-			{
-				result.push_back({ L"isStanding", std::to_wstring(m_IsStanding) });
-			}
+			result.push_back({ L"fullName", m_FullName.BuildSerializationNodes() });
+			result.push_back({ L"vitalStats", m_VitalStats.BuildSerializationNodes() });
+			result.push_back({ L"phenotype", m_Phenotype.BuildSerializationNodes() });
+			result.push_back({ L"experienceInfo", m_ExperienceInfo.BuildSerializationNodes() });
+			result.push_back({ L"permanentStats", m_PermanentStats.BuildSerializationNodes() });
+			result.push_back({ L"variableStats", m_VariableStats.BuildSerializationNodes() });
+			result.push_back({ L"reputation", m_Reputation.BuildSerializationNodes() });
+			result.push_back({ L"inventoryInfo", m_InventoryInfo.BuildSerializationNodes() });
+			result.push_back({ L"targetId", std::to_wstring(m_TargetId) });
+			result.push_back({ L"isStanding", std::to_wstring(m_IsStanding) });
 
 			return result;
 		}
 
 		Hero(
 			const uint32_t id,
-			const ValueObjects::Transform transform,
-			const ValueObjects::FullName fullName,
-			const ValueObjects::VitalStats vitalStats,
-			const ValueObjects::Phenotype phenotype,
-			const ValueObjects::ExperienceInfo experienceInfo,
-			const ValueObjects::PermanentStats permanentStats,
-			const ValueObjects::VariableStats variableStats,
-			const ValueObjects::Reputation reputation,
-			const ValueObjects::InventoryInfo inventoryInfo,
+			const ValueObjects::Transform& transform,
+			const ValueObjects::FullName& fullName,
+			const ValueObjects::VitalStats& vitalStats,
+			const ValueObjects::Phenotype& phenotype,
+			const ValueObjects::ExperienceInfo& experienceInfo,
+			const ValueObjects::PermanentStats& permanentStats,
+			const ValueObjects::VariableStats& variableStats,
+			const ValueObjects::Reputation& reputation,
+			const ValueObjects::InventoryInfo& inventoryInfo,
 			const uint32_t targetId,
 			const bool isStanding
 		) :
@@ -145,23 +113,6 @@ namespace L2Bot::Domain::Entities
 		virtual ~Hero() = default;
 
 	private:
-		struct GetState
-		{
-			ValueObjects::FullName fullName = ValueObjects::FullName();
-			ValueObjects::VitalStats vitalStats = ValueObjects::VitalStats();
-			ValueObjects::Phenotype phenotype = ValueObjects::Phenotype();
-			ValueObjects::ExperienceInfo experienceInfo = ValueObjects::ExperienceInfo();
-			ValueObjects::PermanentStats permanentStats = ValueObjects::PermanentStats();
-			ValueObjects::VariableStats variableStats = ValueObjects::VariableStats();
-			ValueObjects::Reputation reputation = ValueObjects::Reputation();
-			ValueObjects::InventoryInfo inventoryInfo = ValueObjects::InventoryInfo();
-			uint32_t targetId = 0;
-			bool isStanding = true;
-
-			bool isNewState = true;
-		};
-
-	private:
 		ValueObjects::FullName m_FullName = ValueObjects::FullName();
 		ValueObjects::VitalStats m_VitalStats = ValueObjects::VitalStats();
 		ValueObjects::Phenotype m_Phenotype = ValueObjects::Phenotype();
@@ -172,6 +123,5 @@ namespace L2Bot::Domain::Entities
 		ValueObjects::InventoryInfo m_InventoryInfo = ValueObjects::InventoryInfo();
 		uint32_t m_TargetId = 0;
 		bool m_IsStanding = true;
-		GetState m_PrevState = GetState();
 	};
 }

@@ -8,13 +8,49 @@ namespace Interlude
 {
 	class PlayerFactory
 	{
+	private:
+		struct Data
+		{
+			uint32_t id;
+			ValueObjects::Transform transform;
+			ValueObjects::FullName fullName;
+			ValueObjects::Phenotype phenotype;
+			ValueObjects::VitalStats vitalStats;
+		};
+
 	public:
 		PlayerFactory() = default;
 		virtual ~PlayerFactory() = default;
 
 		std::shared_ptr<Entities::Player> Create(const User* item) const
 		{
+			const auto& data = GetData(item);
+
 			return std::make_shared<Entities::Player>(
+				data.id,
+				data.transform,
+				data.fullName,
+				data.phenotype,
+				data.vitalStats
+			);
+		}
+
+		void Update(std::shared_ptr<Entities::Player> &player, const User* item) const
+		{
+			const auto& data = GetData(item);
+
+			player->Update(
+				data.transform,
+				data.fullName,
+				data.phenotype,
+				data.vitalStats
+			);
+		}
+
+	private:
+		const Data GetData(const User* item) const
+		{
+			return {
 				item->objectId,
 				ValueObjects::Transform(
 					ValueObjects::Vector3(item->pawn->Location.x, item->pawn->Location.y, item->pawn->Location.z),
@@ -41,7 +77,7 @@ namespace Interlude
 					item->maxMp, item->mp,
 					item->maxCp, item->cp
 				)
-			);
+			};
 		}
 	};
 }
