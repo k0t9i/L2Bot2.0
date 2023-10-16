@@ -33,7 +33,7 @@ namespace Interlude
 				}
 				result[hero->objectId] = m_Hero;
 			}
-			else {
+			else if (m_Hero) {
 				m_Hero = nullptr;
 				EventDispatcher::GetInstance().Dispatch(HeroDeletedEvent{});
 			}
