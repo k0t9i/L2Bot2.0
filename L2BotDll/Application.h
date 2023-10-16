@@ -9,6 +9,8 @@
 #include "Serializers/JsonIncomingMessageFactory.h"
 #include "Transports/NamedPipeTransport.h"
 #include "Versions/VersionAbstractFactory.h"
+#include "Services/ServiceLocator.h"
+#include "Events/HeroDeletedEvent.h"
 
 using namespace L2Bot::Domain;
 
@@ -33,20 +35,13 @@ public:
 			m_Transport
 		)
 	{
-
 	}
 	Application() = delete;
 	virtual ~Application() = default;
 
 	void Start()
 	{
-		HMODULE hEngine = GetModuleHandleA("Engine.dll");
-		HMODULE hCore = GetModuleHandleA("Core.dll");
-
-		m_AbstractFactory.GetNetworkHandler().Init(hEngine);
-		m_AbstractFactory.GetGameEngine().Init(hEngine);
-		m_AbstractFactory.GetL2GameData().Init(hEngine);
-		m_AbstractFactory.GetFName().Init(hCore);
+		Init();
 		m_WorldHandler.Start();
 	}
 
@@ -56,6 +51,20 @@ public:
 		m_AbstractFactory.GetL2GameData().Restore();
 		m_AbstractFactory.GetGameEngine().Restore();
 		m_AbstractFactory.GetNetworkHandler().Restore();
+	}
+
+private:
+	void Init()
+	{
+		ServiceLocator::GetInstance().SetEventDispatcher(std::make_unique<EventDispatcher>());
+
+		HMODULE hEngine = GetModuleHandleA("Engine.dll");
+		HMODULE hCore = GetModuleHandleA("Core.dll");
+
+		m_AbstractFactory.GetNetworkHandler().Init(hEngine);
+		m_AbstractFactory.GetGameEngine().Init(hEngine);
+		m_AbstractFactory.GetL2GameData().Init(hEngine);
+		m_AbstractFactory.GetFName().Init(hCore);
 	}
 
 private:

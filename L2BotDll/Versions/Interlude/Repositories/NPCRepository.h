@@ -5,10 +5,10 @@
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/NPCFactory.h"
-#include "../../../Events/EventDispatcher.h"
 #include "../../../Events/SpoiledEvent.h"
 #include "../../../Events/CreatureDiedEvent.h"
 #include "../../GameStructs/FindObjectsTrait.h"
+#include "../../../Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -55,17 +55,21 @@ namespace Interlude
 			m_Npcs.clear();
 		}
 
+		void Init() override
+		{
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SpoiledEvent::name, [this](const Event& evt) {
+				OnSpoiled(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(CreatureDiedEvent::name, [this](const Event& evt) {
+				OnCreatureDied(evt);
+			});
+		}
+
 		NPCRepository(const NetworkHandlerWrapper& networkHandler, const NPCFactory& factory, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
 			m_Radius(radius)
 		{
-			EventDispatcher::GetInstance().Subscribe(SpoiledEvent::name, [this](const Event& evt) {
-				OnSpoiled(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(CreatureDiedEvent::name, [this](const Event& evt) {
-				OnCreatureDied(evt);
-			});
 		}
 
 		NPCRepository() = delete;

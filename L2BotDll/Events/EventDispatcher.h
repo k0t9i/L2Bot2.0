@@ -11,10 +11,8 @@ class EventDispatcher
 public:
 	using Delegate = std::function<void(const Event&)>;
 
-	static EventDispatcher& GetInstance() {
-		static EventDispatcher instance;
-		return instance;
-	}
+	EventDispatcher() = default;
+	virtual ~EventDispatcher() = default;
 
 	void Dispatch(const Event& evt)
 	{
@@ -35,12 +33,6 @@ public:
 	{
 		m_Handlers[eventName].push_back(handler);
 	}
-
-private:
-	EventDispatcher() = default;
-	virtual ~EventDispatcher() = default;
-	EventDispatcher(const EventDispatcher&) = delete;
-	EventDispatcher& operator=(const EventDispatcher&) = delete;
 
 private:
 	std::unordered_map<std::string, std::vector<Delegate>> m_Handlers;

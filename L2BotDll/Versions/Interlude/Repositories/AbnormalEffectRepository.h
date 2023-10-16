@@ -7,8 +7,8 @@
 #include "../Factories/AbnormalEffectFactory.h"
 #include "../../../Events/AbnormalEffectChangedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
-#include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
+#include "../../../Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -27,18 +27,22 @@ namespace Interlude
 		AbnormalEffectRepository(const AbnormalEffectFactory& factory) :
 			m_Factory(factory)
 		{
-			EventDispatcher::GetInstance().Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
-				OnEffectToggled(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
-				OnHeroDeleted(evt);
-			});
 		}
 
 		AbnormalEffectRepository() = delete;
 		virtual ~AbnormalEffectRepository()
 		{
 			Reset();
+		}
+
+		void Init() override
+		{
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
+				OnEffectToggled(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+				OnHeroDeleted(evt);
+			});
 		}
 
 		void Reset() override

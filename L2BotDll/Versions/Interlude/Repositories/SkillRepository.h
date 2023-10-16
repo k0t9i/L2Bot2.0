@@ -11,9 +11,9 @@
 #include "../../../Events/AbnormalEffectChangedEvent.h"
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/GameEngineTickedEvent.h"
-#include "../../../Events/EventDispatcher.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../../../Common/TimerMap.h"
+#include "../../../Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -34,24 +34,7 @@ namespace Interlude
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory)
 		{
-			EventDispatcher::GetInstance().Subscribe(SkillCreatedEvent::name, [this](const Event& evt) {
-				OnSkillCreated(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(SkillUsedEvent::name, [this](const Event& evt) {
-				OnSkillUsed(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(SkillCancelledEvent::name, [this](const Event& evt) {
-				OnSkillCancelled(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
-				OnSkillToggled(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
-				OnHeroDeleted(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(GameEngineTickedEvent::name, [this](const Event& evt) {
-				OnGameEngineTicked(evt);
-			});
+			
 		}
 
 		SkillRepository() = delete;
@@ -66,6 +49,28 @@ namespace Interlude
 			m_Skills.clear();
 			m_IsNewCycle = false;
 			m_NewSkills.clear();
+		}
+
+		void Init() override
+		{
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SkillCreatedEvent::name, [this](const Event& evt) {
+				OnSkillCreated(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SkillUsedEvent::name, [this](const Event& evt) {
+				OnSkillUsed(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SkillCancelledEvent::name, [this](const Event& evt) {
+				OnSkillCancelled(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
+				OnSkillToggled(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+				OnHeroDeleted(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(GameEngineTickedEvent::name, [this](const Event& evt) {
+				OnGameEngineTicked(evt);
+			});
 		}
 
 		void OnGameEngineTicked(const Event& evt)

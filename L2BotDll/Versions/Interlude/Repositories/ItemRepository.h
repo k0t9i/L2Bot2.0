@@ -12,7 +12,7 @@
 #include "../../../Events/HeroDeletedEvent.h"
 #include "../../../Events/ItemAutousedEvent.h"
 #include "../../../Events/OnEndItemListEvent.h"
-#include "../../../Events/EventDispatcher.h"
+#include "../../../Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -44,24 +44,6 @@ namespace Interlude
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory)
 		{
-			EventDispatcher::GetInstance().Subscribe(ItemCreatedEvent::name, [this](const Event& evt) {
-				OnItemCreated(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(ItemUpdatedEvent::name, [this](const Event& evt) {
-				OnItemUpdated(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(ItemDeletedEvent::name, [this](const Event& evt) {
-				OnItemDeleted(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
-				OnHeroDeleted(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(ItemAutousedEvent::name, [this](const Event& evt) {
-				OnItemAutoused(evt);
-			});
-			EventDispatcher::GetInstance().Subscribe(OnEndItemListEvent::name, [this](const Event& evt) {
-				OnEndItemList(evt);
-			});
 		}
 
 		void OnEndItemList(const Event& evt)
@@ -196,6 +178,28 @@ namespace Interlude
 			m_NewItems.clear();
 			m_Items.clear();
 			m_NetworkHandler.RequestItemList();
+		}
+
+		void Init() override
+		{
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemCreatedEvent::name, [this](const Event& evt) {
+				OnItemCreated(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemUpdatedEvent::name, [this](const Event& evt) {
+				OnItemUpdated(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemDeletedEvent::name, [this](const Event& evt) {
+				OnItemDeleted(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+				OnHeroDeleted(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemAutousedEvent::name, [this](const Event& evt) {
+				OnItemAutoused(evt);
+			});
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(OnEndItemListEvent::name, [this](const Event& evt) {
+				OnEndItemList(evt);
+			});
 		}
 
 	private:

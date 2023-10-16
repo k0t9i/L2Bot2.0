@@ -46,6 +46,15 @@ namespace L2Bot::Domain::Services
 
 		void Start()
 		{
+			m_DropRepository.Init();
+			m_HeroRepository.Init();
+			m_NPCRepository.Init();
+			m_PlayerRepository.Init();
+			m_SkillRepository.Init();
+			m_ItemRepository.Init();
+			m_AbnormalEffectRepository.Init();
+			m_ChatMessageRepository.Init();
+
 			m_ConnectingThread = std::thread(&WorldHandler::Connect, this);
 			m_SendingThread = std::thread(&WorldHandler::Send, this);
 			m_ReceivingThread = std::thread(&WorldHandler::Receive, this);

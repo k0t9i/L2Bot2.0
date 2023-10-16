@@ -2,8 +2,8 @@
 #include "../../../Common/apihook.h"
 #include "NetworkHandlerWrapper.h"
 #include "../../../Events/SpoiledEvent.h"
-#include "../../../Events/EventDispatcher.h"
 #include "ProcessManipulation.h"
+#include "../../../Services/ServiceLocator.h"
 
 namespace Interlude
 {
@@ -176,7 +176,7 @@ namespace Interlude
 				p->GetMessageId() == static_cast<int>(L2::SystemMessagePacket::Type::SPOIL_SUCCESS) ||
 				p->GetMessageId() == static_cast<int>(L2::SystemMessagePacket::Type::ALREADY_SPOILED)
 				) {
-				EventDispatcher::GetInstance().Dispatch(SpoiledEvent{});
+				ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(SpoiledEvent{});
 			}
 		}
 

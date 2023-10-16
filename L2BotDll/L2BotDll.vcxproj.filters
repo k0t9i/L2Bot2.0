@@ -204,6 +204,9 @@
     <ClInclude Include="Versions\Interlude\Services\HeroService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Services\ServiceLocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

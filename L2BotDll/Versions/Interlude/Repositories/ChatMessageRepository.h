@@ -4,7 +4,7 @@
 #include <shared_mutex>
 #include "../Factories/ChatMessageFactory.h"
 #include "../../../Events/ChatMessageCreatedEvent.h"
-#include "../../../Events/EventDispatcher.h"
+#include "../../../Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -20,18 +20,22 @@ namespace Interlude
 			return m_Messages;
 		}
 
-		void Reset()
+		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			m_Messages.clear();
 		}
 
+		void Init() override
+		{
+			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ChatMessageCreatedEvent::name, [this](const Event& evt) {
+				OnMessageCreated(evt);
+			});
+		}
+
 		ChatMessageRepository(const ChatMessageFactory& factory) :
 			m_Factory(factory)
 		{
-			EventDispatcher::GetInstance().Subscribe(ChatMessageCreatedEvent::name, [this](const Event& evt) {
-				OnMessageCreated(evt);
-			});
 		}
 
 		void OnMessageCreated(const Event& evt)

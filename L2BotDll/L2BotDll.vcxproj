@@ -186,6 +186,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Serializers\JsonIncomingMessageFactory.h" />
     <ClInclude Include="Serializers\JsonSerializer.h" />
+    <ClInclude Include="Services\ServiceLocator.h" />
     <ClInclude Include="Versions\Interlude\Services\HeroService.h" />
     <ClInclude Include="ThirdParty\json.hpp" />
     <ClInclude Include="Versions\GameStructs\FNameInterface.h" />
