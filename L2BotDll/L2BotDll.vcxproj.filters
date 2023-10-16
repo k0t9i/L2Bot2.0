@@ -90,9 +90,6 @@
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Services\WorldHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\GameStructs\GameEngineInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>

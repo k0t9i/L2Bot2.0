@@ -18,7 +18,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	case DLL_PROCESS_ATTACH:
 		injector.SetHook(hModule);
 		if (processName == "l2.exe") {
-			MessageBox(0, L"A", L"B", MB_OK);
 			InjectLibrary::StopCurrentProcess();
 			application.Start();
 			InjectLibrary::StartCurrentProcess();

@@ -179,7 +179,9 @@
     <ClInclude Include="Domain\Serializers\IncomingMessage.h" />
     <ClInclude Include="Domain\Services\HeroServiceInterface.h" />
     <ClInclude Include="Domain\Entities\ChatMessage.h" />
-    <ClInclude Include="Domain\Services\UnitOfWork.h" />
+    <ClInclude Include="Domain\Services\IncomingMessageProcessor.h" />
+    <ClInclude Include="Domain\Services\OutgoingMessageBuilder.h" />
+    <ClInclude Include="Domain\Services\WorldHandler.h" />
     <ClInclude Include="Domain\ValueObjects\Vector3.h" />
     <ClInclude Include="Domain\Enums\SpoilStateEnum.h" />
     <ClInclude Include="Domain\Transports\TransportInterface.h" />

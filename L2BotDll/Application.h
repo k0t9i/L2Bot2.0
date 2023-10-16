@@ -3,11 +3,11 @@
 #include <Windows.h>
 #include <string>
 
-#include "Services/WorldHandler.h"
+#include "Domain/Services/WorldHandler.h"
+#include "Domain/Services/IncomingMessageProcessor.h"
 #include "Serializers/JsonSerializer.h"
 #include "Serializers/JsonIncomingMessageFactory.h"
 #include "Transports/NamedPipeTransport.h"
-
 #include "Versions/VersionAbstractFactory.h"
 
 using namespace L2Bot::Domain;
@@ -29,8 +29,7 @@ public:
 			m_AbstractFactory.GetAbnormalEffectRepository(),
 			m_AbstractFactory.GetChatMessageRepository(),
 			m_Serializer,
-			m_MessageFactory,
-			m_AbstractFactory.GetHeroService(),
+			Services::IncomingMessageProcessor(m_MessageFactory, m_AbstractFactory.GetHeroService()),
 			m_Transport
 		)
 	{
@@ -61,7 +60,7 @@ public:
 
 private:
 	const VersionAbstractFactory& m_AbstractFactory;
-	WorldHandler m_WorldHandler;
+	Services::WorldHandler m_WorldHandler;
 	JsonSerializer m_Serializer;
 	JsonIncomingMessageFactory m_MessageFactory;
 	NamedPipeTransport m_Transport;

@@ -156,7 +156,13 @@
     <ClInclude Include="Domain\Helpers\HashCombiner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\Services\UnitOfWork.h">
+    <ClInclude Include="Domain\Services\IncomingMessageProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Services\WorldHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Services\OutgoingMessageBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
