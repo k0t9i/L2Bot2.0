@@ -22,14 +22,7 @@ public:
 		m_Transport(Application::PIPE_NAME),
 		m_WorldHandler
 		(
-			m_AbstractFactory.GetHeroRepository(),
-			m_AbstractFactory.GetDropRepository(),
-			m_AbstractFactory.GetNPCRepository(),
-			m_AbstractFactory.GetPlayerRepository(),
-			m_AbstractFactory.GetSkillRepository(),
-			m_AbstractFactory.GetItemRepository(),
-			m_AbstractFactory.GetAbnormalEffectRepository(),
-			m_AbstractFactory.GetChatMessageRepository(),
+			m_AbstractFactory.GetRepositories(),
 			m_Serializer,
 			Services::IncomingMessageProcessor(m_MessageFactory, m_AbstractFactory.GetHeroService()),
 			m_Transport

@@ -17,26 +17,12 @@ namespace L2Bot::Domain::Services
 	{
 	public:
 		WorldHandler(
-			Repositories::EntityRepositoryInterface& heroRepository,
-			Repositories::EntityRepositoryInterface& dropRepository,
-			Repositories::EntityRepositoryInterface& npcRepository,
-			Repositories::EntityRepositoryInterface& playerRepository,
-			Repositories::EntityRepositoryInterface& skillRepository,
-			Repositories::EntityRepositoryInterface& itemRepository,
-			Repositories::EntityRepositoryInterface& abnormalEffectRepository,
-			Repositories::EntityRepositoryInterface& chatMessageRepository,
+			const std::map<std::wstring, Repositories::EntityRepositoryInterface&> repositories,
 			const Serializers::SerializerInterface& serializer,
 			const Services::IncomingMessageProcessor& incomingMessageProcessor,
 			Transports::TransportInterface& transport
 		) :
-			m_HeroRepository(heroRepository),
-			m_DropRepository(dropRepository),
-			m_NPCRepository(npcRepository),
-			m_PlayerRepository(playerRepository),
-			m_SkillRepository(skillRepository),
-			m_ItemRepository(itemRepository),
-			m_AbnormalEffectRepository(abnormalEffectRepository),
-			m_ChatMessageRepository(chatMessageRepository),
+			m_Repositories(repositories),
 			m_Serializer(serializer),
 			m_IncomingMessageProcessor(incomingMessageProcessor),
 			m_Transport(transport)
@@ -46,14 +32,10 @@ namespace L2Bot::Domain::Services
 
 		void Start()
 		{
-			m_DropRepository.Init();
-			m_HeroRepository.Init();
-			m_NPCRepository.Init();
-			m_PlayerRepository.Init();
-			m_SkillRepository.Init();
-			m_ItemRepository.Init();
-			m_AbnormalEffectRepository.Init();
-			m_ChatMessageRepository.Init();
+			for (const auto& kvp : m_Repositories)
+			{
+				kvp.second.Init();
+			}
 
 			m_ConnectingThread = std::thread(&WorldHandler::Connect, this);
 			m_SendingThread = std::thread(&WorldHandler::Send, this);
@@ -133,21 +115,9 @@ namespace L2Bot::Domain::Services
 
 		const std::vector<std::vector<Serializers::Node>> GetOutgoingMessages()
 		{
-			std::map<std::wstring, Repositories::EntityRepositoryInterface&> handlers
-			{
-				{L"hero", m_HeroRepository},
-				{L"drop", m_DropRepository},
-				{L"npc", m_NPCRepository},
-				{L"player", m_PlayerRepository},
-				{L"skill", m_SkillRepository},
-				{L"item", m_ItemRepository},
-				{L"abnormalEffect", m_AbnormalEffectRepository},
-				{L"chat", m_ChatMessageRepository}
-			};
-
 			std::vector<std::vector<Serializers::Node>> result;
 
-			for (const auto& kvp : handlers)
+			for (const auto& kvp : m_Repositories)
 			{
 				auto& entities = kvp.second.GetEntities();
 
@@ -160,24 +130,14 @@ namespace L2Bot::Domain::Services
 
 		void Invalidate()
 		{
-			m_DropRepository.Reset();
-			m_HeroRepository.Reset();
-			m_NPCRepository.Reset();
-			m_PlayerRepository.Reset();
-			m_SkillRepository.Reset();
-			m_ItemRepository.Reset();
-			m_AbnormalEffectRepository.Reset();
+			for (const auto& kvp : m_Repositories)
+			{
+				kvp.second.Reset();
+			}
 		}
 
 	private:
-		Repositories::EntityRepositoryInterface& m_DropRepository;
-		Repositories::EntityRepositoryInterface& m_HeroRepository;
-		Repositories::EntityRepositoryInterface& m_NPCRepository;
-		Repositories::EntityRepositoryInterface& m_PlayerRepository;
-		Repositories::EntityRepositoryInterface& m_SkillRepository;
-		Repositories::EntityRepositoryInterface& m_ItemRepository;
-		Repositories::EntityRepositoryInterface& m_AbnormalEffectRepository;
-		Repositories::EntityRepositoryInterface& m_ChatMessageRepository;
+		const std::map<std::wstring, Repositories::EntityRepositoryInterface&> m_Repositories;
 		const Serializers::SerializerInterface& m_Serializer;
 		const Services::IncomingMessageProcessor m_IncomingMessageProcessor;
 		Services::OutgoingMessageBuilder m_OutgoingMessageBuilder;

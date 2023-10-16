@@ -1,5 +1,7 @@
 #pragma once
 
+#include<map>
+#include <string>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "Domain/Services/HeroServiceInterface.h"
 #include "GameStructs/NetworkHandlerInterface.h"
@@ -30,6 +32,20 @@ public:
 	virtual GameEngineInterface& GetGameEngine() const = 0;
 	virtual L2GameDataInterface& GetL2GameData() const = 0;
 	virtual FNameInterface& GetFName() const = 0;
+
+	virtual const std::map<std::wstring, Repositories::EntityRepositoryInterface&> GetRepositories() const
+	{
+		return {
+			{L"hero", GetHeroRepository()},
+			{L"drop", GetDropRepository()},
+			{L"npc", GetNPCRepository()},
+			{L"player", GetPlayerRepository()},
+			{L"skill", GetSkillRepository()},
+			{L"item", GetItemRepository()},
+			{L"abnormalEffect", GetAbnormalEffectRepository()},
+			{L"chat", GetChatMessageRepository()}
+		};
+	}
 
 	static const VersionAbstractFactory& GetFactory(Version version, const uint16_t radius);
 };
