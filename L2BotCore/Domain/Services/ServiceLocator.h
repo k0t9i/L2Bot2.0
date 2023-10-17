@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "../Events/EventDispatcher.h"
+#include "../Logger/Logger.h"
 
 namespace L2Bot::Domain::Services
 {
@@ -21,6 +22,15 @@ namespace L2Bot::Domain::Services
 		{
 			m_EventDispatcher = std::move(dispatcher);
 		}
+
+		const std::unique_ptr<Logger::Logger>& GetLogger()
+		{
+			return m_Logger;
+		}
+		void SetLogger(std::unique_ptr<Logger::Logger> logger)
+		{
+			m_Logger = std::move(logger);
+		}
 	private:
 		ServiceLocator() = default;
 		virtual ~ServiceLocator() = default;
@@ -29,5 +39,6 @@ namespace L2Bot::Domain::Services
 		ServiceLocator& operator=(const ServiceLocator&) = delete;
 	private:
 		std::unique_ptr<Events::EventDispatcher> m_EventDispatcher;
+		std::unique_ptr<Logger::Logger> m_Logger;
 	};
 }

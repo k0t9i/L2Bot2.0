@@ -194,6 +194,9 @@
     <ClInclude Include="Domain\Events\SkillCreatedEvent.h" />
     <ClInclude Include="Domain\Events\SkillUsedEvent.h" />
     <ClInclude Include="Domain\Events\SpoiledEvent.h" />
+    <ClInclude Include="Domain\Logger\LogChannel.h" />
+    <ClInclude Include="Domain\Logger\Logger.h" />
+    <ClInclude Include="Domain\Logger\LogLevel.h" />
     <ClInclude Include="Domain\Serializers\IncomingMessageFactoryInterface.h" />
     <ClInclude Include="Domain\Serializers\IncomingMessage.h" />
     <ClInclude Include="Domain\Services\HeroServiceInterface.h" />

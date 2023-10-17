@@ -165,6 +165,9 @@
     <ClInclude Include="Common\Common.h" />
     <ClInclude Include="Common\TimerMap.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Logger\OutputDebugLogChannel.h" />
+    <ClInclude Include="Logger\FileLogChannel.h" />
+    <ClInclude Include="Logger\ChatLogChannel.h" />
     <ClInclude Include="Serializers\JsonIncomingMessageFactory.h" />
     <ClInclude Include="Serializers\JsonSerializer.h" />
     <ClInclude Include="Versions\Interlude\Services\HeroService.h" />

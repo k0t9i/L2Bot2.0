@@ -19,6 +19,7 @@ namespace L2Bot::Domain::Enums
 		announcement,
 		partyroomCommander = 15,
 		partyroomAll,
-		heroVoice
+		heroVoice,
+		log = 255
 	};
 }
