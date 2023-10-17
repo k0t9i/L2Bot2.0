@@ -61,6 +61,10 @@ namespace L2Bot::Domain::Entities
 		{
 			return "hero";
 		}
+		const ValueObjects::FullName& GetFullName() const
+		{
+			return m_FullName;
+		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{

@@ -28,7 +28,7 @@ protected:
 					0,
 					static_cast<uint8_t>(m_ChatChannel),
 					L"",
-					GetCurrentDateTime() + logEntry
+					logEntry
 				}
 			}
 		);

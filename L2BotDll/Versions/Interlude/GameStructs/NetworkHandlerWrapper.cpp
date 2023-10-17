@@ -166,6 +166,7 @@ namespace Interlude
 			restore(originalInitAddress);
 			InjectLibrary::StartCurrentProcess();
 
+			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UNetworkHandler {:#010x} obtained", (int)_target);
 			(*__Init)(This, unk);
 		}
 	}

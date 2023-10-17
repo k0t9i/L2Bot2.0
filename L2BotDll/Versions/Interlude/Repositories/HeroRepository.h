@@ -26,6 +26,7 @@ namespace Interlude
 				if (!m_Hero) {
 					m_Hero = m_Factory.Create(hero);
 					Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::HeroCreatedEvent{});
+					Services::ServiceLocator::GetInstance().GetLogger()->App(L"{} enter in the world", m_Hero->GetFullName().GetNickname());
 				}
 				else
 				{
@@ -34,6 +35,7 @@ namespace Interlude
 				result[hero->objectId] = m_Hero;
 			}
 			else if (m_Hero) {
+				Services::ServiceLocator::GetInstance().GetLogger()->App(L"{} leave the world", m_Hero->GetFullName().GetNickname());
 				m_Hero = nullptr;
 				Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::HeroDeletedEvent{});
 			}

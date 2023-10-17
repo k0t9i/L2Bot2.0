@@ -15,7 +15,7 @@ namespace Client.Application.ViewModels
         {
             get
             {
-                return message.Name + ": " + message.Text;
+                return (message.Name != "" ? message.Name + ": " : "") + message.Text;
             }
         }
 

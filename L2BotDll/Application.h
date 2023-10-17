@@ -11,6 +11,10 @@
 #include "Versions/VersionAbstractFactory.h"
 #include "Domain/Services/ServiceLocator.h"
 #include "Domain/Events/EventDispatcher.h"
+#include "Domain/Logger/Logger.h"
+#include "Logger/ChatLogChannel.h"
+#include "Logger/FileLogChannel.h"
+#include "Logger/OutputDebugLogChannel.h"
 
 using namespace L2Bot::Domain;
 

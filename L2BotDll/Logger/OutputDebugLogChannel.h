@@ -14,6 +14,6 @@ public:
 protected:
 	void DoSendToChannel(const std::wstring& logEntry) override
 	{
-		OutputDebugStringW((GetCurrentDateTime() + logEntry).c_str());
+		OutputDebugStringW(logEntry.c_str());
 	}
 };

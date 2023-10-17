@@ -180,6 +180,7 @@ namespace Interlude
 		if (_target == 0)
 		{
 			_target = This;
+			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine {:#010x} obtained", (int)_target);
 		}
 
 		(*__Tick)(This, deltaTime);

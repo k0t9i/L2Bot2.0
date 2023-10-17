@@ -2,6 +2,9 @@
 #include "../../../Common/apihook.h"
 #include "L2GameDataWrapper.h"
 #include "ProcessManipulation.h"
+#include "Domain/Services/ServiceLocator.h"
+
+using namespace L2Bot::Domain;
 
 namespace Interlude
 {
@@ -53,6 +56,7 @@ namespace Interlude
 			restore(originalInitAddress);
 			InjectLibrary::StartCurrentProcess();
 
+			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"FL2GameData {:#010x} obtained", (int)_target);
 			return (*__Init)(This, unk, unk1);
 		}
 
