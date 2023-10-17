@@ -6,13 +6,13 @@
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/ItemFactory.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Events/ItemCreatedEvent.h"
-#include "../../../Events/ItemUpdatedEvent.h"
-#include "../../../Events/ItemDeletedEvent.h"
-#include "../../../Events/HeroDeletedEvent.h"
-#include "../../../Events/ItemAutousedEvent.h"
-#include "../../../Events/OnEndItemListEvent.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Events/ItemCreatedEvent.h"
+#include "Domain/Events/ItemUpdatedEvent.h"
+#include "Domain/Events/ItemDeletedEvent.h"
+#include "Domain/Events/HeroDeletedEvent.h"
+#include "Domain/Events/ItemAutousedEvent.h"
+#include "Domain/Events/OnEndItemListEvent.h"
+#include "Domain/Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -46,10 +46,10 @@ namespace Interlude
 		{
 		}
 
-		void OnEndItemList(const Event& evt)
+		void OnEndItemList(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == OnEndItemListEvent::name)
+			if (evt.GetName() == Events::OnEndItemListEvent::name)
 			{
 				for (auto it = m_Items.begin(); it != m_Items.end();)
 				{
@@ -67,21 +67,21 @@ namespace Interlude
 			}
 		}
 		
-		void OnHeroDeleted(const Event& evt)
+		void OnHeroDeleted(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == HeroDeletedEvent::name)
+			if (evt.GetName() == Events::HeroDeletedEvent::name)
 			{
 				Reset();
 			}
 		}
 		
-		void OnItemAutoused(const Event& evt)
+		void OnItemAutoused(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == ItemAutousedEvent::name)
+			if (evt.GetName() == Events::ItemAutousedEvent::name)
 			{
-				const auto casted = static_cast<const ItemAutousedEvent&>(evt);
+				const auto casted = static_cast<const Events::ItemAutousedEvent&>(evt);
 				const auto& data = casted.GetAutouseInfo();
 
 				const auto itemId = data[0];
@@ -104,10 +104,10 @@ namespace Interlude
 			}
 		}
 
-		void OnItemCreated(const Event& evt)
+		void OnItemCreated(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == ItemCreatedEvent::name)
+			if (evt.GetName() == Events::ItemCreatedEvent::name)
 			{
 				if (m_IsNewCycle)
 				{
@@ -115,7 +115,7 @@ namespace Interlude
 					m_NewItems.clear();
 				}
 
-				const auto casted = static_cast<const ItemCreatedEvent&>(evt);
+				const auto casted = static_cast<const Events::ItemCreatedEvent&>(evt);
 				const auto& data = casted.GetItemData();
 
 				
@@ -135,12 +135,12 @@ namespace Interlude
 			}
 		}
 
-		void OnItemUpdated(const Event& evt)
+		void OnItemUpdated(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == ItemUpdatedEvent::name)
+			if (evt.GetName() == Events::ItemUpdatedEvent::name)
 			{
-				const auto casted = static_cast<const ItemUpdatedEvent&>(evt);
+				const auto casted = static_cast<const Events::ItemUpdatedEvent&>(evt);
 				const auto& data = casted.GetItemData();
 
 				//todo exception?
@@ -153,13 +153,13 @@ namespace Interlude
 			}
 		}
 
-		void OnItemDeleted(const Event& evt)
+		void OnItemDeleted(const Events::Event& evt)
 		{
 			//fixme may be a race condition
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == ItemDeletedEvent::name)
+			if (evt.GetName() == Events::ItemDeletedEvent::name)
 			{
-				const auto casted = static_cast<const ItemDeletedEvent&>(evt);
+				const auto casted = static_cast<const Events::ItemDeletedEvent&>(evt);
 
 				m_Items.erase(casted.GetObjectId());
 			}
@@ -182,22 +182,22 @@ namespace Interlude
 
 		void Init() override
 		{
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemCreatedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::ItemCreatedEvent::name, [this](const Events::Event& evt) {
 				OnItemCreated(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemUpdatedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::ItemUpdatedEvent::name, [this](const Events::Event& evt) {
 				OnItemUpdated(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemDeletedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::ItemDeletedEvent::name, [this](const Events::Event& evt) {
 				OnItemDeleted(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::HeroDeletedEvent::name, [this](const Events::Event& evt) {
 				OnHeroDeleted(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ItemAutousedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::ItemAutousedEvent::name, [this](const Events::Event& evt) {
 				OnItemAutoused(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(OnEndItemListEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::OnEndItemListEvent::name, [this](const Events::Event& evt) {
 				OnEndItemList(evt);
 			});
 		}

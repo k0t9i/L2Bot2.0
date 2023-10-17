@@ -5,10 +5,10 @@
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/AbnormalEffectFactory.h"
-#include "../../../Events/AbnormalEffectChangedEvent.h"
-#include "../../../Events/HeroDeletedEvent.h"
+#include "Domain/Events/AbnormalEffectChangedEvent.h"
+#include "Domain/Events/HeroDeletedEvent.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -37,10 +37,10 @@ namespace Interlude
 
 		void Init() override
 		{
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::AbnormalEffectChangedEvent::name, [this](const Events::Event& evt) {
 				OnEffectToggled(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::HeroDeletedEvent::name, [this](const Events::Event& evt) {
 				OnHeroDeleted(evt);
 			});
 		}
@@ -51,21 +51,21 @@ namespace Interlude
 			m_Effects.clear();
 		}
 
-		void OnHeroDeleted(const Event& evt)
+		void OnHeroDeleted(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == HeroDeletedEvent::name)
+			if (evt.GetName() == Events::HeroDeletedEvent::name)
 			{
 				Reset();
 			}
 		}
 
-		void OnEffectToggled(const Event& evt)
+		void OnEffectToggled(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == AbnormalEffectChangedEvent::name)
+			if (evt.GetName() == Events::AbnormalEffectChangedEvent::name)
 			{
-				const auto casted = static_cast<const AbnormalEffectChangedEvent&>(evt);
+				const auto casted = static_cast<const Events::AbnormalEffectChangedEvent&>(evt);
 				
 				const auto &actualIds = Create(casted.GetSkillInfo());
 				Delete(actualIds);

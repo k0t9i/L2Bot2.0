@@ -5,10 +5,10 @@
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/NPCFactory.h"
-#include "../../../Events/SpoiledEvent.h"
-#include "../../../Events/CreatureDiedEvent.h"
+#include "Domain/Events/SpoiledEvent.h"
+#include "Domain/Events/CreatureDiedEvent.h"
 #include "../../GameStructs/FindObjectsTrait.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -57,10 +57,10 @@ namespace Interlude
 
 		void Init() override
 		{
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SpoiledEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::SpoiledEvent::name, [this](const Events::Event& evt) {
 				OnSpoiled(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(CreatureDiedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::CreatureDiedEvent::name, [this](const Events::Event& evt) {
 				OnCreatureDied(evt);
 			});
 		}
@@ -75,12 +75,12 @@ namespace Interlude
 		NPCRepository() = delete;
 		virtual ~NPCRepository() = default;
 
-		void OnSpoiled(const Event& evt)
+		void OnSpoiled(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == SpoiledEvent::name)
+			if (evt.GetName() == Events::SpoiledEvent::name)
 			{
-				const auto casted = static_cast<const SpoiledEvent&>(evt);
+				const auto casted = static_cast<const Events::SpoiledEvent&>(evt);
 				const auto hero = m_NetworkHandler.GetHero();
 				if (hero && hero->pawn && hero->pawn->lineagePlayerController)
 				{
@@ -93,12 +93,12 @@ namespace Interlude
 			}
 		}
 
-		void OnCreatureDied(const Event& evt)
+		void OnCreatureDied(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == CreatureDiedEvent::name)
+			if (evt.GetName() == Events::CreatureDiedEvent::name)
 			{
-				const auto casted = static_cast<const CreatureDiedEvent&>(evt);
+				const auto casted = static_cast<const Events::CreatureDiedEvent&>(evt);
 				if (m_Spoiled.find(casted.GetCreatureId()) != m_Spoiled.end())
 				{
 					const auto isSweepable = casted.GetCreatureInfo()[4] != 0;

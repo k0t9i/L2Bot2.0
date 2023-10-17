@@ -3,10 +3,10 @@
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/HeroFactory.h"
-#include "../../../Events/HeroCreatedEvent.h"
-#include "../../../Events/HeroDeletedEvent.h"
+#include "Domain/Events/HeroCreatedEvent.h"
+#include "Domain/Events/HeroDeletedEvent.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -25,7 +25,7 @@ namespace Interlude
 			if (hero) {
 				if (!m_Hero) {
 					m_Hero = m_Factory.Create(hero);
-					ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(HeroCreatedEvent{});
+					Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::HeroCreatedEvent{});
 				}
 				else
 				{
@@ -35,7 +35,7 @@ namespace Interlude
 			}
 			else if (m_Hero) {
 				m_Hero = nullptr;
-				ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(HeroDeletedEvent{});
+				Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::HeroDeletedEvent{});
 			}
 
 			return result;

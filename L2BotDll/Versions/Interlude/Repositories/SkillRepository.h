@@ -5,15 +5,15 @@
 #include <shared_mutex>
 #include "Domain/Repositories/EntityRepositoryInterface.h"
 #include "../Factories/SkillFactory.h"
-#include "../../../Events/SkillCreatedEvent.h"
-#include "../../../Events/SkillUsedEvent.h"
-#include "../../../Events/SkillCancelledEvent.h"
-#include "../../../Events/AbnormalEffectChangedEvent.h"
-#include "../../../Events/HeroDeletedEvent.h"
-#include "../../../Events/GameEngineTickedEvent.h"
+#include "Domain/Events/SkillCreatedEvent.h"
+#include "Domain/Events/SkillUsedEvent.h"
+#include "Domain/Events/SkillCancelledEvent.h"
+#include "Domain/Events/AbnormalEffectChangedEvent.h"
+#include "Domain/Events/HeroDeletedEvent.h"
+#include "Domain/Events/GameEngineTickedEvent.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../../../Common/TimerMap.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -53,30 +53,30 @@ namespace Interlude
 
 		void Init() override
 		{
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SkillCreatedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::SkillCreatedEvent::name, [this](const Events::Event& evt) {
 				OnSkillCreated(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SkillUsedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::SkillUsedEvent::name, [this](const Events::Event& evt) {
 				OnSkillUsed(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(SkillCancelledEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::SkillCancelledEvent::name, [this](const Events::Event& evt) {
 				OnSkillCancelled(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(AbnormalEffectChangedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::AbnormalEffectChangedEvent::name, [this](const Events::Event& evt) {
 				OnSkillToggled(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(HeroDeletedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::HeroDeletedEvent::name, [this](const Events::Event& evt) {
 				OnHeroDeleted(evt);
 			});
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(GameEngineTickedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::GameEngineTickedEvent::name, [this](const Events::Event& evt) {
 				OnGameEngineTicked(evt);
 			});
 		}
 
-		void OnGameEngineTicked(const Event& evt)
+		void OnGameEngineTicked(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == GameEngineTickedEvent::name)
+			if (evt.GetName() == Events::GameEngineTickedEvent::name)
 			{
 				for (auto it = m_Skills.begin(); it != m_Skills.end();)
 				{
@@ -94,10 +94,10 @@ namespace Interlude
 			}
 		}
 
-		void OnHeroDeleted(const Event& evt)
+		void OnHeroDeleted(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == HeroDeletedEvent::name)
+			if (evt.GetName() == Events::HeroDeletedEvent::name)
 			{
 				Reset();
 				m_CastingTimers.StopAll();
@@ -106,10 +106,10 @@ namespace Interlude
 		}
 
 		//todo need to delete skills if they are not exists in create "queue"
-		void OnSkillCreated(const Event& evt)
+		void OnSkillCreated(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == SkillCreatedEvent::name)
+			if (evt.GetName() == Events::SkillCreatedEvent::name)
 			{
 				if (m_IsNewCycle)
 				{
@@ -117,7 +117,7 @@ namespace Interlude
 					m_NewSkills.clear();
 				}
 
-				const auto casted = static_cast<const SkillCreatedEvent&>(evt);
+				const auto casted = static_cast<const Events::SkillCreatedEvent&>(evt);
 				const auto skillInfo = casted.GetSkillInfo();
 				const auto skillId = skillInfo[2];
 
@@ -142,12 +142,12 @@ namespace Interlude
 				m_NewSkills[skillId] = skillId;
 			}
 		}
-		void OnSkillUsed(const Event& evt)
+		void OnSkillUsed(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == SkillUsedEvent::name)
+			if (evt.GetName() == Events::SkillUsedEvent::name)
 			{
-				const auto casted = static_cast<const SkillUsedEvent&>(evt);
+				const auto casted = static_cast<const Events::SkillUsedEvent&>(evt);
 				const auto skillInfo = casted.GetSkillInfo();
 				const auto skillId = skillInfo[0];
 
@@ -174,12 +174,12 @@ namespace Interlude
 				});
 			}
 		}
-		void OnSkillCancelled(const Event& evt)
+		void OnSkillCancelled(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == SkillCancelledEvent::name)
+			if (evt.GetName() == Events::SkillCancelledEvent::name)
 			{
-				const auto casted = static_cast<const SkillCancelledEvent&>(evt);
+				const auto casted = static_cast<const Events::SkillCancelledEvent&>(evt);
 
 				const auto hero = m_NetworkHandler.GetHero();
 
@@ -198,12 +198,12 @@ namespace Interlude
 				}
 			}
 		}
-		void OnSkillToggled(const Event& evt)
+		void OnSkillToggled(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == AbnormalEffectChangedEvent::name)
+			if (evt.GetName() == Events::AbnormalEffectChangedEvent::name)
 			{
-				const auto casted = static_cast<const AbnormalEffectChangedEvent&>(evt);
+				const auto casted = static_cast<const Events::AbnormalEffectChangedEvent&>(evt);
 				const auto skillInfo = casted.GetSkillInfo();
 
 				std::unordered_map<uint32_t, int32_t> ids;

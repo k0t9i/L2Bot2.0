@@ -3,8 +3,8 @@
 #include <vector>
 #include <shared_mutex>
 #include "../Factories/ChatMessageFactory.h"
-#include "../../../Events/ChatMessageCreatedEvent.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Events/ChatMessageCreatedEvent.h"
+#include "Domain/Services/ServiceLocator.h"
 
 using namespace L2Bot::Domain;
 
@@ -28,7 +28,7 @@ namespace Interlude
 
 		void Init() override
 		{
-			ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(ChatMessageCreatedEvent::name, [this](const Event& evt) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::ChatMessageCreatedEvent::name, [this](const Events::Event& evt) {
 				OnMessageCreated(evt);
 			});
 		}
@@ -38,12 +38,12 @@ namespace Interlude
 		{
 		}
 
-		void OnMessageCreated(const Event& evt)
+		void OnMessageCreated(const Events::Event& evt)
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
-			if (evt.GetName() == ChatMessageCreatedEvent::name)
+			if (evt.GetName() == Events::ChatMessageCreatedEvent::name)
 			{
-				const auto casted = static_cast<const ChatMessageCreatedEvent&>(evt);
+				const auto casted = static_cast<const Events::ChatMessageCreatedEvent&>(evt);
 
 				const auto message = m_Factory.Create(casted.GetChatMessage());
 				m_Messages[message->GetId()] = message;

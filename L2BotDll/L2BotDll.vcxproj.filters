@@ -60,18 +60,6 @@
     <ClInclude Include="Versions\Interlude\AbstractFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\SpoiledEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\EventDispatcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\CreatureDiedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\GameStructs\NetworkHandlerInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,25 +87,7 @@
     <ClInclude Include="Versions\Interlude\GameStructs\L2ParamStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\SkillCreatedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\SkillUsedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\SkillCancelledEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Common\TimerMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\HeroCreatedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\HeroDeletedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\AbnormalEffectChangedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Serializers\JsonSerializer.h">
@@ -153,46 +123,19 @@
     <ClInclude Include="Versions\Interlude\Repositories\ItemRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\ItemCreatedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DTO\ItemData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\ItemUpdatedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\ItemDeletedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\ItemAutousedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\Interlude\Factories\AbnormalEffectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\Repositories\AbnormalEffectRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\GameEngineTickedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Versions\Interlude\Helpers\EnchantHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DTO\ChatMessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\ChatMessageCreatedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\Factories\ChatMessageFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\Repositories\ChatMessageRepository.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Events\OnEndItemListEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ThirdParty\json.hpp">
@@ -202,9 +145,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Versions\Interlude\Services\HeroService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Services\ServiceLocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

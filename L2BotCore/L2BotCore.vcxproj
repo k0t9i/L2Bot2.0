@@ -159,7 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Domain\DTO\ChatMessageData.h" />
     <ClInclude Include="Domain\DTO\EntityState.h" />
+    <ClInclude Include="Domain\DTO\ItemData.h" />
     <ClInclude Include="Domain\DTO\Message.h" />
     <ClInclude Include="Domain\Entities\AbnormalEffect.h" />
     <ClInclude Include="Domain\Entities\ArmorItem.h" />
@@ -175,12 +177,30 @@
     <ClInclude Include="Domain\Enums\ChatChannelEnum.h" />
     <ClInclude Include="Domain\Enums\ItemTypeEnum.h" />
     <ClInclude Include="Domain\Enums\WeaponTypeEnum.h" />
+    <ClInclude Include="Domain\Events\AbnormalEffectChangedEvent.h" />
+    <ClInclude Include="Domain\Events\ChatMessageCreatedEvent.h" />
+    <ClInclude Include="Domain\Events\CreatureDiedEvent.h" />
+    <ClInclude Include="Domain\Events\Event.h" />
+    <ClInclude Include="Domain\Events\EventDispatcher.h" />
+    <ClInclude Include="Domain\Events\GameEngineTickedEvent.h" />
+    <ClInclude Include="Domain\Events\HeroCreatedEvent.h" />
+    <ClInclude Include="Domain\Events\HeroDeletedEvent.h" />
+    <ClInclude Include="Domain\Events\ItemAutousedEvent.h" />
+    <ClInclude Include="Domain\Events\ItemCreatedEvent.h" />
+    <ClInclude Include="Domain\Events\ItemDeletedEvent.h" />
+    <ClInclude Include="Domain\Events\ItemUpdatedEvent.h" />
+    <ClInclude Include="Domain\Events\OnEndItemListEvent.h" />
+    <ClInclude Include="Domain\Events\SkillCancelledEvent.h" />
+    <ClInclude Include="Domain\Events\SkillCreatedEvent.h" />
+    <ClInclude Include="Domain\Events\SkillUsedEvent.h" />
+    <ClInclude Include="Domain\Events\SpoiledEvent.h" />
     <ClInclude Include="Domain\Serializers\IncomingMessageFactoryInterface.h" />
     <ClInclude Include="Domain\Serializers\IncomingMessage.h" />
     <ClInclude Include="Domain\Services\HeroServiceInterface.h" />
     <ClInclude Include="Domain\Entities\ChatMessage.h" />
     <ClInclude Include="Domain\Services\IncomingMessageProcessor.h" />
     <ClInclude Include="Domain\Services\OutgoingMessageBuilder.h" />
+    <ClInclude Include="Domain\Services\ServiceLocator.h" />
     <ClInclude Include="Domain\Services\WorldHandler.h" />
     <ClInclude Include="Domain\ValueObjects\Vector3.h" />
     <ClInclude Include="Domain\Enums\SpoilStateEnum.h" />

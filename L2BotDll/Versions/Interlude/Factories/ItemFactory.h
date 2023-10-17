@@ -10,7 +10,7 @@
 #include "Domain/Entities/ArmorItem.h"
 #include "Domain/Entities/WeaponItem.h"
 #include "Domain/Entities/ShieldItem.h"
-#include "../../../DTO/ItemData.h"
+#include "Domain/DTO/ItemData.h"
 #include "../Helpers/EnchantHelper.h"
 
 using namespace L2Bot::Domain;
@@ -88,7 +88,7 @@ namespace Interlude
 		ItemFactory() = delete;
 		virtual ~ItemFactory() = default;
 
-		std::shared_ptr<Entities::BaseItem> Create(const ItemData& itemInfo) const
+		std::shared_ptr<Entities::BaseItem> Create(const DTO::ItemData& itemInfo) const
 		{
 			//FIXME during first start data may be undefined
 			const auto data = GetItemData(itemInfo.itemId);
@@ -109,7 +109,7 @@ namespace Interlude
 			return nullptr;
 		}
 
-		void Update(std::shared_ptr<Entities::BaseItem>& item, const ItemData& itemInfo) const
+		void Update(std::shared_ptr<Entities::BaseItem>& item, const DTO::ItemData& itemInfo) const
 		{
 			//FIXME during first start data may be undefined
 			const auto data = GetItemData(itemInfo.itemId);
@@ -131,7 +131,7 @@ namespace Interlude
 		}
 
 	private:
-		std::shared_ptr<Entities::BaseItem> CreateEtc(const ItemData& itemInfo) const
+		std::shared_ptr<Entities::BaseItem> CreateEtc(const DTO::ItemData& itemInfo) const
 		{
 			const auto& data = GetEtcData(itemInfo);
 
@@ -148,7 +148,7 @@ namespace Interlude
 			);
 		}
 
-		void UpdateEtc(std::shared_ptr<Entities::BaseItem> &item, const ItemData& itemInfo) const
+		void UpdateEtc(std::shared_ptr<Entities::BaseItem> &item, const DTO::ItemData& itemInfo) const
 		{
 			auto etcItem = std::dynamic_pointer_cast<Entities::EtcItem>(item);
 
@@ -166,7 +166,7 @@ namespace Interlude
 			);
 		}
 
-		std::shared_ptr<Entities::BaseItem> CreateArmor(const ItemData& itemInfo) const
+		std::shared_ptr<Entities::BaseItem> CreateArmor(const DTO::ItemData& itemInfo) const
 		{
 			const auto& data = GetArmorData(itemInfo);
 
@@ -190,7 +190,7 @@ namespace Interlude
 			);
 		}
 
-		void UpdateArmor(std::shared_ptr<Entities::BaseItem>& item, const ItemData& itemInfo) const
+		void UpdateArmor(std::shared_ptr<Entities::BaseItem>& item, const DTO::ItemData& itemInfo) const
 		{
 			auto armorItem = std::dynamic_pointer_cast<Entities::ArmorItem>(item);
 
@@ -215,7 +215,7 @@ namespace Interlude
 			);
 		}
 
-		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(const ItemData& itemInfo) const
+		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(const DTO::ItemData& itemInfo) const
 		{
 			const auto itemData = static_cast<const FL2WeaponItemData*>(GetItemData(itemInfo.itemId));
 
@@ -266,7 +266,7 @@ namespace Interlude
 			);
 		}
 
-		void UpdateWeaponOrShield(std::shared_ptr<Entities::BaseItem>& item, const ItemData& itemInfo) const
+		void UpdateWeaponOrShield(std::shared_ptr<Entities::BaseItem>& item, const DTO::ItemData& itemInfo) const
 		{
 			const auto itemData = static_cast<const FL2WeaponItemData*>(GetItemData(itemInfo.itemId));
 
@@ -319,7 +319,7 @@ namespace Interlude
 			);
 		}
 
-		const BaseData GetBaseData(const ItemData& itemInfo) const
+		const BaseData GetBaseData(const DTO::ItemData& itemInfo) const
 		{
 			const auto data = GetItemData(itemInfo.itemId);
 
@@ -340,7 +340,7 @@ namespace Interlude
 			};
 		}
 
-		const EtcData GetEtcData(const ItemData& itemInfo) const
+		const EtcData GetEtcData(const DTO::ItemData& itemInfo) const
 		{
 			const auto& baseData = GetBaseData(itemInfo);
 
@@ -357,7 +357,7 @@ namespace Interlude
 			};
 		}
 
-		const ArmorData GetArmorData(const ItemData& itemInfo) const
+		const ArmorData GetArmorData(const DTO::ItemData& itemInfo) const
 		{
 			const auto& baseData = GetBaseData(itemInfo);
 
@@ -387,7 +387,7 @@ namespace Interlude
 			};
 		}
 
-		const ShieldData GetShieldData(const ItemData& itemInfo, const FL2WeaponItemData* itemData) const
+		const ShieldData GetShieldData(const DTO::ItemData& itemInfo, const FL2WeaponItemData* itemData) const
 		{
 			const auto& baseData = GetBaseData(itemInfo);
 
@@ -408,7 +408,7 @@ namespace Interlude
 			};
 		}
 
-		const WeaponData GetWeaponData(const ItemData& itemInfo, const FL2WeaponItemData* itemData) const
+		const WeaponData GetWeaponData(const DTO::ItemData& itemInfo, const FL2WeaponItemData* itemData) const
 		{
 			const auto& baseData = GetBaseData(itemInfo);
 

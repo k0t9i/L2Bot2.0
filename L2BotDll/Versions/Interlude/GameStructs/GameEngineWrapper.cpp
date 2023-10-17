@@ -3,21 +3,24 @@
 #include "../../../Common/Common.h"
 #include "GameEngineWrapper.h"
 #include "ProcessManipulation.h"
-#include "../../../Events/SkillCreatedEvent.h"
-#include "../../../Events/SkillUsedEvent.h"
-#include "../../../Events/SkillCancelledEvent.h"
-#include "../../../Events/AbnormalEffectChangedEvent.h"
-#include "../../../Events/ItemCreatedEvent.h"
-#include "../../../Events/ItemUpdatedEvent.h"
-#include "../../../Events/ItemDeletedEvent.h"
-#include "../../../Events/ItemAutousedEvent.h"
-#include "../../../Events/GameEngineTickedEvent.h"
-#include "../../../Events/ChatMessageCreatedEvent.h"
-#include "../../../Events/OnEndItemListEvent.h"
-#include "../../../Events/CreatureDiedEvent.h"
-#include "../../../DTO/ItemData.h"
+#include "Domain/Events/SkillCreatedEvent.h"
+#include "Domain/Events/SkillUsedEvent.h"
+#include "Domain/Events/SkillCancelledEvent.h"
+#include "Domain/Events/AbnormalEffectChangedEvent.h"
+#include "Domain/Events/ItemCreatedEvent.h"
+#include "Domain/Events/ItemUpdatedEvent.h"
+#include "Domain/Events/ItemDeletedEvent.h"
+#include "Domain/Events/ItemAutousedEvent.h"
+#include "Domain/Events/GameEngineTickedEvent.h"
+#include "Domain/Events/ChatMessageCreatedEvent.h"
+#include "Domain/Events/OnEndItemListEvent.h"
+#include "Domain/Events/CreatureDiedEvent.h"
+#include "Domain/DTO/ItemData.h"
+#include "Domain/DTO/ChatMessageData.h"
 #include "FName.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Services/ServiceLocator.h"
+
+using namespace L2Bot::Domain;
 
 namespace Interlude
 {
@@ -94,34 +97,34 @@ namespace Interlude
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(SkillCreatedEvent{stack.GetBufferAsVector<int32_t>()});
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillCreatedEvent{stack.GetBufferAsVector<int32_t>()});
 		(*__OnSkillListPacket)(This, stack);
 	}
 
 	int __fastcall GameEngineWrapper::__OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t, User* u1, User* u2, L2ParamStack& stack)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(SkillUsedEvent{ stack.GetBufferAsVector<int32_t>() });
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillUsedEvent{ stack.GetBufferAsVector<int32_t>() });
 		return (*__OnReceiveMagicSkillUse)(This, u1, u2, stack);
 	}
 
 	void __fastcall GameEngineWrapper::__OnReceiveMagicSkillCanceled_hook(GameEngine* This, uint32_t, User* user)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(SkillCancelledEvent{ user->objectId });
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillCancelledEvent{ user->objectId });
 		(*__OnReceiveMagicSkillCanceled)(This, user);
 	}
 
 	void __fastcall GameEngineWrapper::__AddAbnormalStatus_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(AbnormalEffectChangedEvent{ stack.GetBufferAsVector<int32_t>(3) });
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AbnormalEffectChangedEvent{ stack.GetBufferAsVector<int32_t>(3) });
 		(*__AddAbnormalStatus)(This, stack);
 	}
 
 	void __fastcall GameEngineWrapper::__AddInventoryItem_hook(GameEngine* This, uint32_t, ItemInfo& itemInfo)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(
-			ItemCreatedEvent
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(
+			Events::ItemCreatedEvent
 			{
-				ItemData
+				DTO::ItemData
 				{
 					itemInfo.objectId,
 					itemInfo.itemId,
@@ -139,7 +142,7 @@ namespace Interlude
 
 	void __fastcall GameEngineWrapper::__OnReceiveUpdateItemList_hook(GameEngine* This, uint32_t, UpdateItemListActionType actionType, ItemInfo& itemInfo)
 	{
-		const ItemData itemData
+		const DTO::ItemData itemData
 		{
 			itemInfo.objectId,
 			itemInfo.itemId,
@@ -154,13 +157,13 @@ namespace Interlude
 		switch (actionType)
 		{
 		case UpdateItemListActionType::created:
-			ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(ItemCreatedEvent{ itemData });
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::ItemCreatedEvent{ itemData });
 			break;
 		case UpdateItemListActionType::updated:
-			ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(ItemUpdatedEvent{ itemData });
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::ItemUpdatedEvent{ itemData });
 			break;
 		case UpdateItemListActionType::deleted:
-			ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(ItemDeletedEvent{ itemInfo.objectId });
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::ItemDeletedEvent{ itemInfo.objectId });
 			break;
 		}
 		(*__OnReceiveUpdateItemList)(This, actionType, itemInfo);
@@ -168,7 +171,7 @@ namespace Interlude
 
 	void __fastcall GameEngineWrapper::__OnExAutoSoulShot_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(ItemAutousedEvent{ stack.GetBufferAsVector<uint32_t>() });
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::ItemAutousedEvent{ stack.GetBufferAsVector<uint32_t>() });
 		(*__OnExAutoSoulShot)(This, stack);
 	}
 
@@ -181,16 +184,16 @@ namespace Interlude
 
 		(*__Tick)(This, deltaTime);
 
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(GameEngineTickedEvent{});
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::GameEngineTickedEvent{});
 	}
 	void __fastcall GameEngineWrapper::__OnSay2_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
 	{
 		const auto buffer = stack.GetBufferAsVector<uint32_t>();
 
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(
-			ChatMessageCreatedEvent
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(
+			Events::ChatMessageCreatedEvent
 			{
-				ChatMessage
+				DTO::ChatMessageData
 				{
 					buffer[0],
 					static_cast<uint8_t>(buffer[1]),
@@ -204,7 +207,7 @@ namespace Interlude
 	}
 	void __fastcall GameEngineWrapper::__OnEndItemList_hook(GameEngine* This, uint32_t)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(OnEndItemListEvent());
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::OnEndItemListEvent());
 		(*__OnEndItemList)(This);
 	}
 	// TODO ini
@@ -217,7 +220,7 @@ namespace Interlude
 
 	int __fastcall GameEngineWrapper::__OnDie_hook(GameEngine* This, int, User* creature, L2ParamStack& stack)
 	{
-		ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(CreatureDiedEvent{ creature->objectId, stack.GetBufferAsVector<int32_t>() });
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::CreatureDiedEvent{ creature->objectId, stack.GetBufferAsVector<int32_t>() });
 
 		return (*__OnDie)(This, creature, stack);
 	}

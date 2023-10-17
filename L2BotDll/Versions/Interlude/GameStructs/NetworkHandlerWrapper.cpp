@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "../../../Common/apihook.h"
 #include "NetworkHandlerWrapper.h"
-#include "../../../Events/SpoiledEvent.h"
+#include "Domain/Events/SpoiledEvent.h"
 #include "ProcessManipulation.h"
-#include "../../../Services/ServiceLocator.h"
+#include "Domain/Services/ServiceLocator.h"
+
+using namespace L2Bot::Domain;
 
 namespace Interlude
 {
@@ -176,7 +178,7 @@ namespace Interlude
 				p->GetMessageId() == static_cast<int>(L2::SystemMessagePacket::Type::SPOIL_SUCCESS) ||
 				p->GetMessageId() == static_cast<int>(L2::SystemMessagePacket::Type::ALREADY_SPOILED)
 				) {
-				ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(SpoiledEvent{});
+				Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SpoiledEvent{});
 			}
 		}
 

@@ -9,8 +9,8 @@
 #include "Serializers/JsonIncomingMessageFactory.h"
 #include "Transports/NamedPipeTransport.h"
 #include "Versions/VersionAbstractFactory.h"
-#include "Services/ServiceLocator.h"
-#include "Events/HeroDeletedEvent.h"
+#include "Domain/Services/ServiceLocator.h"
+#include "Domain/Events/EventDispatcher.h"
 
 using namespace L2Bot::Domain;
 
@@ -49,7 +49,7 @@ public:
 private:
 	void Init()
 	{
-		ServiceLocator::GetInstance().SetEventDispatcher(std::make_unique<EventDispatcher>());
+		Services::ServiceLocator::GetInstance().SetEventDispatcher(std::make_unique<Events::EventDispatcher>());
 
 		HMODULE hEngine = GetModuleHandleA("Engine.dll");
 		HMODULE hCore = GetModuleHandleA("Core.dll");
