@@ -229,6 +229,7 @@
     <ClInclude Include="Domain\ValueObjects\Transform.h" />
     <ClInclude Include="Domain\ValueObjects\VariableStats.h" />
     <ClInclude Include="Domain\ValueObjects\VitalStats.h" />
+    <ClInclude Include="Domain\Exceptions.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Domain\Helpers\HashCombiner.h" />
     <ClInclude Include="pch.h" />

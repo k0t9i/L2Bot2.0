@@ -33,7 +33,7 @@ namespace L2Bot::Domain::Logger
 			struct tm timeinfo;
 			localtime_s(&timeinfo, &rawTime);
 			std::wstringstream oss;
-			oss << "[" << std::put_time(&timeinfo, L"%Y-%m-%d %H.%M.%S") << "]";
+			oss << "[" << std::put_time(&timeinfo, L"%Y-%m-%d %H:%M:%S") << "]";
 			return oss.str();
 		}
 

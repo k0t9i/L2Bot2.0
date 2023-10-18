@@ -4,6 +4,8 @@
 #include <string>
 #include <memory>
 #include <cstdint>
+#include <format>
+#include "Domain/Exceptions.h"
 #include "Domain/Services/ServiceLocator.h"
 
 #define BUFFER_SIZE 16384
@@ -38,8 +40,7 @@ public:
 
 			if (m_Pipe == INVALID_HANDLE_VALUE)
 			{
-				Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot connect to the pipe ""{}""", m_PipeName);
-				return false;
+				throw RuntimeException(std::format(L"cannot create the pipe {}: {}", m_PipeName, GetLastError()));
 			}
 		}
 		else
@@ -81,14 +82,14 @@ public:
 				const auto overlappedResult = GetOverlappedResult(m_Pipe, &m_WritingOverlapped, &ret, false);
 				if (!overlappedResult)
 				{
-					Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot get overlapped result for the pipe ""{}"" when writing", m_PipeName);
 					m_Connected = false;
+					throw RuntimeException(std::format(L"cannot get overlapped result for the pipe {} when writing", m_PipeName));
 				}
 			}
 			else
 			{
-				Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot write to the pipe ""{}"": {}", m_PipeName, lastError);
 				m_Connected = false;
+				throw RuntimeException(std::format(L"cannot write to the pipe {}: {}", m_PipeName, lastError));
 			}
 		}
 	}
@@ -114,16 +115,14 @@ public:
 				const auto overlappedResult = GetOverlappedResult(m_Pipe, &m_ReadingOverlapped, &ret, false);
 				if (!overlappedResult)
 				{
-					Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot get overlapped result for the pipe ""{}"" when reading", m_PipeName);
 					m_Connected = false;
-					return L"";
+					throw RuntimeException(std::format(L"cannot get overlapped result for the pipe {} when reading", m_PipeName));
 				}
 			}
 			else
 			{
-				Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot read from the pipe ""{}"": {}", m_PipeName, lastError);
 				m_Connected = false;
-				return L"";
+				throw RuntimeException(std::format(L"cannot read from the pipe {}: {}", m_PipeName, lastError));
 			}
 		}
 
@@ -152,7 +151,7 @@ private:
 		const bool connected = ConnectNamedPipe(m_Pipe, &m_ConntectingOverlapped) == 0;
 		if (!connected)
 		{
-			Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot connect to the pipe ""{}"": {}", m_PipeName, GetLastError());
+			throw RuntimeException(std::format(L"cannot connect the pipe {}: {}", m_PipeName, GetLastError()));
 		}
 
 		switch (GetLastError())
@@ -165,7 +164,7 @@ private:
 			if (SetEvent(m_ConntectingOverlapped.hEvent))
 				break;
 		default:
-			Services::ServiceLocator::GetInstance().GetLogger()->Error(L"an error has occurred when connecting to the pipe ""{}"": {}", m_PipeName, GetLastError());
+			throw RuntimeException(std::format(L"an error has occurred when connecting to the pipe ""{}"": {}", m_PipeName, GetLastError()));
 		}
 	}
 
@@ -176,8 +175,7 @@ private:
 			overlapped.hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 			if (overlapped.hEvent == NULL)
 			{
-				Services::ServiceLocator::GetInstance().GetLogger()->Error(L"cannot create overlapped for the pipe ""{}"": {}", m_PipeName, GetLastError());
-				return;
+				throw RuntimeException(std::format(L"cannot create overlapped for the pipe {}: {}", m_PipeName, GetLastError()));
 			}
 			overlapped.Offset = 0;
 			overlapped.OffsetHigh = 0;

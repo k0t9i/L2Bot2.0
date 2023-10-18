@@ -7,6 +7,7 @@
 #include "../GameStructs/FName.h"
 #include "../../../Common/Common.h"
 #include "Domain/Entities/Skill.h"
+#include "Domain/Exceptions.h"
 
 using namespace L2Bot::Domain;
 
@@ -72,21 +73,20 @@ namespace Interlude
 		const Data GetData(const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
+			if (!data) {
+				throw RuntimeException(std::format(L"cannot load MSData for skill {}", skillId));
+			}
 
-			const auto cost = data ? data->mpCost : 0;
-			const auto range = data ? data->range : 0;
-			const auto name = data && data->name ? data->name : L"";
-			const auto description = data && data->description ? data->description : L"";
-			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
+			const auto iconEntry = m_FName.GetEntry(data->iconNameIndex);
 
 			return {
 				skillId,
 				static_cast<uint8_t>(level),
 				isActive != 1,
-				static_cast<uint8_t>(cost),
-				static_cast<int16_t>(range),
-				std::wstring(name),
-				std::wstring(description),
+				static_cast<uint8_t>(data->mpCost),
+				static_cast<int16_t>(data->range),
+				data->name ? std::wstring(data->name) : L"",
+				data->description ? std::wstring(data->description) : L"",
 				iconEntry ? std::wstring(iconEntry->value) : L"",
 			};
 		}

@@ -35,9 +35,30 @@ namespace L2Bot::Domain::Logger
 			Log(LogLevel::app, format, args...);
 		}
 
+		void Error(const std::wstring& message) const
+		{
+			Log(LogLevel::error, message);
+		}
+		void Warning(const std::wstring& message) const
+		{
+			Log(LogLevel::warning, message);
+		}
+		void Info(const std::wstring& message) const
+		{
+			Log(LogLevel::info, message);
+		}
+		void App(const std::wstring& message) const
+		{
+			Log(LogLevel::app, message);
+		}
+
 	private:
 		template <class ... Args>
 		void Log(LogLevel level, const std::wformat_string<Args...> format, Args... args) const
+		{
+			Log(level, std::vformat(format.get(), std::make_wformat_args(args...)));
+		}
+		void Log(LogLevel level, const std::wstring& message) const
 		{
 			std::wstring prefix = L"";
 			if (level == LogLevel::error) {
@@ -55,7 +76,7 @@ namespace L2Bot::Domain::Logger
 
 			for (const auto& channel : m_Channels) {
 				if (channel->IsAppropriateLevel(level)) {
-					channel->SendToChannel(prefix + std::vformat(format.get(), std::make_wformat_args(args...)));
+					channel->SendToChannel(prefix + message);
 				}
 			}
 		}

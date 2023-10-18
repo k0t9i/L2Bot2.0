@@ -5,6 +5,7 @@
 #include "../Factories/HeroFactory.h"
 #include "Domain/Events/HeroCreatedEvent.h"
 #include "Domain/Events/HeroDeletedEvent.h"
+#include "Domain/Events/CreatureDiedEvent.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "Domain/Services/ServiceLocator.h"
 
@@ -47,6 +48,21 @@ namespace Interlude
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
 			m_Hero = nullptr;
+		}
+
+		void Init() override
+		{
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::CreatureDiedEvent::name, [this](const Events::Event& evt) {
+				std::unique_lock<std::shared_timed_mutex>(m_Mutex);
+				if (evt.GetName() == Events::CreatureDiedEvent::name)
+				{
+					const auto casted = static_cast<const Events::CreatureDiedEvent&>(evt);
+					if (m_Hero && m_Hero->GetId() == casted.GetCreatureId())
+					{
+						Services::ServiceLocator::GetInstance().GetLogger()->App(L"{} died", m_Hero->GetFullName().GetNickname());
+					}
+				}
+			});
 		}
 
 		HeroRepository(const NetworkHandlerWrapper& networkHandler, const HeroFactory& factory) :

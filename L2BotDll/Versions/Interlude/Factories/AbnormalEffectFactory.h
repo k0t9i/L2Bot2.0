@@ -7,6 +7,7 @@
 #include "../GameStructs/FName.h"
 #include "../../../Common/Common.h"
 #include "Domain/Entities/AbnormalEffect.h"
+#include "Domain/Exceptions.h"
 
 using namespace L2Bot::Domain;
 
@@ -28,15 +29,17 @@ namespace Interlude
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
-			const auto name = data && data->name ? data->name : L"";
-			const auto description = data && data->description ? data->description : L"";
-			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
+			if (!data) {
+				throw RuntimeException(std::format(L"cannot load MSData for abnormal effect {}", skillId));
+			}
+
+			const auto iconEntry = m_FName.GetEntry(data->iconNameIndex);
 
 			return std::make_shared<Entities::AbnormalEffect>(
 				skillId,
 				static_cast<uint8_t>(level),
-				std::wstring(name),
-				std::wstring(description),
+				data->name ? std::wstring(data->name) : L"",
+				data->description ? std::wstring(data->description) : L"",
 				iconEntry ? std::wstring(iconEntry->value) : L""
 			);
 		}

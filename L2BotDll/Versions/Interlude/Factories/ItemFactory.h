@@ -12,6 +12,7 @@
 #include "Domain/Entities/ShieldItem.h"
 #include "Domain/DTO/ItemData.h"
 #include "../Helpers/EnchantHelper.h"
+#include "Domain/Exceptions.h"
 
 using namespace L2Bot::Domain;
 
@@ -92,39 +93,37 @@ namespace Interlude
 		{
 			//FIXME during first start data may be undefined
 			const auto data = GetItemData(itemInfo.itemId);
-
-			if (data)
+			if (!data) {
+				throw RuntimeException(std::format(L"cannot load ItemData for item {}", itemInfo.itemId));
+			}
+			
+			switch (data->dataType)
 			{
-				switch (data->dataType)
-				{
-				case L2::ItemDataType::ARMOR:
-					return CreateArmor(itemInfo);
-				case L2::ItemDataType::WEAPON:
-					return CreateWeaponOrShield(itemInfo);
-				}
-
-				return CreateEtc(itemInfo);
+			case L2::ItemDataType::ARMOR:
+				return CreateArmor(itemInfo);
+			case L2::ItemDataType::WEAPON:
+				return CreateWeaponOrShield(itemInfo, static_cast<const FL2WeaponItemData*>(data));
 			}
 
-			return nullptr;
+			return CreateEtc(itemInfo);
 		}
 
 		void Update(std::shared_ptr<Entities::BaseItem>& item, const DTO::ItemData& itemInfo) const
 		{
 			//FIXME during first start data may be undefined
 			const auto data = GetItemData(itemInfo.itemId);
-
-			if (data)
+			if (!data) {
+				throw RuntimeException(std::format(L"cannot load ItemData for item {}", itemInfo.itemId));
+			}
+			
+			switch (data->dataType)
 			{
-				switch (data->dataType)
-				{
-				case L2::ItemDataType::ARMOR:
-					UpdateArmor(item, itemInfo);
-					return;
-				case L2::ItemDataType::WEAPON:
-					UpdateWeaponOrShield(item, itemInfo);
-					return;
-				}
+			case L2::ItemDataType::ARMOR:
+				UpdateArmor(item, itemInfo);
+				return;
+			case L2::ItemDataType::WEAPON:
+				UpdateWeaponOrShield(item, itemInfo, static_cast<const FL2WeaponItemData*>(data));
+				return;
 			}
 
 			UpdateEtc(item, itemInfo);
@@ -215,10 +214,8 @@ namespace Interlude
 			);
 		}
 
-		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(const DTO::ItemData& itemInfo) const
+		std::shared_ptr<Entities::BaseItem> CreateWeaponOrShield(const DTO::ItemData& itemInfo, const FL2WeaponItemData* itemData) const
 		{
-			const auto itemData = static_cast<const FL2WeaponItemData*>(GetItemData(itemInfo.itemId));
-
 			if (itemData->weaponType != L2::WeaponType::SHIELD)
 			{
 				const auto& data = GetWeaponData(itemInfo, itemData);
@@ -266,10 +263,8 @@ namespace Interlude
 			);
 		}
 
-		void UpdateWeaponOrShield(std::shared_ptr<Entities::BaseItem>& item, const DTO::ItemData& itemInfo) const
+		void UpdateWeaponOrShield(std::shared_ptr<Entities::BaseItem>& item, const DTO::ItemData& itemInfo, const FL2WeaponItemData* itemData) const
 		{
-			const auto itemData = static_cast<const FL2WeaponItemData*>(GetItemData(itemInfo.itemId));
-
 			if (itemData->weaponType != L2::WeaponType::SHIELD)
 			{
 				auto weaponItem = std::dynamic_pointer_cast<Entities::WeaponItem>(item);
@@ -322,21 +317,20 @@ namespace Interlude
 		const BaseData GetBaseData(const DTO::ItemData& itemInfo) const
 		{
 			const auto data = GetItemData(itemInfo.itemId);
-
-			const auto nameEntry = data ? m_FName.GetEntry(data->nameIndex) : nullptr;
-			const auto name = nameEntry ? std::wstring(nameEntry->value) : L"";
-			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
-			const auto icon = iconEntry ? std::wstring(iconEntry->value) : L"";
-			const auto description = data && data->description ? std::wstring(data->description) : L"";
+			if (!data) {
+				throw RuntimeException(std::format(L"cannot load ItemData for item {}", itemInfo.itemId));
+			}
+			const auto nameEntry = m_FName.GetEntry(data->nameIndex);
+			const auto iconEntry = m_FName.GetEntry(data->iconNameIndex);
 
 			return {
 				itemInfo.objectId,
 				itemInfo.itemId,
 				itemInfo.mana,
-				name,
-				icon,
-				description,
-				(uint16_t)(data ? data->weight : 0)
+				nameEntry ? std::wstring(nameEntry->value) : L"",
+				iconEntry ? std::wstring(iconEntry->value) : L"",
+				data->description ? std::wstring(data->description) : L"",
+				static_cast<uint16_t>(data->weight)
 			};
 		}
 

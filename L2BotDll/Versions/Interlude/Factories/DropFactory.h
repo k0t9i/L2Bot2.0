@@ -1,11 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <format>
 #include "../GameStructs/L2GameDataWrapper.h"
 #include "../GameStructs/FName.h"
 #include "../GameStructs/GameStructs.h"
 #include "../../../Common/Common.h"
 #include "Domain/Entities/Drop.h"
+#include "Domain/Exceptions.h"
 
 namespace Interlude
 {
@@ -63,8 +65,15 @@ namespace Interlude
 		const Data GetData(const Item* item) const
 		{
 			const auto itemData = m_L2GameData.GetItemData(item->itemId);
-			const auto nameEntry = itemData ? m_FName.GetEntry(itemData->nameIndex) : nullptr;
-			const auto iconEntry = itemData ? m_FName.GetEntry(itemData->iconNameIndex) : nullptr;
+			if (!itemData) {
+				throw RuntimeException(std::format(L"cannot load ItemData for drop {}", item->itemId));
+			}
+			const auto nameEntry = m_FName.GetEntry(itemData->nameIndex);
+			const auto iconEntry = m_FName.GetEntry(itemData->iconNameIndex);
+
+			if (!item->pawn) {
+				throw RuntimeException(std::format(L"pawn is empty for drop {}", std::wstring(nameEntry->value)));
+			}
 
 			return {
 				item->objectId,

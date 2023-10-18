@@ -1,8 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <format>
 #include "../../../Common/Common.h"
 #include "Domain/Entities/NPC.h"
+#include "Domain/Exceptions.h"
 
 namespace Interlude
 {
@@ -53,6 +55,9 @@ namespace Interlude
 	private:
 		const Data GetData(const User* item) const
 		{
+			if (!item->pawn) {
+				throw RuntimeException(std::format(L"pawn is empty for npc {}", item->nickname));
+			}
 			return {
 				item->objectId,
 				ValueObjects::Transform(

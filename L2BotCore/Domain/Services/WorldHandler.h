@@ -10,6 +10,8 @@
 #include "../DTO/Message.h"
 #include "../Services/IncomingMessageProcessor.h"
 #include "../Services/OutgoingMessageBuilder.h"
+#include "../Exceptions.h"
+#include "../Services/ServiceLocator.h"
 
 namespace L2Bot::Domain::Services
 {
@@ -69,19 +71,30 @@ namespace L2Bot::Domain::Services
 		{
 			while (!m_Stopped)
 			{
-				const auto& messages = GetOutgoingMessages();
+				try {
+					const auto& messages = GetOutgoingMessages();
 
-				if (m_Transport.IsConnected())
-				{
-					for (const auto& message : messages)
+					if (m_Transport.IsConnected())
 					{
-						m_Transport.Send(
-							m_Serializer.Serialize(message)
-						);
+						for (const auto& message : messages)
+						{
+							m_Transport.Send(
+								m_Serializer.Serialize(message)
+							);
+						}
 					}
-				}
 
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+					std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				}
+				catch (const CriticalRuntimeException& e)
+				{
+					m_Stopped = true;
+					ServiceLocator::GetInstance().GetLogger()->Error(e.Message());
+				}
+				catch (const RuntimeException& e)
+				{
+					ServiceLocator::GetInstance().GetLogger()->Warning(e.Message());
+				}
 			}
 		}
 
@@ -89,15 +102,28 @@ namespace L2Bot::Domain::Services
 		{
 			while (!m_Stopped)
 			{
-				if (m_Transport.IsConnected())
-				{
-					const auto messageType = m_IncomingMessageProcessor.Process(m_Transport.Receive());
+				try {
+					if (m_Transport.IsConnected())
+					{
+						const auto& message = m_Transport.Receive();
+						ServiceLocator::GetInstance().GetLogger()->Info(L"received message from client: {}", message);
+						const auto messageType = m_IncomingMessageProcessor.Process(message);
 
-					if (messageType == Serializers::IncomingMessage::Type::invalidate) {
-						Invalidate();
+						if (messageType == Serializers::IncomingMessage::Type::invalidate) {
+							Invalidate();
+						}
 					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(50));
 				}
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				catch (const CriticalRuntimeException& e)
+				{
+					m_Stopped = true;
+					ServiceLocator::GetInstance().GetLogger()->Error(e.Message());
+				}
+				catch (const RuntimeException& e)
+				{
+					ServiceLocator::GetInstance().GetLogger()->Warning(e.Message());
+				}
 			}
 		}
 
@@ -105,11 +131,22 @@ namespace L2Bot::Domain::Services
 		{
 			while (!m_Stopped)
 			{
-				if (!m_Transport.IsConnected())
-				{
-					m_Transport.Connect();
+				try {
+					if (!m_Transport.IsConnected())
+					{
+						m_Transport.Connect();
+					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(50));
 				}
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				catch (const CriticalRuntimeException& e)
+				{
+					m_Stopped = true;
+					ServiceLocator::GetInstance().GetLogger()->Error(e.Message());
+				}
+				catch (const RuntimeException& e)
+				{
+					ServiceLocator::GetInstance().GetLogger()->Warning(e.Message());
+				}
 			}
 		}
 
