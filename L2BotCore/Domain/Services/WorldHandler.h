@@ -61,10 +61,7 @@ namespace L2Bot::Domain::Services
 			}
 		}
 
-		virtual ~WorldHandler()
-		{
-			Stop();
-		}
+		virtual ~WorldHandler() = default;
 
 	private:
 		void Send()
