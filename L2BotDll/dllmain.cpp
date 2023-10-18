@@ -21,10 +21,14 @@ void ConfigLogger(HMODULE hModule)
 	}
 
 	std::vector <std::unique_ptr<Logger::LogChannel>> channels;
+#ifdef _DEBUG
 	channels.push_back(std::make_unique<OutputDebugLogChannel>(std::vector<Logger::LogLevel>{}));
-	channels.push_back(std::make_unique<FileLogChannel>(directory + L"\\error.log", std::vector<Logger::LogLevel>{
+#endif
+	channels.push_back(std::make_unique<FileLogChannel>(directory + L"\\app.log", std::vector<Logger::LogLevel>{
+#ifndef _DEBUG
 		Logger::LogLevel::error,
 		Logger::LogLevel::warning
+#endif
 	}));
 	channels.push_back(std::make_unique<ChatLogChannel>(Enums::ChatChannelEnum::log, std::vector<Logger::LogLevel>{
 		Logger::LogLevel::app
