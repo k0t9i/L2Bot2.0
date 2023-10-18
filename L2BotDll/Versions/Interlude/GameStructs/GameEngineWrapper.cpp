@@ -93,6 +93,7 @@ namespace Interlude
 		restore((void*&)__OnEndItemList);
 		restore((void*&)__GetMaxTickRate);
 		restore((void*&)__OnDie);
+		restore((void*&)__Tick);
 	}
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
