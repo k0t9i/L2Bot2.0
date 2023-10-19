@@ -30,10 +30,7 @@ namespace Interlude
 		}
 
 		AbnormalEffectRepository() = delete;
-		virtual ~AbnormalEffectRepository()
-		{
-			Reset();
-		}
+		virtual ~AbnormalEffectRepository() = default;
 
 		void Init() override
 		{

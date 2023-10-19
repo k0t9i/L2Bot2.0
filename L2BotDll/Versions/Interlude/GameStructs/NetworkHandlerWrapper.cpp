@@ -4,6 +4,7 @@
 #include "Domain/Events/SpoiledEvent.h"
 #include "ProcessManipulation.h"
 #include "Domain/Services/ServiceLocator.h"
+#include "Domain/Exceptions.h"
 
 using namespace L2Bot::Domain;
 
@@ -26,22 +27,32 @@ namespace Interlude
 	void(__thiscall* NetworkHandlerWrapper::__RequestAutoSoulShot)(NetworkHandler*, L2ParamStack&) = 0;
 	void(__thiscall* NetworkHandlerWrapper::__ChangeWaitType)(NetworkHandler*, int) = 0;
 
-	//todo exception
 	Item* NetworkHandlerWrapper::GetNextItem(float_t radius, int prevId) const
 	{
-		if (__GetNextItem && _target) {
-			return (*__GetNextItem)(_target, radius, prevId);
+		__try {
+			if (__GetNextItem && _target) {
+				return (*__GetNextItem)(_target, radius, prevId);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::GetNextItem failed");
+		}
 	}
 
-	//todo exception
 	User* NetworkHandlerWrapper::GetNextCreature(float_t radius, int prevId) const
 	{
-		if (__GetNextCreature && _target) {
-			return (*__GetNextCreature)(_target, radius, prevId);
+		__try {
+			if (__GetNextCreature && _target) {
+				return (*__GetNextCreature)(_target, radius, prevId);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::GetNextCreature failed");
+		}
 	}
 
 	User* NetworkHandlerWrapper::GetHero() const
@@ -63,69 +74,123 @@ namespace Interlude
 
 	User* NetworkHandlerWrapper::GetUser(int objectId) const
 	{
-		if (__GetUser && _target) {
-			return (*__GetUser)(_target, objectId);
+		__try {
+			if (__GetUser && _target) {
+				return (*__GetUser)(_target, objectId);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::GetUser failed");
+		}
 	}
 
 	Item* NetworkHandlerWrapper::GetItem(int objectId) const
 	{
-		if (__GetItem && _target) {
-			return (*__GetItem)(_target, objectId);
+		__try {
+			if (__GetItem && _target) {
+				return (*__GetItem)(_target, objectId);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::GetItem failed");
+		}
 	}
 
 	void NetworkHandlerWrapper::MTL(APawn* self, L2::FVector dst, L2::FVector src, void* terrainInfo, int unk1) const
 	{
-		if (__MTL && _target) {
-			(*__MTL)(_target, self, dst, src, terrainInfo, unk1);
+		__try {
+			if (__MTL && _target) {
+				(*__MTL)(_target, self, dst, src, terrainInfo, unk1);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::MTL failed");
 		}
 	}
 
 	void NetworkHandlerWrapper::Action(int objectId, L2::FVector objectLocation, int unk) const
 	{
-		if (__Action && _target) {
-			(*__Action)(_target, objectId, objectLocation, unk);
+		__try {
+			if (__Action && _target) {
+				(*__Action)(_target, objectId, objectLocation, unk);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::Action failed");
 		}
 	}
 
 	void NetworkHandlerWrapper::RequestMagicSkillUse(L2ParamStack& stack) const
 	{
-		if (__RequestMagicSkillUse && _target) {
-			(*__RequestMagicSkillUse)(_target, stack);
+		__try {
+			if (__RequestMagicSkillUse && _target) {
+				(*__RequestMagicSkillUse)(_target, stack);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::RequestMagicSkillUse failed");
 		}
 	}
 
 	int NetworkHandlerWrapper::RequestUseItem(L2ParamStack& stack) const
 	{
-		if (__RequestUseItem && _target) {
-			return (*__RequestUseItem)(_target, stack);
+		__try {
+			if (__RequestUseItem && _target) {
+				return (*__RequestUseItem)(_target, stack);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::RequestUseItem failed");
+		}
 	}
 
 	void NetworkHandlerWrapper::RequestAutoSoulShot(L2ParamStack& stack) const
 	{
-		if (__RequestAutoSoulShot && _target) {
-			(*__RequestAutoSoulShot)(_target, stack);
+		__try {
+			if (__RequestAutoSoulShot && _target) {
+				(*__RequestAutoSoulShot)(_target, stack);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::RequestAutoSoulShot failed");
 		}
 	}
 
 	void NetworkHandlerWrapper::ChangeWaitType(int type) const
 	{
-		if (__ChangeWaitType && _target) {
-			(*__ChangeWaitType)(_target, type);
+		__try {
+			if (__ChangeWaitType && _target) {
+				(*__ChangeWaitType)(_target, type);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::ChangeWaitType failed");
 		}
 	}
 
 	int NetworkHandlerWrapper::RequestItemList() const
 	{
-		if (__RequestItemList && _target) {
-			return (*__RequestItemList)(_target);
+		__try {
+			if (__RequestItemList && _target) {
+				return (*__RequestItemList)(_target);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::RequestItemList failed");
+		}
 	}
 
 	void NetworkHandlerWrapper::Init(HMODULE hModule)
@@ -149,24 +214,26 @@ namespace Interlude
 		(FARPROC&)__AddNetworkQueue = (FARPROC)splice(
 			GetProcAddress(hModule, "?AddNetworkQueue@UNetworkHandler@@UAEHPAUNetworkPacket@@@Z"), __AddNetworkQueue_hook
 		);
+		Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UNetworkHandler hooks initialized");
 	}
 
 	void NetworkHandlerWrapper::Restore()
 	{
 		restore(originalInitAddress);
 		restore((void*&)__AddNetworkQueue);
+		Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UNetworkHandler hooks restored");
 	}
 
 	void __fastcall NetworkHandlerWrapper::__Init_hook(NetworkHandler* This, int /*edx*/, float unk)
 	{
 		if (_target == 0) {
 			_target = This;
+			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UNetworkHandler pointer {:#010x} obtained", (int)_target);
 
 			InjectLibrary::StopCurrentProcess();
 			restore(originalInitAddress);
 			InjectLibrary::StartCurrentProcess();
 
-			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UNetworkHandler {:#010x} obtained", (int)_target);
 			(*__Init)(This, unk);
 		}
 	}

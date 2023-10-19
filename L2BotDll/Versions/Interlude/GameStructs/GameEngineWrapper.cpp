@@ -78,6 +78,7 @@ namespace Interlude
 		(FARPROC&)__OnDie = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnDie@UGameEngine@@UAEHPAUUser@@AAVL2ParamStack@@@Z"), __OnDie_hook
 		);
+		Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine hooks initialized");
 	}
 
 	void GameEngineWrapper::Restore()
@@ -94,6 +95,7 @@ namespace Interlude
 		restore((void*&)__GetMaxTickRate);
 		restore((void*&)__OnDie);
 		restore((void*&)__Tick);
+		Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine hooks restored");
 	}
 
 	void __fastcall GameEngineWrapper::__OnSkillListPacket_hook(GameEngine* This, uint32_t, L2ParamStack& stack)
@@ -181,7 +183,7 @@ namespace Interlude
 		if (_target == 0)
 		{
 			_target = This;
-			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine {:#010x} obtained", (int)_target);
+			Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine pointer {:#010x} obtained", (int)_target);
 		}
 
 		(*__Tick)(This, deltaTime);

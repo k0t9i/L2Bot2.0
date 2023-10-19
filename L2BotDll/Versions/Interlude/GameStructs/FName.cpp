@@ -1,17 +1,25 @@
 #include "pch.h"
 #include "FName.h"
+#include "Domain/Exceptions.h"
+
+using namespace L2Bot::Domain;
 
 namespace Interlude
 {
 	FNameEntry* (__cdecl* FName::__GetEntry)(int) = 0;
 
-	//todo exception(?)
 	FNameEntry* FName::GetEntry(int index) const
 	{
-		if (__GetEntry) {
-			return(*__GetEntry)(index);
+		__try {
+			if (__GetEntry) {
+				return(*__GetEntry)(index);
+			}
+			return 0;
 		}
-		return 0;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"FName::GetEntry failed");
+		}
 	}
 
 	void FName::Init(HMODULE hModule)

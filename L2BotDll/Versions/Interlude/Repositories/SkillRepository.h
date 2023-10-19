@@ -38,14 +38,13 @@ namespace Interlude
 		}
 
 		SkillRepository() = delete;
-		virtual ~SkillRepository()
-		{
-			Reset();
-		}
+		virtual ~SkillRepository() = default;
 
 		void Reset() override
 		{
 			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			m_CastingTimers.StopAll();
+			m_ReloadingTimers.StopAll();
 			m_Skills.clear();
 			m_IsNewCycle = false;
 			m_NewSkills.clear();
@@ -100,8 +99,6 @@ namespace Interlude
 			if (evt.GetName() == Events::HeroDeletedEvent::name)
 			{
 				Reset();
-				m_CastingTimers.StopAll();
-				m_ReloadingTimers.StopAll();
 			}
 		}
 

@@ -166,10 +166,7 @@ namespace Interlude
 		}
 
 		ItemRepository() = delete;
-		virtual ~ItemRepository()
-		{
-			Reset();
-		}
+		virtual ~ItemRepository() = default;
 
 		void Reset() override
 		{
