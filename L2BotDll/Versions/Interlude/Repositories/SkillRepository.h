@@ -120,11 +120,14 @@ namespace Interlude
 
 				if (m_Skills.find(skillId) == m_Skills.end())
 				{
-					m_Skills[skillId] = m_Factory.Create(
+					const auto newSkill = m_Factory.Create(
 						skillInfo[2],
 						skillInfo[1],
 						skillInfo[0]
 					);
+					if (newSkill) {
+						m_Skills[skillId] = newSkill;
+					}
 				}
 				else
 				{

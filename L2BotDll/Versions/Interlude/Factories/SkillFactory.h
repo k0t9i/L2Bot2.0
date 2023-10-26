@@ -7,7 +7,6 @@
 #include "../GameStructs/FName.h"
 #include "../../../Common/Common.h"
 #include "Domain/Entities/Skill.h"
-#include "Domain/Exceptions.h"
 
 using namespace L2Bot::Domain;
 
@@ -18,14 +17,14 @@ namespace Interlude
 	private:
 		struct Data
 		{
-			uint32_t skillId;
-			uint8_t level;
-			bool isActive;
-			uint8_t cost;
-			int16_t range;
-			std::wstring name;
-			std::wstring description;
-			std::wstring iconName;
+			uint32_t skillId = 0;
+			uint8_t level = 0;
+			bool isActive = false;
+			uint8_t cost = 0;
+			int16_t range = 0;
+			std::wstring name = L"";
+			std::wstring description = L"";
+			std::wstring iconName = L"";
 		};
 
 	public:
@@ -42,6 +41,10 @@ namespace Interlude
 		{
 			const auto& data = GetData(skillId, level, isActive);
 
+			if (data.skillId == 0) {
+				return nullptr;
+			}
+
 			return std::make_shared<Entities::Skill>(
 				data.skillId,
 				data.level,
@@ -51,12 +54,16 @@ namespace Interlude
 				data.name,
 				data.description,
 				data.iconName
-			);
+			);			
 		}
 
 		void Update(std::shared_ptr<Entities::Skill>& skill, const uint32_t skillId, const uint32_t level, const uint32_t isActive) const
 		{
 			const auto& data = GetData(skillId, level, isActive);
+
+			if (data.skillId == 0) {
+				return;
+			}
 
 			skill->Update(
 				data.level,
@@ -74,7 +81,7 @@ namespace Interlude
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 			if (!data) {
-				throw RuntimeException(std::format(L"cannot load MSData for skill {}", skillId));
+				return Data();
 			}
 
 			const auto iconEntry = m_FName.GetEntry(data->iconNameIndex);

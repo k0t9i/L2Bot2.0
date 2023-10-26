@@ -121,7 +121,7 @@ namespace Interlude
 				
 				if (m_Items.find(data.objectId) == m_Items.end())
 				{
-					auto item = m_Factory.Create(data);
+					const auto item = m_Factory.Create(data);
 					if (item) {
 						m_Items[data.objectId] = item;
 					}
@@ -197,6 +197,7 @@ namespace Interlude
 			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::OnEndItemListEvent::name, [this](const Events::Event& evt) {
 				OnEndItemList(evt);
 			});
+			m_NetworkHandler.RequestItemList();
 		}
 
 	private:

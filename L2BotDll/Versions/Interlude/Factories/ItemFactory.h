@@ -12,7 +12,6 @@
 #include "Domain/Entities/ShieldItem.h"
 #include "Domain/DTO/ItemData.h"
 #include "../Helpers/EnchantHelper.h"
-#include "Domain/Exceptions.h"
 
 using namespace L2Bot::Domain;
 
@@ -23,13 +22,13 @@ namespace Interlude
 	private:
 		struct BaseData
 		{
-			uint32_t objectId;
-			uint32_t itemId;
-			int32_t mana;
-			std::wstring name;
-			std::wstring iconName;
-			std::wstring description;
-			uint16_t weight;
+			uint32_t objectId = 0;
+			uint32_t itemId = 0;
+			int32_t mana = 0;
+			std::wstring name = L"";
+			std::wstring iconName = L"";
+			std::wstring description = L"";
+			uint16_t weight = 0;
 		};
 
 		struct EtcData : public BaseData
@@ -94,7 +93,7 @@ namespace Interlude
 			//FIXME during first start data may be undefined
 			const auto data = GetItemData(itemInfo.itemId);
 			if (!data) {
-				throw RuntimeException(std::format(L"cannot load ItemData for item {}", itemInfo.itemId));
+				return nullptr;
 			}
 			
 			switch (data->dataType)
@@ -113,7 +112,7 @@ namespace Interlude
 			//FIXME during first start data may be undefined
 			const auto data = GetItemData(itemInfo.itemId);
 			if (!data) {
-				throw RuntimeException(std::format(L"cannot load ItemData for item {}", itemInfo.itemId));
+				return;
 			}
 			
 			switch (data->dataType)
@@ -318,7 +317,7 @@ namespace Interlude
 		{
 			const auto data = GetItemData(itemInfo.itemId);
 			if (!data) {
-				throw RuntimeException(std::format(L"cannot load ItemData for item {}", itemInfo.itemId));
+				return BaseData();
 			}
 			const auto nameEntry = m_FName.GetEntry(data->nameIndex);
 			const auto iconEntry = m_FName.GetEntry(data->iconNameIndex);
