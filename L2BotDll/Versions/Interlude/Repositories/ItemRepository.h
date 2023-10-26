@@ -10,6 +10,7 @@
 #include "Domain/Events/ItemUpdatedEvent.h"
 #include "Domain/Events/ItemDeletedEvent.h"
 #include "Domain/Events/HeroDeletedEvent.h"
+#include "Domain/Events/HeroCreatedEvent.h"
 #include "Domain/Events/ItemAutousedEvent.h"
 #include "Domain/Events/OnEndItemListEvent.h"
 #include "Domain/Services/ServiceLocator.h"
@@ -64,6 +65,15 @@ namespace Interlude
 				}
 
 				m_IsNewCycle = true;
+			}
+		}
+
+		void OnHeroCreated(const Events::Event& evt)
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			if (evt.GetName() == Events::HeroCreatedEvent::name)
+			{
+				m_NetworkHandler.RequestItemList();
 			}
 		}
 		
@@ -190,6 +200,9 @@ namespace Interlude
 			});
 			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::HeroDeletedEvent::name, [this](const Events::Event& evt) {
 				OnHeroDeleted(evt);
+			});
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::HeroCreatedEvent::name, [this](const Events::Event& evt) {
+				OnHeroCreated(evt);
 			});
 			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::ItemAutousedEvent::name, [this](const Events::Event& evt) {
 				OnItemAutoused(evt);
