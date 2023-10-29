@@ -27,6 +27,8 @@ namespace Client.Domain.Service
         EventHandlerInterface<ItemCreatedEvent>,
         EventHandlerInterface<ItemDeletedEvent>
     {
+        public Hero? Hero => hero;
+
         public void RequestMoveToLocation(Vector3 location)
         {
             if (hero == null)
@@ -35,24 +37,6 @@ namespace Client.Domain.Service
             }
 
             SendMessage(OutgoingMessageTypeEnum.Move, location);
-        }
-
-        public void RequestMoveToEntity(uint id)
-        {
-            if (hero == null)
-            {
-                return;
-            }
-
-            if (!creatures.ContainsKey(id) && !drops.ContainsKey(id))
-            {
-                Debug.WriteLine("RequestMoveToEntity: entity " + id + " not found");
-                return;
-            }
-
-            var position = creatures.ContainsKey(id) ? creatures[id].Transform.Position : drops[id].Transform.Position;
-
-            RequestMoveToLocation(position);
         }
 
         public void RequestAcquireTarget(uint id)

@@ -220,6 +220,41 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Path=Path}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Line
+                            X1="{Binding From.X}"
+                            Y1="{Binding From.Y}"
+                            X2="{Binding To.X}"
+                            Y2="{Binding To.Y}"
+                            Stroke="Red"
+                            StrokeDashArray="1 3"
+                            StrokeThickness="1"
+                        />
+                        <Path
+                            Stroke="Red"
+                            StrokeThickness="1"
+                        >
+                            <Path.Data>
+                                <EllipseGeometry 
+                                    RadiusX="{Binding Radius,Mode=OneWay}" 
+                                    RadiusY="{Binding Radius,Mode=OneWay}" />
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <TranslateTransform X="{Binding To.X,Mode=OneWay}" Y="{Binding To.Y,Mode=OneWay}"/>
+                            </Path.RenderTransform>
+                        </Path>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
         <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#66ffffff">
             <Grid Margin="10 5">
                 <Grid.ColumnDefinitions>

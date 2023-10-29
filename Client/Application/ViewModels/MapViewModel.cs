@@ -14,6 +14,10 @@ using System.Collections.Specialized;
 using Client.Application.Commands;
 using System.Reflection.Metadata;
 using System.Windows;
+using Client.Infrastructure.Service;
+using System.Windows.Data;
+using Client.Domain.DTO;
+using System.Windows.Documents;
 
 namespace Client.Application.ViewModels
 {
@@ -138,11 +142,17 @@ namespace Client.Application.ViewModels
                     drop.Scale = scale;
                     drop.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
                 }
+                
+                foreach (var node in Path)
+                {
+                    node.Scale = scale;
+                    node.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
+                }
             }
         }
 
         public ICommand MouseLeftClickCommand { get; }
-        private void OnLeftMouseClick(object? obj)
+        private async Task OnLeftMouseClick(object? obj)
         {
             if (obj == null)
             {
@@ -159,7 +169,8 @@ namespace Client.Application.ViewModels
                 (float)(mousePos.Y - ViewportHeight / 2) * scale + hero.Transform.Position.Y,
                 hero.Transform.Position.Z
             );
-            worldHandler.RequestMoveToLocation(location);
+
+            await pathMover.MoveUntilReachedAsync(location);
         }
 
         public void OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -189,13 +200,58 @@ namespace Client.Application.ViewModels
             mousePosition.Y = (float)(mousePos.Y - ViewportHeight / 2) * scale + hero.Transform.Position.Y;
         }
 
-        public MapViewModel(WorldHandler worldHandler)
+        public MapViewModel(AsyncPathMoverInterface pathMover)
         {
             Creatures.CollectionChanged += Creatures_CollectionChanged;
             Drops.CollectionChanged += Drops_CollectionChanged;
-            this.worldHandler = worldHandler;
-            MouseLeftClickCommand = new RelayCommand(OnLeftMouseClick);
+            Path.CollectionChanged += Path_CollectionChanged;
+            MouseLeftClickCommand = new RelayCommand(async (o) => await OnLeftMouseClick(o));
             mousePosition.PropertyChanged += MousePosition_PropertyChanged;
+            BindingOperations.EnableCollectionSynchronization(Path, pathCollectionLock);
+            this.pathMover = pathMover;
+            this.pathMover.Path.CollectionChanged += PathMover_Path_CollectionChanged;
+        }
+
+        private void PathMover_Path_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            lock(pathCollectionLock)
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
+                {
+                    if (hero != null)
+                    {
+                        foreach (var item in e.NewItems)
+                        {
+                            var node = (PathSegment)item;
+                            Path.Add(new PathNodeViewModel(node.From, node.To, hero));
+                        }
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+                {
+                    foreach (var item in e.OldItems)
+                    {
+                        Path.RemoveAt(0);
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Reset)
+                {
+                    Path.Clear();
+                }
+            }
+        }
+
+        private void Path_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    var node = (PathNodeViewModel)item;
+                    node.Scale = scale;
+                    node.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
+                }
+            }
         }
 
         private void MousePosition_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -232,9 +288,11 @@ namespace Client.Application.ViewModels
         public ObservableCollection<MapBlockViewModel> Blocks { get; } = new ObservableCollection<MapBlockViewModel>();
         public ObservableCollection<CreatureMapViewModel> Creatures { get; } = new ObservableCollection<CreatureMapViewModel>();
         public ObservableCollection<DropMapViewModel> Drops { get; } = new ObservableCollection<DropMapViewModel>();
+        public ObservableCollection<PathNodeViewModel> Path { get; } = new ObservableCollection<PathNodeViewModel>();
 
         public readonly static float MIN_SCALE = 1;
         public readonly static float MAX_SCALE = 64;
+        private readonly AsyncPathMoverInterface pathMover;
         private MapImageSelector selector = new MapImageSelector();
         private Dictionary<uint, MapBlockViewModel> blocks = new Dictionary<uint, MapBlockViewModel>();
         private Hero? hero;
@@ -242,6 +300,6 @@ namespace Client.Application.ViewModels
         private double viewportWidth = 0;
         private double viewportHeight = 0;
         private Vector3 mousePosition = new Vector3(0, 0, 0);
-        private readonly WorldHandler worldHandler;
+        private object pathCollectionLock = new object();
     }
 }

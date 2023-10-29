@@ -11,7 +11,7 @@ namespace Client.Domain.ValueObjects
 
         public float X { get => x; set { if (value != x) { x = value; OnPropertyChanged("X"); } } }
         public float Y { get => y; set { if (value != y) { y = value; OnPropertyChanged("Y"); } } }
-        public float Z { get => z; set { if (value != z) { z = value; OnPropertyChanged("X"); } } }
+        public float Z { get => z; set { if (value != z) { z = value; OnPropertyChanged("Z"); } } }
 
         public Vector3(float x, float y, float z)
         {
@@ -29,5 +29,34 @@ namespace Client.Domain.ValueObjects
         {
             return MathF.Sqrt(HorizontalSqrDistance(other));
         }
+
+        public override bool Equals(object? other)
+        {
+            if (!(other is Vector3))
+            {
+                return false;
+            }
+
+            var obj = (Vector3)other;
+            return MathF.Abs(x - obj.x) < float.Epsilon && MathF.Abs(y - obj.y) < float.Epsilon && MathF.Abs(z - obj.z) < float.Epsilon;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public bool ApproximatelyEquals(Vector3 other, float epsilon, bool withZ = false)
+        {
+            var equals = MathF.Abs(x - other.x) < epsilon && MathF.Abs(y - other.y) < epsilon;
+            if (withZ)
+            {
+                equals = equals && MathF.Abs(z - other.z) < epsilon;
+            }
+
+            return equals;
+        }
+
+        public static readonly Vector3 Zero = new Vector3(0, 0, 0);
     }
 }

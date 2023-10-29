@@ -56,21 +56,22 @@ namespace Client.Application.ViewModels
         {
             worldHandler.RequestPickUp(Id);
         }
-        private void OnMouseRightClick(object? obj)
+        private async Task OnMouseRightClick(object? obj)
         {
-            worldHandler.RequestMoveToEntity(Id);
+            await pathMover.MoveUntilReachedAsync(drop.Transform.Position);
         }
 
-        public DropMapViewModel(WorldHandler worldHandler, Drop drop, Hero hero)
+        public DropMapViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover, Drop drop, Hero hero)
         {
             this.drop = drop;
             this.hero = hero;
             this.worldHandler = worldHandler;
+            this.pathMover = pathMover;
             drop.PropertyChanged += Creature_PropertyChanged;
             drop.Transform.Position.PropertyChanged += Position_PropertyChanged;
             hero.Transform.Position.PropertyChanged += HeroPosition_PropertyChanged;
             MouseLeftClickCommand = new RelayCommand(OnMouseLeftClick);
-            MouseRightClickCommand = new RelayCommand(OnMouseRightClick);
+            MouseRightClickCommand = new RelayCommand(async (o) => await OnMouseRightClick(o));
         }
 
         private void HeroPosition_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -94,6 +95,7 @@ namespace Client.Application.ViewModels
         private readonly Drop drop;
         private readonly Hero hero;
         private readonly WorldHandler worldHandler;
+        private readonly AsyncPathMoverInterface pathMover;
         private float scale = 1;
         private static readonly float MAX_RADIUS = 8;
         private static readonly float MIN_RADIUS = 2;

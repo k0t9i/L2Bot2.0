@@ -77,16 +77,17 @@ namespace Client.Application.ViewModels
             worldHandler.RequestAttackOrFollow(Id);
         }
         
-        private void OnMouseRightClick(object? obj)
+        private async Task OnMouseRightClick(object? obj)
         {
-            worldHandler.RequestMoveToEntity(Id);
+            await pathMover.MoveUntilReachedAsync(creature.Transform.Position);
         }
 
-        public CreatureMapViewModel(WorldHandler worldHandler, CreatureInterface creature, Hero hero)
+        public CreatureMapViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover, CreatureInterface creature, Hero hero)
         {
             this.creature = creature;
             this.hero = hero;
             this.worldHandler = worldHandler;
+            this.pathMover = pathMover;
             creature.PropertyChanged += Creature_PropertyChanged;
             creature.Transform.PropertyChanged += Transform_PropertyChanged;
             creature.Transform.Position.PropertyChanged += Position_PropertyChanged;
@@ -95,7 +96,7 @@ namespace Client.Application.ViewModels
             hero.PropertyChanged += Hero_PropertyChanged;
             MouseLeftClickCommand = new RelayCommand(OnMouseLeftClick);
             MouseLeftDoubleClickCommand = new RelayCommand(OnMouseLeftDoubleClick);
-            MouseRightClickCommand = new RelayCommand(OnMouseRightClick);
+            MouseRightClickCommand = new RelayCommand(async (o) => await OnMouseRightClick(o));
         }
 
         private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -149,6 +150,7 @@ namespace Client.Application.ViewModels
         private readonly CreatureInterface creature;
         private readonly Hero hero;
         private readonly WorldHandler worldHandler;
+        private readonly AsyncPathMoverInterface pathMover;
         private float scale = 1;
         private static readonly float MAX_RADIUS = 10;
         private static readonly float MIN_RADIUS = 2;

@@ -59,7 +59,7 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Creatures.Add(new CreatureListViewModel(worldHandler, @event.Creature, hero));
+                Creatures.Add(new CreatureListViewModel(worldHandler, pathMover, @event.Creature, hero));
                 AddCreature(@event.Creature);
             }
         }
@@ -74,8 +74,8 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Drops.Add(new DropListViewModel(worldHandler, @event.Drop, hero));
-                Map.Drops.Add(new DropMapViewModel(worldHandler, @event.Drop, hero));
+                Drops.Add(new DropListViewModel(worldHandler, pathMover, @event.Drop, hero));
+                Map.Drops.Add(new DropMapViewModel(worldHandler, pathMover, @event.Drop, hero));
             }
         }
 
@@ -136,7 +136,7 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                Map.Creatures.Add(new CreatureMapViewModel(worldHandler, creature, hero));
+                Map.Creatures.Add(new CreatureMapViewModel(worldHandler, pathMover, creature, hero));
             }
         }
 
@@ -145,10 +145,11 @@ namespace Client.Application.ViewModels
             Map.Creatures.RemoveAll(x => x.Id == id);
         }
 
-        public MainViewModel(WorldHandler worldHandler)
+        public MainViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover)
         {
             this.worldHandler = worldHandler;
-            Map = new MapViewModel(worldHandler);
+            this.pathMover = pathMover;
+            Map = new MapViewModel(pathMover);
         }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
@@ -162,5 +163,6 @@ namespace Client.Application.ViewModels
         public MapViewModel Map { get; private set; }
         public Hero? hero;
         private readonly WorldHandler worldHandler;
+        private readonly AsyncPathMoverInterface pathMover;
     }
 }

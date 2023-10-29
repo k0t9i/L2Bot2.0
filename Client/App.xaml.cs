@@ -19,6 +19,9 @@ using Client.Infrastructure.Helpers;
 using Client.Domain.Events;
 using Client.Infrastructure.Events;
 using System;
+using Client.Infrastructure.Service;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Client
 {
@@ -105,7 +108,26 @@ namespace Client
                 .AddSingleton<SkillHandler>()
                 .AddSingleton<ItemHander>()
                 .AddSingleton<WorldHandler>()
-                
+
+                .AddSingleton(
+                    typeof(PathfinderInterface),
+                    x => new L2jGeoDataPathfinder(
+                        config.GetValue<string>("GeoDataDirectory") ?? "",
+                        config.GetValue<ushort>("MaxPassableHeight")
+                    )
+                 )
+                .AddSingleton(
+                    typeof(AsyncPathMoverInterface),
+                    x => new AsyncPathMover(
+                        x.GetRequiredService<WorldHandler>(),
+                        x.GetRequiredService<PathfinderInterface>(),
+                        config.GetValue<int>("PathNumberOfAttempts"),
+                        config.GetValue<double>("NodeWaitingTime"),
+                        config.GetValue<int>("NodeDistanceTolerance"),
+                        config.GetValue<int>("NextNodeDistanceTolerance")
+                    )
+                )
+
                 .AddSingleton<MainViewModel>();
         }
     }
