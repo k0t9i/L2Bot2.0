@@ -16,4 +16,5 @@ Communication between the client and the injected code occurs through a named pi
 
 ## Pathfinding
 Pathfinding is done using [L2jGeodataPathFinder](https://github.com/k0t9i/L2jGeodataPathFinder).
+
 ![image_2023-10-29_20-53-56](https://github.com/k0t9i/L2Bot2.0/assets/7733997/104e5ff2-7435-4def-be5c-3223f02e37c5)
