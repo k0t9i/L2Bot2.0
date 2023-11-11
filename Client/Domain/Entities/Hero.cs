@@ -1,8 +1,11 @@
 ﻿using Client.Domain.Common;
 using Client.Domain.Enums;
 using Client.Domain.ValueObjects;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Client.Domain.Entities
 {
@@ -63,6 +66,9 @@ namespace Client.Domain.Entities
         }
         public uint AggroRadius { get; set; } = 0;
         public bool IsHostile { get; set; } = false;
+        // TODO move from domain
+        [JsonProperty("AttackerIds", ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<uint> AttackerIds { get => attackerIds; set { if (!value.All(attackerIds.Contains) || !attackerIds.All(value.Contains)) { attackerIds = value; OnPropertyChanged("AttackerIds"); } } }
 
         public Hero(uint id, Transform transform, FullName fullName, VitalStats vitalStats, Phenotype phenotype, ExperienceInfo experienceInfo, PermanentStats permanentStats, VariableStats variableStats, Reputation reputation, InventoryInfo inventoryInfo, uint targetId, bool isStanding)
         {
@@ -100,5 +106,6 @@ namespace Client.Domain.Entities
         private Phenotype phenotype;
         private CreatureInterface? target;
         private uint targetId;
+        private List<uint> attackerIds = new List<uint>();
     }
 }

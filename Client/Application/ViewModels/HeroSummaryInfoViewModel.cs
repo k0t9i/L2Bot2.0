@@ -74,6 +74,13 @@ namespace Client.Application.ViewModels
                 return target;
             }
         }
+        public List<uint> Attackers
+        {
+            get
+            {
+                return hero.AttackerIds.ToList();
+            }
+        }
         public HeroSummaryInfoViewModel(Hero hero)
         {
             this.hero = hero;
@@ -101,6 +108,10 @@ namespace Client.Application.ViewModels
                     target = null;
                     OnPropertyChanged("Target");
                 }
+            }
+            else if (e.PropertyName == "AttackerIds")
+            {
+                OnPropertyChanged("Attackers");
             }
         }
 

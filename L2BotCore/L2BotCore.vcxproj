@@ -178,6 +178,7 @@
     <ClInclude Include="Domain\Enums\ItemTypeEnum.h" />
     <ClInclude Include="Domain\Enums\WeaponTypeEnum.h" />
     <ClInclude Include="Domain\Events\AbnormalEffectChangedEvent.h" />
+    <ClInclude Include="Domain\Events\AttackedEvent.h" />
     <ClInclude Include="Domain\Events\ChatMessageCreatedEvent.h" />
     <ClInclude Include="Domain\Events\CreatureDiedEvent.h" />
     <ClInclude Include="Domain\Events\Event.h" />

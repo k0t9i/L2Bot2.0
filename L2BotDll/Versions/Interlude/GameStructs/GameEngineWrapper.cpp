@@ -15,6 +15,7 @@
 #include "Domain/Events/ChatMessageCreatedEvent.h"
 #include "Domain/Events/OnEndItemListEvent.h"
 #include "Domain/Events/CreatureDiedEvent.h"
+#include "Domain/Events/AttackedEvent.h"
 #include "Domain/DTO/ItemData.h"
 #include "Domain/DTO/ChatMessageData.h"
 #include "FName.h"
@@ -38,6 +39,7 @@ namespace Interlude
 	void(__thiscall* GameEngineWrapper::__OnEndItemList)(GameEngine*) = 0;
 	float(__thiscall* GameEngineWrapper::__GetMaxTickRate)(GameEngine*) = 0;
 	int(__thiscall* GameEngineWrapper::__OnDie)(GameEngine*, User*, L2ParamStack&) = 0;
+	int(__thiscall* GameEngineWrapper::__OnAttack)(GameEngine*, User*, User*, int, int, int, int, int, L2::FVector, int) = 0;
 
 
 	void GameEngineWrapper::Init(HMODULE hModule)
@@ -78,6 +80,10 @@ namespace Interlude
 		(FARPROC&)__OnDie = (FARPROC)splice(
 			GetProcAddress(hModule, "?OnDie@UGameEngine@@UAEHPAUUser@@AAVL2ParamStack@@@Z"), __OnDie_hook
 		);
+		(FARPROC&)__OnAttack = (FARPROC)splice(
+			GetProcAddress(hModule, "?OnAttack@UGameEngine@@UAEHPAUUser@@0HHHHHVFVector@@H@Z"), __OnAttack_hook
+		);
+
 		Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine hooks initialized");
 	}
 
@@ -95,6 +101,7 @@ namespace Interlude
 		restore((void*&)__GetMaxTickRate);
 		restore((void*&)__OnDie);
 		restore((void*&)__Tick);
+		restore((void*&)__OnAttack);
 		Services::ServiceLocator::GetInstance().GetLogger()->Info(L"UGameEngine hooks restored");
 	}
 
@@ -104,10 +111,11 @@ namespace Interlude
 		(*__OnSkillListPacket)(This, stack);
 	}
 
-	int __fastcall GameEngineWrapper::__OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t, User* u1, User* u2, L2ParamStack& stack)
+	int __fastcall GameEngineWrapper::__OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t, User* attacker, User* target, L2ParamStack& stack)
 	{
 		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillUsedEvent{ stack.GetBufferAsVector<int32_t>() });
-		return (*__OnReceiveMagicSkillUse)(This, u1, u2, stack);
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AttackedEvent{ attacker->objectId, target->objectId });
+		return (*__OnReceiveMagicSkillUse)(This, attacker, target, stack);
 	}
 
 	void __fastcall GameEngineWrapper::__OnReceiveMagicSkillCanceled_hook(GameEngine* This, uint32_t, User* user)
@@ -215,7 +223,6 @@ namespace Interlude
 		(*__OnEndItemList)(This);
 	}
 	// TODO ini
-	// 0 - фпс без ограничений
 	float __fastcall GameEngineWrapper::__GetMaxTickRate_hook(GameEngine* This, int)
 	{
 		float fps = (*__GetMaxTickRate)(This);
@@ -227,5 +234,11 @@ namespace Interlude
 		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::CreatureDiedEvent{ creature->objectId, stack.GetBufferAsVector<int32_t>() });
 
 		return (*__OnDie)(This, creature, stack);
+	}
+
+	int __fastcall GameEngineWrapper::__OnAttack_hook(GameEngine* This, int, User* attacker, User* target, int unk0, int unk1, int unk2, int unk3, int unk4, L2::FVector unk5, int unk6)
+	{
+		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AttackedEvent{ attacker->objectId, target->objectId });
+		return (*__OnAttack)(This, attacker, target, unk0, unk1, unk2, unk3, unk4, unk5, unk6);
 	}
 }

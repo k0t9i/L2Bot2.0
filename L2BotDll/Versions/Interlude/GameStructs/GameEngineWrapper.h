@@ -31,9 +31,10 @@ namespace Interlude
 		static void(__thiscall* __OnEndItemList)(GameEngine*);
 		static float(__thiscall* __GetMaxTickRate)(GameEngine*);
 		static int(__thiscall* __OnDie)(GameEngine*, User*, L2ParamStack&);
+		static int(__thiscall* __OnAttack)(GameEngine*, User*, User*, int, int, int, int, int, L2::FVector, int);
 
 		static void __fastcall __OnSkillListPacket_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
-		static int __fastcall __OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t /*edx*/, User* u1, User* u2, L2ParamStack& stack);
+		static int __fastcall __OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t /*edx*/, User* attacker, User* target, L2ParamStack& stack);
 		static void __fastcall __OnReceiveMagicSkillCanceled_hook(GameEngine* This, uint32_t /*edx*/, User* user);
 		static void __fastcall __AddAbnormalStatus_hook(GameEngine* This, uint32_t /*edx*/, L2ParamStack& stack);
 		static void __fastcall __AddInventoryItem_hook(GameEngine* This, uint32_t /*edx*/, ItemInfo& itemInfo);
@@ -44,7 +45,8 @@ namespace Interlude
 		static void __fastcall __OnEndItemList_hook(GameEngine* This, uint32_t /*edx*/);
 		static int __fastcall __OnDie_hook(GameEngine* This, int /*edx*/, User* creature, L2ParamStack& stack);
 		static float __fastcall __GetMaxTickRate_hook(GameEngine* This, int /*edx*/);
-		
+		static int __fastcall __OnAttack_hook(GameEngine* This, int /*edx*/, User* attacker, User* target, int unk0, int unk1, int unk2, int unk3, int unk4, L2::FVector unk5, int unk6);
+
 	private:
 		static GameEngine* _target;
 	};

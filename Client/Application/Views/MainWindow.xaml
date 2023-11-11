@@ -221,6 +221,13 @@
                     </TextBlock>
                 </StackPanel>
             </DockPanel>
+            <ListBox  Grid.Row="3" Margin="4" ItemsSource="{Binding Attackers, Mode=OneWay}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Mode=OneWay}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
             <StackPanel Grid.Column="1" DataContext="{Binding Target, Mode=OneWay}" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}" Margin="4">
                 <TextBlock FontSize="16" Text="{Binding Path=Name, Mode=OneWay}"></TextBlock>
                 <TextBlock Text="{Binding Path=BriefInfo, Mode=OneWay}"></TextBlock>
