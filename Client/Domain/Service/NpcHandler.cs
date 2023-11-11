@@ -33,7 +33,7 @@ namespace Client.Domain.Service
             @event.Hero.Target = target;
         }
 
-        public NpcHandler(EntityFactoryInterface<NPC> factory, EventBusInterface eventBus, NpcInfoHelperInterface npcInfoHelper) : base(factory)
+        public NpcHandler(EntityFactoryInterface<NPC> factory, EntityFactoryInterface<Entity> entityFactory, EventBusInterface eventBus, NpcInfoHelperInterface npcInfoHelper) : base(factory, entityFactory)
         {
             this.eventBus = eventBus;
             this.npcInfoHelper = npcInfoHelper;

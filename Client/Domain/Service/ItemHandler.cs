@@ -20,7 +20,7 @@ namespace Client.Domain.Service
             eventBus.Publish(new ItemDeletedEvent(entity.Id));
         }
 
-        public ItemHander(EntityFactoryInterface<ItemInterface> factory, EventBusInterface eventBus) : base(factory)
+        public ItemHander(EntityFactoryInterface<ItemInterface> factory, EntityFactoryInterface<Entity> entityFactory, EventBusInterface eventBus) : base(factory, entityFactory)
         {
             this.eventBus = eventBus;
         }

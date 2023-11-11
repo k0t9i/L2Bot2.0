@@ -14,29 +14,38 @@ namespace Client.Domain.Service
     {
         public void Update(MessageOperationEnum operation, string content)
         {
-            var entity = factory.Create(content);
+            var baseEntity = entityFactory.Create(content);
+            if (baseEntity == null)
+            {
+                throw new ArgumentNullException(nameof(baseEntity));
+            }
+
             if (operation == MessageOperationEnum.Create)
             {
+                var entity = factory.Create(content);
+
                 if (entity == null)
                 {
                     throw new ArgumentNullException(nameof(entity));
                 }
-                entities[entity.Id] = entity;
+                entities[baseEntity.Id] = entity;
 
                 OnCreate(entity);
             }
             else if (operation == MessageOperationEnum.Update)
             {
-                if (entity != null && entities.ContainsKey(entity.Id))
+                if (entities.ContainsKey(baseEntity.Id))
                 {
+                    var entity = entities[baseEntity.Id];
                     factory.Update(entities[entity.Id], content);
                     OnUpdate(entities[entity.Id]);
                 }
             }
             else if (operation == MessageOperationEnum.Delete)
             {
-                if (entity != null)
+                if (entities.ContainsKey(baseEntity.Id))
                 {
+                    var entity = entities[baseEntity.Id];
                     entities.Remove(entity.Id);
                     OnDelete(entity);
                 }
@@ -66,12 +75,14 @@ namespace Client.Domain.Service
 
         }
 
-        public EntityHandler(EntityFactoryInterface<T> factory)
+        public EntityHandler(EntityFactoryInterface<T> factory, EntityFactoryInterface<Entity> entityFactory)
         {
             this.factory = factory;
+            this.entityFactory = entityFactory;
         }
 
         private readonly EntityFactoryInterface<T> factory;
+        private readonly EntityFactoryInterface<Entity> entityFactory;
         private Dictionary<uint, T> entities = new Dictionary<uint, T>();
     }
 }

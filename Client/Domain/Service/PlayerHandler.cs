@@ -20,7 +20,7 @@ namespace Client.Domain.Service
             eventBus.Publish(new CreatureDeletedEvent(entity.Id));
         }
 
-        public PlayerHandler(EntityFactoryInterface<Player> factory, EventBusInterface eventBus) : base(factory)
+        public PlayerHandler(EntityFactoryInterface<Player> factory, EntityFactoryInterface<Entity> entityFactory, EventBusInterface eventBus) : base(factory, entityFactory)
         {
             this.eventBus = eventBus;
         }

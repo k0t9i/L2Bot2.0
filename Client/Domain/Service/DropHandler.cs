@@ -20,7 +20,7 @@ namespace Client.Domain.Service
             eventBus.Publish(new DropDeletedEvent(entity.Id));
         }
 
-        public DropHandler(EntityFactoryInterface<Drop> factory, EventBusInterface eventBus) : base(factory)
+        public DropHandler(EntityFactoryInterface<Drop> factory, EntityFactoryInterface<Entity> entityFactory, EventBusInterface eventBus) : base(factory, entityFactory)
         {
             this.eventBus = eventBus;
         }

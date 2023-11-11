@@ -20,7 +20,7 @@ namespace Client.Domain.Service
             eventBus.Publish(new SkillDeletedEvent(entity.Id));
         }
 
-        public SkillHandler(EntityFactoryInterface<Skill> factory, EventBusInterface eventBus) : base(factory)
+        public SkillHandler(EntityFactoryInterface<Skill> factory, EntityFactoryInterface<Entity> entityFactory, EventBusInterface eventBus) : base(factory, entityFactory)
         {
             this.eventBus = eventBus;
         }

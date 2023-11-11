@@ -92,6 +92,7 @@ namespace Client
                 .AddSingleton(typeof(NpcInfoHelperInterface), typeof(ConfigurationNpcInfoHelper))
                 .AddSingleton(typeof(EventBusInterface), typeof(InMemoryEventBus))
 
+                .AddTransient(typeof(EntityFactoryInterface<Entity>), typeof(EntityFactory<Entity>))
                 .AddTransient(typeof(EntityFactoryInterface<Hero>), typeof(EntityFactory<Hero>))
                 .AddTransient(typeof(EntityFactoryInterface<Drop>), typeof(EntityFactory<Drop>))
                 .AddTransient(typeof(EntityFactoryInterface<NPC>), typeof(EntityFactory<NPC>))

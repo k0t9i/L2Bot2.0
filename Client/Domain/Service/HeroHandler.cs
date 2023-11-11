@@ -35,7 +35,7 @@ namespace Client.Domain.Service
             eventBus.Publish(new HeroDeletedEvent());
         }
 
-        public HeroHandler(EntityFactoryInterface<Hero> factory, EventBusInterface eventBus, ExperienceHelperInterface experienceHelper) : base(factory)
+        public HeroHandler(EntityFactoryInterface<Hero> factory, EntityFactoryInterface<Entity> entityFactory, EventBusInterface eventBus, ExperienceHelperInterface experienceHelper) : base(factory, entityFactory)
         {
             this.eventBus = eventBus;
             this.experienceHelper = experienceHelper;
