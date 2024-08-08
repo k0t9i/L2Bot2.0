@@ -28,6 +28,7 @@ namespace Client.Infrastructure.Service
         private CancellationTokenSource? cancellationTokenSource;
 
         public ObservableCollection<PathSegment> Path { get; private set; } = new ObservableCollection<PathSegment>();
+        public bool IsBusy { get; private set; } = false;
 
         public async Task MoveUntilReachedAsync(Vector3 location)
         {
@@ -40,6 +41,8 @@ namespace Client.Infrastructure.Service
 
         public async Task<bool> MoveAsync(Vector3 location)
         {
+            IsBusy = true;
+
             if (cancellationTokenSource != null)
             {
                 cancellationTokenSource.Cancel();
@@ -50,7 +53,7 @@ namespace Client.Infrastructure.Service
 
             try
             {
-                return await Task.Run(() =>
+                return await Task.Run(async () =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -63,18 +66,22 @@ namespace Client.Infrastructure.Service
                     {
                         worldHandler.RequestMoveToLocation(node.To);
 
-                        if (!WaitForNodeReaching(cancellationToken, node))
+                        var reached = await WaitForNodeReaching(cancellationToken, node);
+                        if (!reached)
                         {
+                            IsBusy = false;
                             return false;
                         }
                         Path.Remove(node);
                     }
 
+                    IsBusy = false;
                     return true;
                 }, cancellationToken);
             }
             catch (OperationCanceledException)
             {
+                IsBusy = false;
                 return true;
             }
         }
@@ -106,7 +113,7 @@ namespace Client.Infrastructure.Service
             }
         }
 
-        private bool WaitForNodeReaching(CancellationToken token, PathSegment node)
+        private async Task<bool> WaitForNodeReaching(CancellationToken token, PathSegment node)
         {
             var hero = worldHandler.Hero;
 
@@ -131,7 +138,7 @@ namespace Client.Infrastructure.Service
                         return false;
                     }
                 }
-                Task.Delay(25);
+                await Task.Delay(25);
             }
 
             return true;
