@@ -42,15 +42,14 @@ namespace Interlude
 			auto target = m_NetworkHandler.GetUser(objectId);
 
 			if (target) {
-				if (target->objectId == objectId) {
-					auto hero = m_NetworkHandler.GetHero();
-					// Reset target
-					if (hero)
-					{
-						m_NetworkHandler.Action(hero->objectId, hero->pawn->Location, 0);
-					}
+				auto currentTargetId = 0;
+				auto hero = m_NetworkHandler.GetHero();
+				if (hero && hero->pawn && hero->pawn->lineagePlayerController) {
+					currentTargetId = hero->pawn->lineagePlayerController->targetObjectId;
 				}
-				m_NetworkHandler.Action(objectId, target->pawn->Location, 0);
+				if (currentTargetId != objectId) {
+					m_NetworkHandler.Action(objectId, target->pawn->Location, 0);
+				}
 			}
 		}
 
