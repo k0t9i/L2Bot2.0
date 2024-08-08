@@ -29,17 +29,13 @@ namespace Interlude
 		{
 			const auto data = m_L2GameData.GetMSData(skillId, level);
 
-			if (!data) {
-				throw RuntimeException(std::format(L"cannot load MSData for abnormal effect {}", skillId));
-			}
-
-			const auto iconEntry = m_FName.GetEntry(data->iconNameIndex);
+			const auto iconEntry = data ? m_FName.GetEntry(data->iconNameIndex) : nullptr;
 
 			return std::make_shared<Entities::AbnormalEffect>(
 				skillId,
 				static_cast<uint8_t>(level),
-				data->name ? std::wstring(data->name) : L"",
-				data->description ? std::wstring(data->description) : L"",
+				data && data->name ? std::wstring(data->name) : L"",
+				data && data->description ? std::wstring(data->description) : L"",
 				iconEntry ? std::wstring(iconEntry->value) : L""
 			);
 		}

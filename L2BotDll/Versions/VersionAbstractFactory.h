@@ -42,7 +42,7 @@ public:
 			{L"player", GetPlayerRepository()},
 			{L"skill", GetSkillRepository()},
 			{L"item", GetItemRepository()},
-			{L"abnormalEffect", GetAbnormalEffectRepository()},
+			//{L"abnormalEffect", GetAbnormalEffectRepository()},
 			{L"chat", GetChatMessageRepository()}
 		};
 	}
