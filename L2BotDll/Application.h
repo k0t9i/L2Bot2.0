@@ -22,7 +22,7 @@ class Application
 {
 public:
 	Application(const VersionAbstractFactory::Version version) :
-		m_AbstractFactory(VersionAbstractFactory::GetFactory(version, Application::RADIUS)),
+		m_AbstractFactory(VersionAbstractFactory::GetFactory(version, Application::CREATURE_RADIUS, Application::DROP_RADIUS)),
 		m_Transport(Application::PIPE_NAME),
 		m_WorldHandler
 		(
@@ -72,8 +72,10 @@ private:
 	NamedPipeTransport m_Transport;
 
 	static const std::wstring PIPE_NAME;
-	static const uint16_t RADIUS;
+	static const uint16_t CREATURE_RADIUS;
+	static const uint16_t DROP_RADIUS;
 };
 
 const std::wstring Application::PIPE_NAME = std::wstring(L"PipeL2Bot");
-const uint16_t Application::RADIUS = 2000;
+const uint16_t Application::CREATURE_RADIUS = 4000;
+const uint16_t Application::DROP_RADIUS = 1000;

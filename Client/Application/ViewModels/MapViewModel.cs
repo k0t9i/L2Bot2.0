@@ -291,7 +291,7 @@ namespace Client.Application.ViewModels
         public ObservableCollection<PathNodeViewModel> Path { get; } = new ObservableCollection<PathNodeViewModel>();
 
         public readonly static float MIN_SCALE = 1;
-        public readonly static float MAX_SCALE = 64;
+        public readonly static float MAX_SCALE = 128;
         private readonly AsyncPathMoverInterface pathMover;
         private MapImageSelector selector = new MapImageSelector();
         private Dictionary<uint, MapBlockViewModel> blocks = new Dictionary<uint, MapBlockViewModel>();

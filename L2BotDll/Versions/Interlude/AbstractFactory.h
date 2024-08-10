@@ -29,8 +29,9 @@ namespace Interlude
 	class AbstractFactory : public VersionAbstractFactory
 	{
 	public:
-		AbstractFactory(const uint16_t radius) :
-			m_Radius(radius)
+		AbstractFactory(const uint16_t creatureRadius, const uint16_t dropRadius) :
+			m_CreatureRadius(creatureRadius),
+			m_DropRadius(dropRadius)
 		{
 
 		}
@@ -52,7 +53,7 @@ namespace Interlude
 			static auto result = DropRepository(
 				GetNetworkHandler(),
 				factory,
-				m_Radius
+				m_DropRadius
 			);
 			return result;
 		}
@@ -62,7 +63,7 @@ namespace Interlude
 			static auto result = NPCRepository(
 				GetNetworkHandler(),
 				factory,
-				m_Radius
+				m_CreatureRadius
 			);
 			return result;
 		}
@@ -72,7 +73,7 @@ namespace Interlude
 			static auto result = PlayerRepository(
 				GetNetworkHandler(),
 				factory,
-				m_Radius
+				m_CreatureRadius
 			);
 			return result;
 		}
@@ -140,6 +141,7 @@ namespace Interlude
 		}
 
 	private:
-		const uint16_t m_Radius;
+		const uint16_t m_CreatureRadius;
+		const uint16_t m_DropRadius;
 	};
 }

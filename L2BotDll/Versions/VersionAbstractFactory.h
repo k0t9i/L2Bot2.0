@@ -47,5 +47,5 @@ public:
 		};
 	}
 
-	static const VersionAbstractFactory& GetFactory(Version version, const uint16_t radius);
+	static const VersionAbstractFactory& GetFactory(Version version, const uint16_t creatureRadius, const uint16_t dropRadius);
 };
