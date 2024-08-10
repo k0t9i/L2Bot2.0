@@ -114,7 +114,9 @@ namespace Interlude
 	int __fastcall GameEngineWrapper::__OnReceiveMagicSkillUse_hook(GameEngine* This, uint32_t, User* attacker, User* target, L2ParamStack& stack)
 	{
 		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillUsedEvent{ stack.GetBufferAsVector<int32_t>() });
-		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AttackedEvent{ attacker->objectId, target->objectId });
+		if (attacker && target) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AttackedEvent{ attacker->objectId, target->objectId });
+		}
 		return (*__OnReceiveMagicSkillUse)(This, attacker, target, stack);
 	}
 
@@ -238,7 +240,9 @@ namespace Interlude
 
 	int __fastcall GameEngineWrapper::__OnAttack_hook(GameEngine* This, int, User* attacker, User* target, int unk0, int unk1, int unk2, int unk3, int unk4, L2::FVector unk5, int unk6)
 	{
-		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AttackedEvent{ attacker->objectId, target->objectId });
+		if (attacker && target) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::AttackedEvent{ attacker->objectId, target->objectId });
+		}
 		return (*__OnAttack)(This, attacker, target, unk0, unk1, unk2, unk3, unk4, unk5, unk6);
 	}
 }
