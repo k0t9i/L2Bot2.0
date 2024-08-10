@@ -73,7 +73,10 @@
                                     </Grid>
                                     <DataTemplate.Triggers>
                                         <DataTrigger Binding="{Binding IsTarget,Mode=OneWay}" Value="True">
-                                            <Setter TargetName="Item" Property="Background" Value="#110000ff" />
+                                            <Setter TargetName="Item" Property="Background" Value="#330000ff" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsAttacker,Mode=OneWay}" Value="True">
+                                            <Setter TargetName="Item" Property="Background" Value="#33ff0000" />
                                         </DataTrigger>
                                     </DataTemplate.Triggers>
                                 </DataTemplate>

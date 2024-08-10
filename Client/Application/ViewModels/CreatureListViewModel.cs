@@ -26,6 +26,8 @@ namespace Client.Application.ViewModels
 
         public bool IsTarget => Id == hero.TargetId;
 
+        public bool IsAttacker => hero.AttackerIds.Contains(creature.Id);
+
         public ICommand MouseLeftClickCommand { get; }
         public ICommand MouseLeftDoubleClickCommand { get; }
         public ICommand MouseRightClickCommand { get; }
@@ -89,6 +91,10 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "TargetId")
             {
                 OnPropertyChanged("IsTarget");
+            }
+            if (e.PropertyName == "AttackerIds")
+            {
+                OnPropertyChanged("IsAttacker");
             }
         }
 

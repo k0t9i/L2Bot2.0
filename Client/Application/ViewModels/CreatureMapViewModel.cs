@@ -63,6 +63,7 @@ namespace Client.Application.ViewModels
         public bool IsTarget => Id == hero.TargetId;
         public bool IsAggressive => creature.AggroRadius > 0 && !creature.VitalStats.IsDead && creature.IsHostile;
         public float AggroRadius => creature.AggroRadius / scale;
+        public bool IsAttacker => hero.AttackerIds.Contains(creature.Id);
 
         public ICommand MouseLeftClickCommand { get; }
         public ICommand MouseLeftDoubleClickCommand { get; }
@@ -116,6 +117,10 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "TargetId")
             {
                 OnPropertyChanged("IsTarget");
+            }
+            if (e.PropertyName == "AttackerIds")
+            {
+                OnPropertyChanged("IsAttacker");
             }
         }
 

@@ -152,6 +152,10 @@
                             <Setter TargetName="CreatureBody" Property="Stroke" Value="Black" />
                             <Setter TargetName="CreatureDirection" Property="Stroke" Value="Black" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsAttacker,Mode=OneWay}" Value="True">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="Red" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="Red" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsTarget,Mode=OneWay}" Value="True">
                             <Setter TargetName="CreatureName" Property="Visibility" Value="Visible" />
                         </DataTrigger>
