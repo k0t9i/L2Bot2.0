@@ -3,6 +3,7 @@
 #include "Domain/Serializers/IncomingMessageFactoryInterface.h"
 #include "../ThirdParty/json.hpp"
 #include "Domain/ValueObjects/Vector3.h"
+#include "Domain/Enums/RestartPointTypeEnum.h"
 
 using namespace L2Bot::Domain;
 using json = nlohmann::json;
@@ -110,6 +111,14 @@ private:
 			return Serializers::IncomingMessage
 			{
 				Serializers::IncomingMessage::Type::stand
+			};
+		}
+		else if (type == "RestartPoint")
+		{
+			return Serializers::IncomingMessage
+			{
+				Serializers::IncomingMessage::Type::restartPoint,
+				std::make_shared<Enums::RestartPointTypeEnum>(jsonObject.get<Enums::RestartPointTypeEnum>())
 			};
 		}
 

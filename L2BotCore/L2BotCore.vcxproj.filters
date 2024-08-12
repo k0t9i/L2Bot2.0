@@ -240,6 +240,9 @@
     <ClInclude Include="Domain\Events\AttackedEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Domain\Enums\RestartPointTypeEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

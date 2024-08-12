@@ -177,6 +177,15 @@ namespace Client.Domain.Service
 
             SendMessage(OutgoingMessageTypeEnum.Stand);
         }
+        public void RequestRestartPoint(RestartPointTypeEnum type)
+        {
+            if (hero == null)
+            {
+                return;
+            }
+
+            SendMessage(OutgoingMessageTypeEnum.RestartPoint, type);
+        }
 
         private void SendMessage<T>(OutgoingMessageTypeEnum type, T? content = default)
         {

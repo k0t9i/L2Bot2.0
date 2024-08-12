@@ -4,6 +4,7 @@
 #include "../Repositories/ItemRepository.h"
 #include "../GameStructs/NetworkHandlerWrapper.h"
 #include "../GameStructs/L2GameDataWrapper.h"
+#include "Domain/Enums/RestartPointTypeEnum.h"
 
 using namespace L2Bot::Domain;
 
@@ -121,6 +122,16 @@ namespace Interlude
 		void Stand() const override
 		{
 			m_NetworkHandler.ChangeWaitType(1);
+		}
+
+		void RestartPoint(Enums::RestartPointTypeEnum type) const override
+		{
+			L2ParamStack* stack = new L2ParamStack(1);
+			stack->PushBack((void*)type);
+
+			m_NetworkHandler.RequestRestartPoint(*stack);
+
+			delete stack;
 		}
 
 	private:

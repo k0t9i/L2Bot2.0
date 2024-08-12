@@ -17,6 +17,7 @@ namespace Client.Domain.Enums
         UseItem,
         ToggleSoulshot,
         Sit,
-        Stand
+        Stand,
+        RestartPoint
     }
 }

@@ -26,6 +26,7 @@ namespace Interlude
 	int(__thiscall* NetworkHandlerWrapper::__RequestUseItem)(NetworkHandler*, L2ParamStack&) = 0;
 	void(__thiscall* NetworkHandlerWrapper::__RequestAutoSoulShot)(NetworkHandler*, L2ParamStack&) = 0;
 	void(__thiscall* NetworkHandlerWrapper::__ChangeWaitType)(NetworkHandler*, int) = 0;
+	void(__thiscall* NetworkHandlerWrapper::__RequestRestartPoint)(NetworkHandler*, L2ParamStack&) = 0;
 
 	Item* NetworkHandlerWrapper::GetNextItem(float_t radius, int prevId) const
 	{
@@ -193,6 +194,19 @@ namespace Interlude
 		}
 	}
 
+	void NetworkHandlerWrapper::RequestRestartPoint(L2ParamStack& stack) const
+	{
+		__try {
+			if (__RequestRestartPoint && _target) {
+				(*__RequestRestartPoint)(_target, stack);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			throw CriticalRuntimeException(L"UNetworkHandler::RequestRestartPoint failed");
+		}
+	}
+
 	void NetworkHandlerWrapper::Init(HMODULE hModule)
 	{
 		void* initAddress = GetProcAddress(hModule, "?Tick@UNetworkHandler@@UAEXM@Z");
@@ -210,6 +224,7 @@ namespace Interlude
 		(FARPROC&)__RequestUseItem = GetProcAddress(hModule, "?RequestUseItem@UNetworkHandler@@UAEHAAVL2ParamStack@@@Z");
 		(FARPROC&)__RequestAutoSoulShot = GetProcAddress(hModule, "?RequestAutoSoulShot@UNetworkHandler@@UAEXAAVL2ParamStack@@@Z");
 		(FARPROC&)__ChangeWaitType = GetProcAddress(hModule, "?ChangeWaitType@UNetworkHandler@@UAEXH@Z");
+		(FARPROC&)__RequestRestartPoint = GetProcAddress(hModule, "?RequestRestartPoint@UNetworkHandler@@UAEXAAVL2ParamStack@@@Z");
 		
 		(FARPROC&)__AddNetworkQueue = (FARPROC)splice(
 			GetProcAddress(hModule, "?AddNetworkQueue@UNetworkHandler@@UAEHPAUNetworkPacket@@@Z"), __AddNetworkQueue_hook

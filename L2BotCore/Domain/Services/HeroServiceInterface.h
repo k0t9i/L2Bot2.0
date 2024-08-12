@@ -3,6 +3,7 @@
 #include <vector>
 #include "../DTO/EntityState.h"
 #include "../ValueObjects/Vector3.h"
+#include "../Enums/RestartPointTypeEnum.h"
 
 namespace L2Bot::Domain::Services
 {
@@ -18,5 +19,6 @@ namespace L2Bot::Domain::Services
 		virtual void ToggleAutouseSoulshot(int objectId) const = 0;
 		virtual void Sit() const = 0;
 		virtual void Stand() const = 0;
+		virtual void RestartPoint(Enums::RestartPointTypeEnum type) const = 0;
 	};
 }

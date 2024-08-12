@@ -3,6 +3,7 @@
 #include <string>
 #include "../Serializers/IncomingMessageFactoryInterface.h"
 #include "HeroServiceInterface.h"
+#include "../Enums/RestartPointTypeEnum.h"
 
 namespace L2Bot::Domain::Services
 {
@@ -50,6 +51,9 @@ namespace L2Bot::Domain::Services
 				break;
 			case Serializers::IncomingMessage::Type::stand:
 				m_HeroService.Stand();
+				break;
+			case Serializers::IncomingMessage::Type::restartPoint:
+				m_HeroService.RestartPoint(message.GetRawContent<Enums::RestartPointTypeEnum>());
 				break;
 			}
 

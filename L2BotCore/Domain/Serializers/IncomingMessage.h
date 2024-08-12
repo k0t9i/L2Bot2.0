@@ -19,7 +19,8 @@ namespace L2Bot::Domain::Serializers
 			useItem,
 			toggleSoulshot,
 			sit,
-			stand
+			stand,
+			restartPoint
 		};
 
 		const Type GetType() const

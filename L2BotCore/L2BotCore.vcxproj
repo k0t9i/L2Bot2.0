@@ -176,6 +176,7 @@
     <ClInclude Include="Domain\Enums\CrystalTypeEnum.h" />
     <ClInclude Include="Domain\Enums\ChatChannelEnum.h" />
     <ClInclude Include="Domain\Enums\ItemTypeEnum.h" />
+    <ClInclude Include="Domain\Enums\RestartPointTypeEnum.h" />
     <ClInclude Include="Domain\Enums\WeaponTypeEnum.h" />
     <ClInclude Include="Domain\Events\AbnormalEffectChangedEvent.h" />
     <ClInclude Include="Domain\Events\AttackedEvent.h" />

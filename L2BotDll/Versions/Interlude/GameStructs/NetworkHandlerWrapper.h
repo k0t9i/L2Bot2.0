@@ -31,6 +31,7 @@ namespace Interlude
 		int RequestUseItem(L2ParamStack& stack) const;
 		void RequestAutoSoulShot(L2ParamStack& stack) const;
 		void ChangeWaitType(int type) const;
+		void RequestRestartPoint(L2ParamStack& stack) const;
 	private:
 
 		static void __fastcall __Init_hook(NetworkHandler* This, int /*edx*/, float unk);
@@ -52,6 +53,7 @@ namespace Interlude
 		static void(__thiscall* __RequestAutoSoulShot)(NetworkHandler*, L2ParamStack&);
 		//params objectId, unk
 		static void(__thiscall* __ChangeWaitType)(NetworkHandler*, int);
+		static void(__thiscall* __RequestRestartPoint)(NetworkHandler*, L2ParamStack&);
 
 	private:
 		static void* originalInitAddress;
