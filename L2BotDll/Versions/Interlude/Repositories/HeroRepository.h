@@ -82,6 +82,7 @@ namespace Interlude
 					if (m_Hero->GetId() == casted.GetCreatureId())
 					{
 						Services::ServiceLocator::GetInstance().GetLogger()->App(L"{} died", m_Hero->GetFullName().GetNickname());
+						m_Hero->ClearAttackers();
 					}
 					else
 					{

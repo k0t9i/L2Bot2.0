@@ -89,6 +89,10 @@ namespace L2Bot::Domain::Entities
 		{
 			return m_AttackerIds;
 		}
+		void ClearAttackers()
+		{
+			m_AttackerIds.clear();
+		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
