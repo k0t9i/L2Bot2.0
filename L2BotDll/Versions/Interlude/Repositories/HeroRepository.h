@@ -104,7 +104,7 @@ namespace Interlude
 					{
 						m_Hero->AddAttacker(casted.GetAttackerId());
 					}
-					else
+					else if (casted.GetAttackerId() != casted.GetTargetId())
 					{
 						// try to remove creature that is attacking another target from the attackers
 						m_Hero->RemoveAttacker(casted.GetAttackerId());
