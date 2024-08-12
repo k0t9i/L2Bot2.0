@@ -4,6 +4,7 @@
 #include "../ThirdParty/json.hpp"
 #include "Domain/ValueObjects/Vector3.h"
 #include "Domain/Enums/RestartPointTypeEnum.h"
+#include "Domain/DTO/UseSkillParams.h"
 
 using namespace L2Bot::Domain;
 using json = nlohmann::json;
@@ -80,7 +81,11 @@ private:
 			return Serializers::IncomingMessage
 			{
 				Serializers::IncomingMessage::Type::useSkill,
-				std::make_shared<uint32_t>(jsonObject.get<uint32_t>())
+				std::make_shared<DTO::UseSkillParams>(
+					jsonObject["skillId"].get<uint32_t>(),
+					jsonObject["isForced"].get<bool>(),
+					jsonObject["isShiftPressed"].get<bool>()
+				)
 			};
 		}
 		else if (type == "UseItem")

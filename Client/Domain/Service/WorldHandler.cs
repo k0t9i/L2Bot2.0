@@ -111,7 +111,14 @@ namespace Client.Domain.Service
                 return;
             }
 
-            SendMessage(OutgoingMessageTypeEnum.UseSkill, id);
+            var data = new UseSkillParams
+            {
+                skillId = id,
+                isForced = isForced,
+                isShiftPressed = isShiftPressed
+            };
+
+            SendMessage(OutgoingMessageTypeEnum.UseSkill, data);
         }
 
         public void RequestUseItem(uint id)

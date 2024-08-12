@@ -201,6 +201,7 @@
     <ClInclude Include="Domain\Logger\LogLevel.h" />
     <ClInclude Include="Domain\Serializers\IncomingMessageFactoryInterface.h" />
     <ClInclude Include="Domain\Serializers\IncomingMessage.h" />
+    <ClInclude Include="Domain\DTO\UseSkillParams.h" />
     <ClInclude Include="Domain\Services\HeroServiceInterface.h" />
     <ClInclude Include="Domain\Entities\ChatMessage.h" />
     <ClInclude Include="Domain\Services\IncomingMessageProcessor.h" />

@@ -4,6 +4,7 @@
 #include "../Serializers/IncomingMessageFactoryInterface.h"
 #include "HeroServiceInterface.h"
 #include "../Enums/RestartPointTypeEnum.h"
+#include "../DTO/UseSkillParams.h"
 
 namespace L2Bot::Domain::Services
 {
@@ -38,7 +39,8 @@ namespace L2Bot::Domain::Services
 				m_HeroService.Pickup(message.GetRawContent<uint32_t>());
 				break;
 			case Serializers::IncomingMessage::Type::useSkill:
-				m_HeroService.UseSkill(message.GetRawContent<uint32_t>(), false, false);
+				const auto params = message.GetRawContent<DTO::UseSkillParams>();
+				m_HeroService.UseSkill(params.skillId, params.isForced, params.isShiftPressed);
 				break;
 			case Serializers::IncomingMessage::Type::useItem:
 				m_HeroService.UseItem(message.GetRawContent<uint32_t>());
