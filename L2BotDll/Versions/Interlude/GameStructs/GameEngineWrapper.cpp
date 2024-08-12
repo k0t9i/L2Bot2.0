@@ -122,7 +122,9 @@ namespace Interlude
 
 	void __fastcall GameEngineWrapper::__OnReceiveMagicSkillCanceled_hook(GameEngine* This, uint32_t, User* user)
 	{
-		Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillCancelledEvent{ user->objectId });
+		if (user) {
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Dispatch(Events::SkillCancelledEvent{ user->objectId });
+		}
 		(*__OnReceiveMagicSkillCanceled)(This, user);
 	}
 
