@@ -18,3 +18,14 @@ Communication between the client and the injected code occurs through a named pi
 Pathfinding is done using [L2jGeodataPathFinder](https://github.com/k0t9i/L2jGeodataPathFinder).
 
 ![image_2023-10-29_20-53-56](https://github.com/k0t9i/L2Bot2.0/assets/7733997/104e5ff2-7435-4def-be5c-3223f02e37c5)
+
+## AI
+The bot client have two AI: combat and deleveling.
+
+Combat AI can attack and spoil mobs in any combination depending on the settings. It can also collect the selected drop and rest when it reaches a certain level of HP and MP.
+
+Deleveling AI ​​can automatically attack guards in any town/village until it reaches a configured level.
+
+Both AIs use pathfinding to achieve desired goals.
+
+![image](https://github.com/user-attachments/assets/8e566c98-e996-4997-afbb-7100e0d0e6a9)
