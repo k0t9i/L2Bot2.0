@@ -4,7 +4,7 @@
 #include "ProcessManipulation.h"
 #include "Injector.h"
 
-InjectLibrary::Injector injector("L2BotHookMutex", WH_CALLWNDPROC);
+InjectLibrary::Injector injector("L2BotHookMutex", WH_GETMESSAGE);
 Application application(VersionAbstractFactory::Version::interlude);
 
 void ConfigLogger(HMODULE hModule)
