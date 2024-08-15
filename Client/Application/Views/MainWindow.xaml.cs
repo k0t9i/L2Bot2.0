@@ -1,7 +1,9 @@
 ﻿using Client.Application.Components;
 using Client.Application.ViewModels;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,13 +25,23 @@ namespace Client.Application.Views
     public partial class MainWindow : Window
     {
         private readonly MainViewModel mainViewModel;
+        private readonly AIConfigViewModel aiConfigViewModel;
+        private AIConfig aiConfigView;
 
-        public MainWindow(MainViewModel mainViewModel)
+        public MainWindow(MainViewModel mainViewModel, AIConfigViewModel aiConfigViewModel)
         {
             InitializeComponent();
 
             DataContext = mainViewModel;
             this.mainViewModel = mainViewModel;
+            this.aiConfigViewModel = aiConfigViewModel;
+            aiConfigView = new AIConfig(aiConfigViewModel);
+        }
+
+        private void AIConfig_Click(object sender, RoutedEventArgs e)
+        {
+            aiConfigView.Owner = this;
+            aiConfigView.ShowDialog();
         }
     }
 }

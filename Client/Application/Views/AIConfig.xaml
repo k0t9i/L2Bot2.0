@@ -1,0 +1,373 @@
+﻿<Window x:Class="Client.Application.Views.AIConfig"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Application.Views"
+        xmlns:components="clr-namespace:Client.Application.Components"
+        mc:Ignorable="d"
+        IsVisibleChanged="Window_IsVisibleChanged"
+        Closing="Window_Closing"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        Title="Combat AI Config" Height="600" Width="800"
+        x:Name="root">
+    <Grid Margin="0,0,0,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="File">
+                <MenuItem Header="Open" Command="{Binding OpenDialogCommand}"/>
+                <MenuItem Header="Save" Command="{Binding SaveDialogCommand}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1" TabStripPlacement="Left">
+            <TabItem>
+                <TabItem.Header>Combat AI</TabItem.Header>
+                <TabItem.Content>
+                    <TabControl>
+                        <TabItem>
+                            <TabItem.Header>Combat</TabItem.Header>
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutoUseShots}">Auto use soul and spiritshots</CheckBox>
+                                    <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding UseOnlySkills}">Use only skills</CheckBox>
+                                    <StackPanel Grid.Row="2" Grid.Column="0">
+                                        <Label>Attack distance for mili weapon:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="AttackDistanceMili" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="3" Grid.Column="0">
+                                        <Label>Attack distance for bows:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="AttackDistanceBow" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="4" Grid.Column="0">
+                                        <Label>Skill conditions:</Label>
+                                        <DataGrid
+                                            AutoGenerateColumns="False" 
+                                            Height="150"
+                                            HorizontalAlignment="Left" 
+                                            VerticalAlignment="Top" 
+                                            ItemsSource="{Binding CombatSkills}">
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="Skill" Width="300">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox
+                                                                ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Skills}"
+                                                                SelectedValuePath="Id"
+                                                                SelectedValue="{Binding Id}"
+                                                                DisplayMemberPath="Name">
+                                                                <ComboBox.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <VirtualizingStackPanel />
+                                                                    </ItemsPanelTemplate>
+                                                                </ComboBox.ItemsPanel>
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                                <DataGridTextColumn Header="Max target % HP" Width="100" Binding="{Binding MaxTargetPercentHp}" />
+                                                <DataGridTextColumn Header="Min player % MP" Width="100" Binding="{Binding MinPlayerPercentMp}" />
+                                                <DataGridTextColumn Header="Max player % HP" Width="100" Binding="{Binding MaxPlayerPercentHp}" />
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="5" Grid.Column="0">
+                                        <Label>Combat zone:</Label>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                                <ColumnDefinition Width="120"></ColumnDefinition>
+                                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Label Grid.Row="0" Grid.Column="0">X:</Label>
+                                            <TextBox Width="100" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1">
+                                                <TextBox.Text>
+                                                    <Binding Path="Zone.X" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <Button Grid.Row="0" Grid.Column="2" Command="{Binding GetHeroPosition}">Current</Button>
+                                            <Label Grid.Row="1" Grid.Column="0">Y:</Label>
+                                            <TextBox Width="100" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1">
+                                                <TextBox.Text>
+                                                    <Binding Path="Zone.Y" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <Label Grid.Row="2" Grid.Column="0">Radius:</Label>
+                                            <TextBox Width="100" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1">
+                                                <TextBox.Text>
+                                                    <Binding Path="Zone.Radius" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>Mobs</TabItem.Header>
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <Label>Max delta z:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="MobsMaxDeltaZ" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <components:MultipleObjectSelector
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Source="{Binding ExcludedMobs}"
+                                        Target="{Binding SelectedExcludedMobs}"
+                                        Header="Excluded:"/>
+                                    <components:MultipleObjectSelector
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Source="{Binding IncludedMobs}"
+                                        Target="{Binding SelectedIncludedMobs}"
+                                        Header="Included:"/>
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <Label>Mobs level range:</Label>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Width="100">
+                                                <TextBox.Text>
+                                                    <Binding Path="MobLevelLowerLimit" UpdateSourceTrigger="PropertyChanged" TargetNullValue=""/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <TextBlock>&lt;= Player level &lt;=</TextBlock>
+                                            <TextBox Width="100">
+                                                <TextBox.Text>
+                                                    <Binding Path="MobLevelUpperLimit" UpdateSourceTrigger="PropertyChanged" TargetNullValue=""/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>Drop</TabItem.Header>
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PickupIfPossible}">Pickup if possible</CheckBox>
+                                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <Label>Max delta z:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="PickupMaxDeltaZ" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <Label>Pickup attempts count:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="PickupAttemptsCount" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <components:MultipleObjectSelector
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Source="{Binding ExcludedItems}"
+                                        Target="{Binding SelectedExcludedItems}"
+                                        Header="Excluded:"/>
+                                    <components:MultipleObjectSelector
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Source="{Binding IncludedItems}"
+                                        Target="{Binding SelectedIncludedItems}"
+                                        Header="Included:"/>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>Spoil</TabItem.Header>
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding SpoilIfPossible}">Spoil if possible</CheckBox>
+                                    <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding SpoilIsPriority}">Spoil is priority</CheckBox>
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <Label>Sweep attempts count:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="SweepAttemptsCount" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <components:MultipleObjectSelector
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Source="{Binding ExcludedSpoilMobs}"
+                                        Target="{Binding SelectedExcludedSpoilMobs}"
+                                        Header="Excluded:"/>
+                                    <components:MultipleObjectSelector
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Source="{Binding IncludedSpoilMobs}"
+                                        Target="{Binding SelectedIncludedSpoilMobs}"
+                                        Header="Included:"/>
+                                    <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <components:ObjectSelector
+                                            Source="{Binding Skills}"
+                                            SelectedValue="{Binding SpoilSkillId, Mode=TwoWay}"
+                                            Header="Spoil skill:"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <components:ObjectSelector
+                                            Source="{Binding Skills}"
+                                            SelectedValue="{Binding SweeperSkillId, Mode=TwoWay}"
+                                            Header="Sweeper skill:"/>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>Rest</TabItem.Header>
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0">
+                                        <Label>% HP range:</Label>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Width="100">
+                                                <TextBox.Text>
+                                                    <Binding Path="RestStartPercentHp" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <TextBlock>-</TextBlock>
+                                            <TextBox Width="100">
+                                                <TextBox.Text>
+                                                    <Binding Path="RestEndPercentHp" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1">
+                                        <Label>% MP range:</Label>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Width="100">
+                                                <TextBox.Text>
+                                                    <Binding Path="RestStartPercentMp" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                            <TextBlock>-</TextBlock>
+                                            <TextBox Width="100">
+                                                <TextBox.Text>
+                                                    <Binding Path="RestEndPercentMp" UpdateSourceTrigger="PropertyChanged"/>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                    </TabControl>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>Deleveling AI</TabItem.Header>
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <Label>Target level:</Label>
+                            <TextBox Width="100" HorizontalAlignment="Left">
+                                <TextBox.Text>
+                                    <Binding Path="DelevelingTargetLevel" UpdateSourceTrigger="PropertyChanged"/>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <Label>Attack distance:</Label>
+                            <TextBox Width="100" HorizontalAlignment="Left">
+                                <TextBox.Text>
+                                    <Binding Path="DelevelingAttackDistance" UpdateSourceTrigger="PropertyChanged"/>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <components:ObjectSelector
+                                Source="{Binding Skills}"
+                                SelectedValue="{Binding DelevelingSkillId, Mode=TwoWay}"
+                                Header="Attacking skill:"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,10,10,0">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="8,0,0,0"/>
+                </Style>
+            </StackPanel.Resources>
+            <Button Command="{Binding SaveCommand}">Save</Button>
+            <Button Command="{Binding ResetCommand}">Reset</Button>
+        </StackPanel>
+    </Grid>
+</Window>

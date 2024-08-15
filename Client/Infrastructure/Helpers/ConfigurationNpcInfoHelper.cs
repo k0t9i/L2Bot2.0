@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using static Client.Infrastructure.Helpers.ConfigurationExperienceHelper;
 
 namespace Client.Infrastructure.Helpers
 {
@@ -14,12 +13,30 @@ namespace Client.Infrastructure.Helpers
     {
         public uint GetLevel(uint id)
         {
-            return GetNpcInfo(id).level;
+            LoadNpc();
+
+            if (npcInfo.ContainsKey(id))
+            {
+                return npcInfo[id].Level;
+            }
+            return 0;
         }
 
         public uint GetAggroRadius(uint id)
         {
-            return GetNpcInfo(id).aggroRadius;
+            LoadNpc();
+
+            if (npcInfo.ContainsKey(id))
+            {
+                return npcInfo[id].AggroRadius;
+            }
+            return 0;
+        }
+
+        public List<NpcInfo> GetAllNpc()
+        {
+            LoadNpc();
+            return npcInfo.Select(x => x.Value).ToList();
         }
 
         public ConfigurationNpcInfoHelper(IConfiguration configuration)
@@ -27,36 +44,37 @@ namespace Client.Infrastructure.Helpers
             this.configuration = configuration;
         }
 
-        private NpcInfo GetNpcInfo(uint id)
+        private void LoadNpc()
         {
-            if (!npcInfo.ContainsKey(id))
+            if (npcInfo.Count == 0)
             {
-                var item = configuration.GetRequiredSection("npcInfo").GetChildren()
-                    .Where(x => x.Key == id.ToString())
-                    .FirstOrDefault();
-                uint level = 0;
-                uint aggroRadius = 0;
-                if (item != null)
+                var items = configuration.GetRequiredSection("npcInfo").GetChildren();
+                foreach (var item in items)
                 {
-                    uint.TryParse(item.GetRequiredSection("level").Value, out level);
-                    uint.TryParse(item.GetRequiredSection("aggroRadius").Value, out aggroRadius);
+                    var id = uint.Parse(item.Key);
+
+                    uint level = 0;
+                    uint aggroRadius = 0;
+                    bool isGuard = false;
+                    if (item != null)
+                    {
+                        uint.TryParse(item.GetRequiredSection("level").Value, out level);
+                        uint.TryParse(item.GetRequiredSection("aggroRadius").Value, out aggroRadius);
+                        bool.TryParse(item.GetRequiredSection("isGuard").Value, out isGuard);
+                    }
+                    npcInfo[id] = new NpcInfo
+                    {
+                        Id = id,
+                        Level = level,
+                        AggroRadius = aggroRadius,
+                        Name = string.Format("{0} [{1}]", item?.GetRequiredSection("name").Value ?? "", id),
+                        IsGuard = isGuard
+                    };
                 }
-                npcInfo[id] = new NpcInfo
-                {
-                    level = level,
-                    aggroRadius = aggroRadius
-                };
             }
-            return npcInfo[id];
         }
 
         private readonly IConfiguration configuration;
         private Dictionary<uint, NpcInfo> npcInfo = new Dictionary<uint, NpcInfo>();
-
-        private class NpcInfo
-        {
-            public uint level { get; set; }
-            public uint aggroRadius { get; set; }
-        }
     }
 }

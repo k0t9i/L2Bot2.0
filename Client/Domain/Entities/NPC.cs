@@ -16,7 +16,7 @@ namespace Client.Domain.Entities
         public Transform Transform { get; set; }
         public bool IsHostile { get; set; }
         public uint NpcId { get; set; }
-        public SpoilStateEnum SpoilState { get; set; }
+        public SpoilStateEnum SpoilState { get { return spoilState; } set { if (spoilState != value) { spoilState = value; OnPropertyChanged(); } } }
         public FullName FullName
         {
             get => fullName;
@@ -134,5 +134,6 @@ namespace Client.Domain.Entities
         private uint aggroRadius;
         private VitalStats vitalStats;
         private FullName fullName;
+        private SpoilStateEnum spoilState;
     }
 }

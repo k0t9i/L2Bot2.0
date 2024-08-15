@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="Client.Application.Components.MultipleObjectSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client.Application.Components"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             x:Name="root">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Content="{Binding Header,ElementName=root}" />
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <TextBox
+                x:Name="sourceSearch"
+                HorizontalAlignment="Stretch">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyUp">
+                        <i:InvokeCommandAction 
+                            Command="{x:Static local:MultipleObjectSelector.SearchSourceCommand}"
+                            CommandParameter="{Binding Text,ElementName=sourceSearch}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+            <ListBox
+                ItemsSource="{Binding Source,ElementName=root}"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                Height="100"
+                Width="Auto"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                x:Name="source">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}">
+                            <TextBlock.InputBindings>
+                                <MouseBinding
+                                    MouseAction="LeftDoubleClick"
+                                    Command="{x:Static local:MultipleObjectSelector.AddItemCommand}"
+                                    CommandParameter="{Binding SelectedValue,ElementName=source}"/>
+                            </TextBlock.InputBindings>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0">
+            <Button
+                Width="20"
+                Command="{x:Static local:MultipleObjectSelector.AddItemCommand}"
+                CommandParameter="{Binding SelectedValue,ElementName=source}"
+            >&#8595;</Button>
+            <Button
+                Width="20"
+                Command="{x:Static local:MultipleObjectSelector.RemoveItemCommand}"
+                CommandParameter="{Binding SelectedValue,ElementName=target}"
+            >&#8593;</Button>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="0">
+            <TextBox
+                x:Name="targetSearch"
+                HorizontalAlignment="Stretch">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyUp">
+                        <i:InvokeCommandAction 
+                            Command="{x:Static local:MultipleObjectSelector.SearchTargetCommand}"
+                            CommandParameter="{Binding Text,ElementName=targetSearch}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+            <ListBox
+                ItemsSource="{Binding Target,ElementName=root}"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                Height="100"
+                Width="Auto"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                x:Name="target">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}">
+                            <TextBlock.InputBindings>
+                                <MouseBinding
+                                    MouseAction="LeftDoubleClick"
+                                    Command="{x:Static local:MultipleObjectSelector.RemoveItemCommand}"
+                                    CommandParameter="{Binding SelectedValue,ElementName=target}"/>
+                            </TextBlock.InputBindings>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -17,6 +17,12 @@ namespace Client.Application.ViewModels
 {
     public class CreatureMapViewModel : ObservableObject
     {
+        public void MapUpdated(float scale, float viewportWidth, float viewportHeight)
+        {
+            Scale = scale;
+            VieportSize = new Vector3(viewportWidth, viewportHeight, 0);
+        }
+
         public uint Id => creature.Id;
         public string Name => creature.Name;
         public Vector3 Position => new Vector3(
@@ -64,6 +70,9 @@ namespace Client.Application.ViewModels
         public bool IsAggressive => creature.AggroRadius > 0 && !creature.VitalStats.IsDead && creature.IsHostile;
         public float AggroRadius => creature.AggroRadius / scale;
         public bool IsAttacker => hero.AttackerIds.Contains(creature.Id);
+        public bool IsDead => creature.VitalStats.IsDead;
+        public bool IsHostile => creature.IsHostile;
+        public bool IsSweepable => creature is NPC && ((NPC) creature).SpoilState == SpoilStateEnum.Sweepable;
 
         public ICommand MouseLeftClickCommand { get; }
         public ICommand MouseLeftDoubleClickCommand { get; }
@@ -109,6 +118,7 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "IsDead")
             {
                 OnPropertyChanged("IsAggressive");
+                OnPropertyChanged("IsDead");
             }
         }
 
@@ -149,6 +159,10 @@ namespace Client.Application.ViewModels
             if (e.PropertyName == "Name")
             {
                 OnPropertyChanged("Name");
+            }
+            if (e.PropertyName == "SpoilState")
+            {
+                OnPropertyChanged("IsSweepable");
             }
         }
 

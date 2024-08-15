@@ -1,28 +1,25 @@
-﻿using Client.Domain.Common;
+﻿using Client.Application.Commands;
+using Client.Domain.Common;
+using Client.Domain.DTO;
 using Client.Domain.Entities;
 using Client.Domain.Service;
 using Client.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
 using System.Collections.Specialized;
-using Client.Application.Commands;
-using System.Reflection.Metadata;
+using System.Threading.Tasks;
 using System.Windows;
-using Client.Infrastructure.Service;
 using System.Windows.Data;
-using Client.Domain.DTO;
-using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace Client.Application.ViewModels
 {
     public class MapViewModel : ObservableObject
     {
+        public delegate void MapUpdatedEventHandler(float scale, float viewportWidth, float viewportHeight);
+        private event MapUpdatedEventHandler? MapUpdated;
+
         public Hero? Hero
         {
             get => hero;
@@ -131,22 +128,10 @@ namespace Client.Application.ViewModels
                     this.blocks[block.Id].Visible = true;
                 }
 
-                foreach (var creature in Creatures)
-                {
-                    creature.Scale = scale;
-                    creature.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
-                }
-
-                foreach (var drop in Drops)
-                {
-                    drop.Scale = scale;
-                    drop.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
-                }
                 
-                foreach (var node in Path)
+                if (MapUpdated != null)
                 {
-                    node.Scale = scale;
-                    node.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
+                    MapUpdated(scale, (float)ViewportWidth, (float)ViewportHeight);
                 }
             }
         }
@@ -236,7 +221,7 @@ namespace Client.Application.ViewModels
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    Path.Clear();
+                    Path.RemoveAll();
                 }
             }
         }
@@ -248,8 +233,16 @@ namespace Client.Application.ViewModels
                 foreach (var item in e.NewItems)
                 {
                     var node = (PathNodeViewModel)item;
-                    node.Scale = scale;
-                    node.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
+                    MapUpdated += node.MapUpdated;
+                    node.MapUpdated(scale, (float)ViewportWidth, (float)ViewportHeight);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    var node = (PathNodeViewModel)item;
+                    MapUpdated -= node.MapUpdated;
                 }
             }
         }
@@ -265,9 +258,17 @@ namespace Client.Application.ViewModels
             {
                 foreach (var item in e.NewItems)
                 {
-                    var creature = (DropMapViewModel)item;
-                    creature.Scale = scale;
-                    creature.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
+                    var drop = (DropMapViewModel)item;
+                    MapUpdated += drop.MapUpdated;
+                    drop.MapUpdated(scale, (float)ViewportWidth, (float)ViewportHeight);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    var drop = (DropMapViewModel)item;
+                    MapUpdated -= drop.MapUpdated;
                 }
             }
         }
@@ -279,8 +280,16 @@ namespace Client.Application.ViewModels
                 foreach (var item in e.NewItems)
                 {
                     var creature = (CreatureMapViewModel)item;
-                    creature.Scale = scale;
-                    creature.VieportSize = new Vector3((float)ViewportWidth, (float)ViewportHeight, 0);
+                    MapUpdated += creature.MapUpdated;
+                    creature.MapUpdated(scale, (float)ViewportWidth, (float)ViewportHeight);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    var creature = (CreatureMapViewModel)item;
+                    MapUpdated -= creature.MapUpdated;
                 }
             }
         }
@@ -289,6 +298,31 @@ namespace Client.Application.ViewModels
         public ObservableCollection<CreatureMapViewModel> Creatures { get; } = new ObservableCollection<CreatureMapViewModel>();
         public ObservableCollection<DropMapViewModel> Drops { get; } = new ObservableCollection<DropMapViewModel>();
         public ObservableCollection<PathNodeViewModel> Path { get; } = new ObservableCollection<PathNodeViewModel>();
+        public AICombatZoneMapViewModel? CombatZone {
+            get
+            {
+                return combatZone;
+            }
+            set
+            {
+                if (value != combatZone)
+                {
+                    if (value == null)
+                    {
+                        if (combatZone != null)
+                        {
+                            MapUpdated -= combatZone.MapUpdated;
+                        }
+                    }
+                    else
+                    {
+                        MapUpdated += value.MapUpdated;
+                    }
+                    combatZone = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public readonly static float MIN_SCALE = 1;
         public readonly static float MAX_SCALE = 128;
@@ -301,5 +335,6 @@ namespace Client.Application.ViewModels
         private double viewportHeight = 0;
         private Vector3 mousePosition = new Vector3(0, 0, 0);
         private object pathCollectionLock = new object();
+        private AICombatZoneMapViewModel? combatZone = null;
     }
 }

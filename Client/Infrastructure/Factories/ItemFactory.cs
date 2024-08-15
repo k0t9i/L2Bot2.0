@@ -26,6 +26,8 @@ namespace Client.Infrastructure.Factories
             {
                 case ItemTypeEnum.Etc:
                     return JsonConvert.DeserializeObject<EtcItem>(data, settings);
+                case ItemTypeEnum.Weapon:
+                    return JsonConvert.DeserializeObject<WeaponItem>(data, settings);
                 default:
                     return JsonConvert.DeserializeObject<EtcItem>(data, settings); //fixme temporary
             }

@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using Client.Domain.Transports;
+using Client.Domain.Common;
+using Client.Domain.Helpers;
 
 namespace Client.Domain.Service
 {
@@ -104,7 +106,7 @@ namespace Client.Domain.Service
                 Debug.WriteLine("RequestUseSkill: skill " + id + " not found");
                 return;
             }
-            
+
             if (!skill.IsActive)
             {
                 Debug.WriteLine("RequestUseSkill: skill " + id + " is passive");
@@ -136,7 +138,7 @@ namespace Client.Domain.Service
 
             SendMessage(OutgoingMessageTypeEnum.UseItem, id);
         }
-        
+
         public void RequestToggleAutouseSoulshot(uint id)
         {
             if (hero == null)
@@ -184,6 +186,7 @@ namespace Client.Domain.Service
 
             SendMessage(OutgoingMessageTypeEnum.Stand);
         }
+
         public void RequestRestartPoint(RestartPointTypeEnum type)
         {
             if (hero == null)
@@ -194,13 +197,126 @@ namespace Client.Domain.Service
             SendMessage(OutgoingMessageTypeEnum.RestartPoint, type);
         }
 
+
+        public List<NPC> GetAliveMobsSortedByDistanceToHero(uint deltaZ)
+        {
+            if (hero == null)
+            {
+                return new List<NPC> { };
+            }
+
+            return creatures
+                .Where(a =>
+                {
+                    return a.Value is NPC
+                        && a.Value.IsHostile
+                        && !a.Value.VitalStats.IsDead
+                        && MathF.Abs(a.Value.DeltaZ(hero)) <= deltaZ;
+                })
+                .OrderBy(a => a.Value.Distance(hero))
+                .Select(a => (NPC)a.Value)
+                .ToList();
+        }
+
+        public List<NPC> GetDeadMobsSortedByDistanceToHero(uint deltaZ)
+        {
+            if (hero == null)
+            {
+                return new List<NPC> { };
+            }
+
+            return creatures
+                .Where(a =>
+                {
+                    return a.Value is NPC
+                        && a.Value.IsHostile
+                        && a.Value.VitalStats.IsDead
+                        && MathF.Abs(a.Value.DeltaZ(hero)) <= deltaZ;
+                })
+                .OrderBy(a => a.Value.Distance(hero))
+                .Select(a => (NPC)a.Value)
+                .ToList();
+        }
+
+        public List<Drop> GetDropsSortedByDistanceToHero(uint deltaZ)
+        {
+            if (hero == null)
+            {
+                return new List<Drop> { };
+            }
+
+            return drops
+                .Where(x => MathF.Abs(x.Value.Transform.Position.Z - hero.Transform.Position.Z) <= deltaZ)
+                .OrderBy(a => a.Value.Transform.Position.HorizontalDistance(hero.Transform.Position))
+                .Select(a => a.Value)
+                .ToList();
+        }
+
+        public Skill? GetSkillById(uint id)
+        {
+            return skills.GetValueOrDefault(id);
+        }
+
+        public ItemInterface? GetItemById(uint id)
+        {
+            return items.Select(x => x.Value)
+                .Where(x => x.ItemId == id)
+                .FirstOrDefault();
+        }
+
+        public List<EtcItem> GetShotItems()
+        {
+            var shotIds = itemInfoHelper.GetAllItems()
+                .Where(x => x.IsShot)
+                .Select(x => x.Id)
+                .ToDictionary(x => x, x => x);
+
+            return items.Select(x => x.Value)
+                .Where(x => x is EtcItem && shotIds.ContainsKey(x.ItemId))
+                .Cast<EtcItem>()
+                .ToList();
+        }
+
+        public List<NPC> GetGuards()
+        {
+            if (hero == null)
+            {
+                return new List<NPC> { };
+            }
+
+            var npcIds = npcInfoHelper.GetAllNpc()
+                .Where(x => x.IsGuard)
+                .Select(x => x.Id)
+                .ToDictionary(x => x, x => x);
+
+            return creatures
+                .Where(x =>
+                {
+                    return x.Value is NPC && npcIds.ContainsKey(((NPC)x.Value).NpcId);
+                })
+                .Select(x => (NPC) x.Value)
+                .OrderBy(x => x.Distance(hero))
+                .ToList();
+        }
+
+        public WeaponItem? GetEquippedWeapon()
+        {
+            return items.Select(x => x.Value)
+                .Where(x =>
+                {
+                    return x is WeaponItem
+                        && ((WeaponItem)x).IsEquipped;
+                })
+                .Cast<WeaponItem>()
+                .FirstOrDefault();
+        }
+
         private void SendMessage<T>(OutgoingMessageTypeEnum type, T? content = default)
         {
             var message = outgoingMessageBuilder.Build(
                 new OutgoingMessage<T>(type, content)
             );
             transport.SendAsync(message);
-            Debug.WriteLine(message);
         }
 
         private void SendMessage(OutgoingMessageTypeEnum type)
@@ -272,10 +388,12 @@ namespace Client.Domain.Service
         }
         #endregion
 
-        public WorldHandler(OutgoingMessageBuilderInterface outgoingMessageBuilder, TransportInterface transport)
+        public WorldHandler(OutgoingMessageBuilderInterface outgoingMessageBuilder, TransportInterface transport, ItemInfoHelperInterface itemInfoHelper, NpcInfoHelperInterface npcInfoHelper)
         {
             this.outgoingMessageBuilder = outgoingMessageBuilder;
             this.transport = transport;
+            this.itemInfoHelper = itemInfoHelper;
+            this.npcInfoHelper = npcInfoHelper;
         }
 
         private Hero? hero;
@@ -285,5 +403,7 @@ namespace Client.Domain.Service
         private ConcurrentDictionary<uint, ItemInterface> items = new ConcurrentDictionary<uint, ItemInterface>();
         private readonly OutgoingMessageBuilderInterface outgoingMessageBuilder;
         private readonly TransportInterface transport;
+        private ItemInfoHelperInterface itemInfoHelper;
+        private readonly NpcInfoHelperInterface npcInfoHelper;
     }
 }

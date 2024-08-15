@@ -28,7 +28,19 @@ namespace Client.Infrastructure.Service
         private CancellationTokenSource? cancellationTokenSource;
 
         public ObservableCollection<PathSegment> Path { get; private set; } = new ObservableCollection<PathSegment>();
-        public bool IsBusy { get; private set; } = false;
+        public bool IsLocked { get; private set; } = false;
+
+        public void Unlock()
+        {
+            IsLocked = false;
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+                Path.Clear();
+            }
+        }
 
         public async Task MoveUntilReachedAsync(Vector3 location)
         {
@@ -41,7 +53,7 @@ namespace Client.Infrastructure.Service
 
         public async Task<bool> MoveAsync(Vector3 location)
         {
-            IsBusy = true;
+            IsLocked = true;
 
             if (cancellationTokenSource != null)
             {
@@ -55,11 +67,9 @@ namespace Client.Infrastructure.Service
             {
                 return await Task.Run(async () =>
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    Debug.WriteLine("Find path start");
+                    Debug.WriteLine("Find path started");
                     FindPath(location);
-                    Debug.WriteLine("Find path finish");
+                    Debug.WriteLine("Find path finished");
 
 
                     foreach (var node in Path.ToList())
@@ -69,19 +79,21 @@ namespace Client.Infrastructure.Service
                         var reached = await WaitForNodeReaching(cancellationToken, node);
                         if (!reached)
                         {
-                            IsBusy = false;
+                            IsLocked = false;
                             return false;
                         }
+
                         Path.Remove(node);
                     }
 
-                    IsBusy = false;
+                    IsLocked = false;
                     return true;
                 }, cancellationToken);
             }
             catch (OperationCanceledException)
             {
-                IsBusy = false;
+                Debug.WriteLine("Path cancelled");
+                IsLocked = false;
                 return true;
             }
         }
@@ -118,13 +130,8 @@ namespace Client.Infrastructure.Service
             var hero = worldHandler.Hero;
 
             var start = DateTime.Now;
-            while (hero != null && !hero.Transform.Position.ApproximatelyEquals(node.To, nodeDistanceTolerance))
+            while (!token.IsCancellationRequested && hero != null && !hero.Transform.Position.ApproximatelyEquals(node.To, nodeDistanceTolerance))
             {
-                if (token.IsCancellationRequested)
-                {
-                    token.ThrowIfCancellationRequested();
-                }
-
                 if (hero.Transform.Velocity.Equals(Vector3.Zero))
                 {
                     var elapsedSeconds = (DateTime.Now - start).TotalSeconds;
@@ -138,7 +145,9 @@ namespace Client.Infrastructure.Service
                         return false;
                     }
                 }
-                await Task.Delay(25);
+
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(25, token);
             }
 
             return true;

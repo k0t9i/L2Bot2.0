@@ -45,6 +45,14 @@ namespace Client.Domain.ValueObjects
             }
         }
 
+        public bool IsMoving
+        {
+            get
+            {
+                return !velocity.ApproximatelyEquals(Vector3.Zero, 0.0001f);
+            }
+        }
+
         public Transform(Vector3 position, Vector3 rotation, Vector3 velocity, Vector3 acceleration)
         {
             this.position = position;

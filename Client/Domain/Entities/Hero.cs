@@ -70,6 +70,14 @@ namespace Client.Domain.Entities
         [JsonProperty("AttackerIds", ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<uint> AttackerIds { get => attackerIds; set { if (!value.All(attackerIds.Contains) || !attackerIds.All(value.Contains)) { attackerIds = value; OnPropertyChanged("AttackerIds"); } } }
 
+        public bool HasValidTarget
+        {
+            get
+            {
+                return Target != null && Target.IsHostile && !Target.VitalStats.IsDead;
+            }
+        }
+
         public Hero(uint id, Transform transform, FullName fullName, VitalStats vitalStats, Phenotype phenotype, ExperienceInfo experienceInfo, PermanentStats permanentStats, VariableStats variableStats, Reputation reputation, InventoryInfo inventoryInfo, uint targetId, bool isStanding)
         {
             Id = id;

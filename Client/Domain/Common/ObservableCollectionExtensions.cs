@@ -10,11 +10,11 @@ namespace Client.Domain.Common
     public static class ObservableCollectionExtensions
     {
         public static void RemoveAll<T>(this ObservableCollection<T> collection,
-                                                           Func<T, bool> condition)
+                                                           Func<T, bool>? condition = null)
         {
             for (int i = collection.Count - 1; i >= 0; i--)
             {
-                if (condition(collection[i]))
+                if (condition == null || condition(collection[i]))
                 {
                     collection.RemoveAt(i);
                 }

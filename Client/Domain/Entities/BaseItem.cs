@@ -15,8 +15,9 @@ namespace Client.Domain.Entities
         public string Name { get; set; }
         public string IconName { get; set; }
         public string Description { get; set; }
-        public int Mana { get { return mana; } set { mana = value; }}
+        public int Mana { get; set; }
         public uint Weight { get; set; }
+        public virtual string FullDescription => Description;
 
         public BaseItem(uint id, uint itemId, ItemTypeEnum type, string name, string iconName, string description, int mana, uint weight)
         {
@@ -26,10 +27,8 @@ namespace Client.Domain.Entities
             Name = name;
             IconName = iconName;
             Description = description;
-            this.mana = mana;
+            Mana = mana;
             Weight = weight;
         }
-
-        private int mana;
     }
 }

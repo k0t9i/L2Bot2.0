@@ -16,6 +16,12 @@ namespace Client.Application.ViewModels
 {
     public class DropMapViewModel : ObservableObject
     {
+        public void MapUpdated(float scale, float viewportWidth, float viewportHeight)
+        {
+            Scale = scale;
+            VieportSize = new Vector3(viewportWidth, viewportHeight, 0);
+        }
+
         public uint Id => drop.Id;
         public string Name => drop.Name + " (" + drop.Amount + ")";
         public Vector3 Position => new Vector3(

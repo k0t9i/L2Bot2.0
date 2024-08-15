@@ -57,6 +57,31 @@ namespace Client.Domain.ValueObjects
             return equals;
         }
 
+        public float GetAngleBetweenDegree(Vector3 other)
+        {
+            return GetAngleBetween(other) / MathF.PI * 180;
+        }
+
+        public float GetAngleBetween(Vector3 other)
+        {
+            return MathF.Acos(DotProduct(other) / (Distance(Zero) * other.Distance(Zero)));
+        }
+
+        public float DotProduct(Vector3 other)
+        {
+            return x * other.x + y * other.y + z * other.z;
+        }
+
+        public float Distance(Vector3 other)
+        {
+            return MathF.Sqrt(MathF.Pow(x - other.x, 2) + MathF.Pow(y - other.y, 2) + MathF.Pow(z - other.z, 2));
+        }
+
+        public static Vector3 operator -(Vector3 left, Vector3 right)
+        {
+            return new Vector3(left.x - right.x, left.y - right.y, left.z - right.z);
+        }
+
         public static readonly Vector3 Zero = new Vector3(0, 0, 0);
     }
 }

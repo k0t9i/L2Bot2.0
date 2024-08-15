@@ -16,9 +16,6 @@ namespace Client.Domain.Entities
         string Description { get; set; }
         int Mana { get; set; }
         uint Weight { get; set; }
-        uint Amount { get; set; }
-        bool IsQuest { get; set; }
-        bool IsAutoused { get; set; }
         string FullDescription { get; }
     }
 }

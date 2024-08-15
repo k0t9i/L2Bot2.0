@@ -13,6 +13,12 @@ namespace Client.Application.ViewModels
 {
     public class PathNodeViewModel : ObservableObject
     {
+        public void MapUpdated(float scale, float viewportWidth, float viewportHeight)
+        {
+            Scale = scale;
+            VieportSize = new Vector3(viewportWidth, viewportHeight, 0);
+        }
+
         public Vector3 From => new Vector3(
            (from.X - hero.Transform.Position.X) / scale + (VieportSize.X / 2),
            (from.Y - hero.Transform.Position.Y) / scale + (VieportSize.Y / 2),

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Client.Application.ViewModels;
+using Client.Domain.AI;
 using Client.Domain.Events;
 using Client.Domain.Factories;
 using Client.Domain.Parsers;
@@ -26,6 +29,7 @@ namespace Client
         private readonly EventBusInterface eventBus;
         private readonly IServiceProvider serviceProvider;
         private readonly string dllName;
+        private readonly AIInterface ai;
 
         public Bot(
             IServiceProvider serviceProvider,
@@ -36,11 +40,12 @@ namespace Client
             messageParser = serviceProvider.GetRequiredService<MessageParserInterface>();
             entityHandlerFactory = serviceProvider.GetRequiredService<EntityHandlerFactoryInterface>();
             eventBus = serviceProvider.GetRequiredService<EventBusInterface>();
+            ai = serviceProvider.GetRequiredService<AIInterface>();
             this.serviceProvider = serviceProvider;
             this.dllName = dllName;
         }
 
-        public async void StartAsync()
+        public async Task StartAsync()
         {
             int hDll = LoadLibrary(dllName);
 
@@ -56,9 +61,16 @@ namespace Client
 
             await transport.ConnectAsync();
             await transport.SendAsync("invalidate");
+            var aiTask = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await ai.Update();
+                }
+            });
             while (true)
             {
-                await transport.StartReceiveAsync();
+                await transport.ReceiveAsync();
                 await transport.ConnectAsync();
             }
         }
@@ -90,9 +102,13 @@ namespace Client
             eventBus.Subscrbe((EventHandlerInterface<ItemCreatedEvent>)worldHandler);
             eventBus.Subscrbe((EventHandlerInterface<ItemDeletedEvent>)worldHandler);
 
-            eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<HeroHandler>());
-            eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<NpcHandler>());
-            eventBus.Subscrbe((EventHandlerInterface<TargetChangedEvent>)serviceProvider.GetRequiredService<PlayerHandler>());
+            eventBus.Subscrbe(serviceProvider.GetRequiredService<HeroHandler>());
+            eventBus.Subscrbe(serviceProvider.GetRequiredService<NpcHandler>());
+            eventBus.Subscrbe(serviceProvider.GetRequiredService<PlayerHandler>());
+
+            var configViewModel = serviceProvider.GetRequiredService<AIConfigViewModel>();
+            eventBus.Subscrbe((EventHandlerInterface<HeroCreatedEvent>)configViewModel);
+            eventBus.Subscrbe((EventHandlerInterface<HeroDeletedEvent>)configViewModel);
         }
 
         private void OnMessage(string args)

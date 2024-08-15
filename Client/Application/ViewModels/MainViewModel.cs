@@ -1,4 +1,6 @@
-﻿using Client.Application.Components;
+﻿using Client.Application.Commands;
+using Client.Application.Components;
+using Client.Domain.AI;
 using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.Events;
@@ -14,6 +16,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Client.Application.ViewModels
@@ -32,11 +35,13 @@ namespace Client.Application.ViewModels
         EventHandlerInterface<ItemCreatedEvent>,
         EventHandlerInterface<ItemDeletedEvent>
     {
+
         public void Handle(HeroCreatedEvent @event)
         {
             Hero = new HeroSummaryInfoViewModel(@event.Hero);
             hero = @event.Hero;
             Map.Hero = hero;
+            Map.CombatZone = new AICombatZoneMapViewModel(aiConfig.Combat.Zone, hero);
             AddCreature(hero);
             OnPropertyChanged("Hero");
             OnPropertyChanged("Map");
@@ -51,6 +56,7 @@ namespace Client.Application.ViewModels
             Hero = null;
             hero = null;
             Map.Hero = null;
+            Map.CombatZone = null;
             OnPropertyChanged("Hero");
             OnPropertyChanged("Map");
         }
@@ -115,13 +121,13 @@ namespace Client.Application.ViewModels
         {
             if (hero != null)
             {
-                if (!@event.Item.IsQuest)
+                if (@event.Item is EtcItem && ((EtcItem) @event.Item).IsQuest)
                 {
-                    Items.Add(new ItemListViewModel(worldHandler, @event.Item));
+                    QuestItems.Add(new ItemListViewModel(worldHandler, @event.Item));
                 }
                 else
                 {
-                    QuestItems.Add(new ItemListViewModel(worldHandler, @event.Item));
+                    Items.Add(new ItemListViewModel(worldHandler, @event.Item));
                 }
             }
         }
@@ -130,6 +136,14 @@ namespace Client.Application.ViewModels
         {
             Items.RemoveAll(x => x.Id == @event.Id);
             QuestItems.RemoveAll(x => x.Id == @event.Id);
+        }
+
+        public Dictionary<TypeEnum, string> AITypes
+        {
+            get
+            {
+                return Enum.GetValues(typeof(TypeEnum)).Cast<TypeEnum>().ToDictionary(x => x, x => x.ToString());
+            }
         }
 
         private void AddCreature(CreatureInterface creature)
@@ -145,12 +159,35 @@ namespace Client.Application.ViewModels
             Map.Creatures.RemoveAll(x => x.Id == id);
         }
 
-        public MainViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover)
+        private void OnToggleAI(object? sender)
+        {
+            ai.Toggle();
+            OnPropertyChanged("AIStatus");
+        }
+
+        private void OnChangeAIType(object? param)
+        {
+            if (!(param is TypeEnum))
+            {
+                return;
+            }
+            ai.Type = (TypeEnum) param;
+            OnPropertyChanged("AIType");
+        }
+
+        public MainViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover, AIInterface ai, Config aiConfig)
         {
             this.worldHandler = worldHandler;
             this.pathMover = pathMover;
+            this.ai = ai;
+            this.aiConfig = aiConfig;
             Map = new MapViewModel(pathMover);
+            ToggleAICommand = new RelayCommand(OnToggleAI);
+            ChangeAITypeCommand = new RelayCommand(OnChangeAIType);
         }
+
+        public ICommand ToggleAICommand { get; set; }
+        public ICommand ChangeAITypeCommand { get; set; }
 
         public ObservableCollection<ChatMessageViewModel> ChatMessages { get; } = new ObservableCollection<ChatMessageViewModel>();
         public ObservableCollection<CreatureListViewModel> Creatures { get; } = new ObservableCollection<CreatureListViewModel>();
@@ -161,8 +198,13 @@ namespace Client.Application.ViewModels
         public ObservableCollection<ItemListViewModel> QuestItems { get; } = new ObservableCollection<ItemListViewModel>();
         public HeroSummaryInfoViewModel? Hero { get; private set; }
         public MapViewModel Map { get; private set; }
+        public bool AIStatus => ai.IsEnabled;
+        public TypeEnum AIType => ai.Type;
+
         public Hero? hero;
         private readonly WorldHandler worldHandler;
         private readonly AsyncPathMoverInterface pathMover;
+        private readonly AIInterface ai;
+        private readonly Config aiConfig;
     }
 }

@@ -44,9 +44,9 @@ namespace Client.Infrastructure.Transports
                 Debug.WriteLine("Connected to main pipe\n");
             }
         }
-        public async Task StartReceiveAsync()
+        public async Task ReceiveAsync()
         {
-            while (IsConnected())
+            if (IsConnected())
             {
                 byte[] buffer = new byte[16384 * 2];
                 int readBytes = await mainPipe!.ReadAsync(buffer, 0, buffer.Length);

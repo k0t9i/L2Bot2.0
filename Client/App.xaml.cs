@@ -22,6 +22,9 @@ using System;
 using Client.Infrastructure.Service;
 using System.Collections.Generic;
 using System.Linq;
+using Client.Domain.AI;
+using Client.Infrastructure.AI.IO;
+using Client.Domain.AI.IO;
 
 namespace Client
 {
@@ -48,10 +51,10 @@ namespace Client
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
             startupForm.Show();
 
-            var application = AppHost.Services.GetRequiredService<Bot>();
-            application.StartAsync();
-
             base.OnStartup(e);
+
+            var application = AppHost.Services.GetRequiredService<Bot>();
+            await application.StartAsync();
         }
 
         protected override async void OnExit(ExitEventArgs e)
@@ -67,6 +70,8 @@ namespace Client
                 .AddJsonFile("config.json", optional: false, reloadOnChange: true)
                 .AddJsonFile("Assets/data/experience.json", optional: false, reloadOnChange: true)
                 .AddJsonFile("Assets/data/npcInfo.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("Assets/data/itemInfo.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("Assets/data/skillInfo.json", optional: false, reloadOnChange: true)
                 .Build();
 
             services
@@ -90,6 +95,8 @@ namespace Client
                 )
                 .AddSingleton(typeof(ExperienceHelperInterface), typeof(ConfigurationExperienceHelper))
                 .AddSingleton(typeof(NpcInfoHelperInterface), typeof(ConfigurationNpcInfoHelper))
+                .AddSingleton(typeof(ItemInfoHelperInterface), typeof(ConfigurationItemInfoHelper))
+                .AddSingleton(typeof(SkillInfoHelperInterface), typeof(ConfigurationSkillInfoHelper))
                 .AddSingleton(typeof(EventBusInterface), typeof(InMemoryEventBus))
 
                 .AddTransient(typeof(EntityFactoryInterface<Entity>), typeof(EntityFactory<Entity>))
@@ -129,7 +136,23 @@ namespace Client
                     )
                 )
 
-                .AddSingleton<MainViewModel>();
+                .AddSingleton<Config>()
+                .AddSingleton<TransitionBuilderLocator>()
+                .AddSingleton(
+                    typeof(AIInterface), 
+                    x => new AI(
+                        x.GetRequiredService<WorldHandler>(),
+                        x.GetRequiredService<Config>(),
+                        x.GetRequiredService<AsyncPathMoverInterface>(),
+                        x.GetRequiredService<TransitionBuilderLocator>()
+                    )
+                )
+
+                .AddTransient(typeof(ConfigSerializerInterface), typeof(JsonConfigSerializer))
+                .AddTransient(typeof(ConfigDeserializerInterface), typeof(JsonConfigDeserializer))
+
+                .AddSingleton<MainViewModel>()
+                .AddSingleton<AIConfigViewModel>();
         }
     }
 }

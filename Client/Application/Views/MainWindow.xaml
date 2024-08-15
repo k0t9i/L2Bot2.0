@@ -29,18 +29,59 @@
             <ColumnDefinition Width="444"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="22"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="240"></RowDefinition>
         </Grid.RowDefinitions>
-        <ListBox x:Name="listBox" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ChatMessages, Mode=OneWay}">
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Header="AI options">
+                <MenuItem Command="{Binding ToggleAICommand}">
+                    <MenuItem.Style>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="Start"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AIStatus, Mode=OneWay}" Value="True">
+                                    <Setter Property="Header" Value="Stop"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.Style>
+                </MenuItem>
+                <MenuItem ItemsSource="{Binding AITypes}" Header="AI type">
+                    <MenuItem.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="MenuItem.Header" Value="{Binding Value}"/>
+                            <Setter Property="MenuItem.Command" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ChangeAITypeCommand}"/>
+                            <Setter Property="MenuItem.CommandParameter" Value="{Binding Key}"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding>
+                                            <MultiBinding.Converter>
+                                                <services:EqualityConverter />
+                                            </MultiBinding.Converter>
+                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" Path="DataContext.AIType" />
+                                            <Binding Path="Key" />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter Property="MenuItem.IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
+                <MenuItem Header="Config" Click="AIConfig_Click"/>
+            </MenuItem>
+        </Menu>
+        <ListBox x:Name="listBox" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ChatMessages, Mode=OneWay}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Path=Text, Mode=OneWay}" Foreground="{Binding Path=Color, Mode=OneWay}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <components:Map DataContext="{Binding Map}" />
-        <TabControl Grid.Row="0" Grid.Column="1">
+        <components:Map Grid.Column="0" Grid.Row="1" DataContext="{Binding Map}" />
+        <TabControl Grid.Row="1" Grid.Column="1">
             <TabItem>
                 <TabItem.Header>Environment</TabItem.Header>
                 <TabItem.Content>
@@ -156,7 +197,7 @@
                 </TabItem.Content>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
+        <Grid Grid.Row="2" Grid.Column="1" DataContext="{Binding Hero, Mode=OneWay}" Margin="4" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -224,13 +265,6 @@
                     </TextBlock>
                 </StackPanel>
             </DockPanel>
-            <ListBox  Grid.Row="3" Margin="4" ItemsSource="{Binding Attackers, Mode=OneWay}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Mode=OneWay}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
             <StackPanel Grid.Column="1" DataContext="{Binding Target, Mode=OneWay}" Visibility="{Binding Path=.,Converter={StaticResource NullToVisibilityConverter}}" Margin="4">
                 <TextBlock FontSize="16" Text="{Binding Path=Name, Mode=OneWay}"></TextBlock>
                 <TextBlock Text="{Binding Path=BriefInfo, Mode=OneWay}"></TextBlock>

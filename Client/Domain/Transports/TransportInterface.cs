@@ -13,7 +13,7 @@ namespace Client.Domain.Transports
         bool IsConnected();
         Task ConnectAsync();
         Task SendAsync(string data);
-        Task StartReceiveAsync();
+        Task ReceiveAsync();
 
         public delegate void DelegateMessage(string args);
     }

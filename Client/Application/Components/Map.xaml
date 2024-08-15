@@ -41,6 +41,18 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <Grid DataContext="{Binding CombatZone}" ClipToBounds="True">
+            <Path StrokeThickness="2" Fill="#1100ff00" Stroke="#3300ff00" >
+                <Path.Data>
+                    <EllipseGeometry 
+                        RadiusX="{Binding Radius,Mode=OneWay}" 
+                        RadiusY="{Binding Radius,Mode=OneWay}"/>
+                </Path.Data>
+                <Path.RenderTransform>
+                    <TranslateTransform X="{Binding Center.X,Mode=OneWay}" Y="{Binding Center.Y,Mode=OneWay}"/>
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
         <ItemsControl ItemsSource="{Binding Path=Creatures}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -141,8 +153,16 @@
                     </Grid>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Type,Mode=OneWay}" Value="NPC">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="DarkGreen" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="DarkGreen" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsHostile,Mode=OneWay}" Value="True">
                             <Setter TargetName="CreatureBody" Property="Stroke" Value="LimeGreen" />
                             <Setter TargetName="CreatureDirection" Property="Stroke" Value="LimeGreen" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsDead,Mode=OneWay}" Value="True">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="Gray" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="Gray" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type,Mode=OneWay}" Value="Player">
                             <Setter TargetName="CreatureBody" Property="Stroke" Value="Blue" />
@@ -155,6 +175,10 @@
                         <DataTrigger Binding="{Binding IsAttacker,Mode=OneWay}" Value="True">
                             <Setter TargetName="CreatureBody" Property="Stroke" Value="Red" />
                             <Setter TargetName="CreatureDirection" Property="Stroke" Value="Red" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSweepable,Mode=OneWay}" Value="True">
+                            <Setter TargetName="CreatureBody" Property="Stroke" Value="Magenta" />
+                            <Setter TargetName="CreatureDirection" Property="Stroke" Value="Magenta" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsTarget,Mode=OneWay}" Value="True">
                             <Setter TargetName="CreatureName" Property="Visibility" Value="Visible" />

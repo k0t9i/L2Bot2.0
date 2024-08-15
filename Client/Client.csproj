@@ -27,8 +27,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Assets\data\itemInfo.json" />
+	  <None Remove="Assets\data\skillInfo.json" />
+	  <None Remove="Assets\icons\_fallback - Copy.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
 
