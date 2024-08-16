@@ -14,7 +14,7 @@ namespace Client.Domain.Service
         private static readonly uint DELTA_X = 20;
         private static readonly uint DELTA_Y = 18;
 
-        public List<MapBlock> SelectImages(float viewportWidth, float viewportHeight, Vector3 heroPosition, float scale)
+        public List<MapBlock> SelectImages(float viewportWidth, float viewportHeight, Vector3 heroPosition, float scale, int level)
         {
             var viewportCenter = new Tuple<float, float>(viewportWidth / 2, viewportHeight / 2);
 
@@ -46,7 +46,7 @@ namespace Client.Domain.Service
                         (blockTopLeft.Item2 - topLeft.Item2) / scale
                     );
 
-                    result.Add(new MapBlock(x, y, delta.Item1, delta.Item2, BLOCK_SIZE / scale));
+                    result.Add(new MapBlock(x, y, delta.Item1, delta.Item2, BLOCK_SIZE / scale, level));
                 }
             }
 

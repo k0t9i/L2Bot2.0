@@ -11,7 +11,7 @@ namespace Client.Application.ViewModels
 {
     public class MapBlockViewModel : ObservableObject
     {
-        public string ImageSource => "/Assets/maps/" + mapBlock.BlockX + "_" + mapBlock.BlockY + ".jpg";
+        public string ImageSource => "/Assets/maps/" + mapBlock.BlockX + "_" + mapBlock.BlockY + (mapBlock.Level > 0 ? "_" + mapBlock.Level : "") + ".jpg";
         public float DeltaX => mapBlock.DeltaX;
         public float DeltaY => mapBlock.DeltaY;
         public float Size => mapBlock.Size;

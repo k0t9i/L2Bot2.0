@@ -13,6 +13,10 @@
         MouseLeave="ContentControl_MouseLeave"
         MouseMove="ContentControl_MouseMove"
         >
+    <ContentControl.Resources>
+        <BitmapImage x:Key="FallbackImage" UriSource="../../Assets/maps/fallback.jpg" />
+        <Int32Collection x:Key="mapLevels">0,1,2,3,4,5</Int32Collection>
+    </ContentControl.Resources>
     <Grid Background="Transparent">
         <Grid.InputBindings>
             <MouseBinding Gesture="LeftClick" Command="{Binding MouseLeftClickCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Grid}}" />
@@ -29,7 +33,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Image
-                        Source="{Binding ImageSource,Mode=OneWay}"
+                        Source="{Binding ImageSource,Mode=OneWay,FallbackValue={StaticResource FallbackImage},TargetNullValue={StaticResource FallbackImage}}"
                         Width="{Binding Size,Mode=OneWay}"
                         Height="{Binding Size,Mode=OneWay}"
                         Visibility="{Binding Visible,Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -286,10 +290,17 @@
         <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#66ffffff">
             <Grid Margin="10 5">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="90"></ColumnDefinition>
                     <ColumnDefinition Width="30"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Padding="0 0 0 3">
+                <StackPanel Orientation="Horizontal">
+                    <Label>Map level:</Label>
+                    <ComboBox
+                        SelectedValue="{Binding MapLevel}"
+                        ItemsSource="{StaticResource mapLevels}" Margin="0,0,10,0"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Padding="0 0 0 3" VerticalAlignment="Center">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0:F0}, {1:F0}">
                             <Binding Path="MousePosition.X" Mode="OneWay"/>
@@ -297,7 +308,7 @@
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
-                <TextBlock Grid.Column="1" Text="{Binding Scale,Mode=OneWay,StringFormat='{}1:{0}'}" HorizontalAlignment="Right" />
+                <Label Grid.Column="2" Content="{Binding Scale,Mode=OneWay,StringFormat='{}1:{0}'}" HorizontalAlignment="Right" />
             </Grid>
         </StackPanel>
     </Grid>

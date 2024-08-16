@@ -1,4 +1,5 @@
 ﻿using Client.Application.Commands;
+using Client.Application.Components;
 using Client.Domain.Common;
 using Client.Domain.DTO;
 using Client.Domain.Entities;
@@ -83,6 +84,19 @@ namespace Client.Application.ViewModels
             }
         }
 
+        public int MapLevel
+        {
+            get => mapLevel;
+            set
+            {
+                if (mapLevel != value)
+                {
+                    mapLevel = value;
+                    UpdateMap();
+                }
+            }
+        }
+
         public Vector3 MousePosition
         {
             get => mousePosition;
@@ -107,7 +121,7 @@ namespace Client.Application.ViewModels
 
             if (hero != null)
             {
-                var blocks = selector.SelectImages((float)ViewportWidth, (float)ViewportHeight, hero.Transform.Position, Scale);
+                var blocks = selector.SelectImages((float)ViewportWidth, (float)ViewportHeight, hero.Transform.Position, Scale, MapLevel);
 
                 foreach (var block in blocks)
                 {
@@ -328,7 +342,7 @@ namespace Client.Application.ViewModels
         public readonly static float MAX_SCALE = 128;
         private readonly AsyncPathMoverInterface pathMover;
         private MapImageSelector selector = new MapImageSelector();
-        private Dictionary<uint, MapBlockViewModel> blocks = new Dictionary<uint, MapBlockViewModel>();
+        private Dictionary<int, MapBlockViewModel> blocks = new Dictionary<int, MapBlockViewModel>();
         private Hero? hero;
         private float scale = 8;
         private double viewportWidth = 0;
@@ -336,5 +350,6 @@ namespace Client.Application.ViewModels
         private Vector3 mousePosition = new Vector3(0, 0, 0);
         private object pathCollectionLock = new object();
         private AICombatZoneMapViewModel? combatZone = null;
+        private int mapLevel = 0;
     }
 }

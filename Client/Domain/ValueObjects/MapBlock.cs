@@ -13,20 +13,24 @@ namespace Client.Domain.ValueObjects
         private float deltaY;
         private float size;
 
-        public uint Id => (BlockX + BlockY) * (BlockX + BlockY + 1) / 2 + BlockX;
+        public int Id => (IdWithOutLevel + Level) * (IdWithOutLevel + Level + 1) / 2 + IdWithOutLevel;
         public uint BlockX { get; set; }
         public uint BlockY { get; set; }
         public float DeltaX { get => deltaX; set { if (value != deltaX) { deltaX = value; OnPropertyChanged(); } } }
         public float DeltaY { get => deltaY; set { if (value != deltaY) { deltaY = value; OnPropertyChanged(); } } }
         public float Size { get => size; set { if (value != size) { size = value; OnPropertyChanged(); } } }
+        public int Level { get; set; }
 
-        public MapBlock(uint blockX, uint blockY, float deltaX, float deltaY, float size)
+        private int IdWithOutLevel => (int) ((BlockX + BlockY) * (BlockX + BlockY + 1) / 2 + BlockX);
+
+        public MapBlock(uint blockX, uint blockY, float deltaX, float deltaY, float size, int level)
         {
             BlockX = blockX;
             BlockY = blockY;
             DeltaX = deltaX;
             DeltaY = deltaY;
             Size = size;
+            Level = level;
         }
     }
 }
