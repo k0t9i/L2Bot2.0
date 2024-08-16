@@ -52,7 +52,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::GetNextCreature failed");
+			throw RuntimeException(L"UNetworkHandler::GetNextCreature failed");
 		}
 	}
 
@@ -83,7 +83,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::GetUser failed");
+			throw RuntimeException(L"UNetworkHandler::GetUser failed");
 		}
 	}
 
@@ -97,7 +97,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::GetItem failed");
+			throw RuntimeException(L"UNetworkHandler::GetItem failed");
 		}
 	}
 
@@ -110,7 +110,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::MTL failed");
+			throw RuntimeException(L"UNetworkHandler::MTL failed");
 		}
 	}
 
@@ -123,7 +123,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::Action failed");
+			throw RuntimeException(L"UNetworkHandler::Action failed");
 		}
 	}
 
@@ -136,7 +136,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::RequestMagicSkillUse failed");
+			throw RuntimeException(L"UNetworkHandler::RequestMagicSkillUse failed");
 		}
 	}
 
@@ -150,7 +150,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::RequestUseItem failed");
+			throw RuntimeException(L"UNetworkHandler::RequestUseItem failed");
 		}
 	}
 
@@ -163,7 +163,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::RequestAutoSoulShot failed");
+			throw RuntimeException(L"UNetworkHandler::RequestAutoSoulShot failed");
 		}
 	}
 
@@ -176,7 +176,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::ChangeWaitType failed");
+			throw RuntimeException(L"UNetworkHandler::ChangeWaitType failed");
 		}
 	}
 
@@ -190,7 +190,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::RequestItemList failed");
+			throw RuntimeException(L"UNetworkHandler::RequestItemList failed");
 		}
 	}
 
@@ -203,7 +203,7 @@ namespace Interlude
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			throw CriticalRuntimeException(L"UNetworkHandler::RequestRestartPoint failed");
+			throw RuntimeException(L"UNetworkHandler::RequestRestartPoint failed");
 		}
 	}
 
