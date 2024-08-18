@@ -27,6 +27,7 @@ namespace Client.Infrastructure.Service
         private readonly int nextNodeDistanceTolerance;
         private CancellationTokenSource? cancellationTokenSource;
 
+        public PathfinderInterface Pathfinder => pathfinder;
         public ObservableCollection<PathSegment> Path { get; private set; } = new ObservableCollection<PathSegment>();
         public bool IsLocked { get; private set; } = false;
 

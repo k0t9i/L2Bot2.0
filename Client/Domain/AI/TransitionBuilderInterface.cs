@@ -14,16 +14,16 @@ namespace Client.Domain.AI
         {
             public readonly Dictionary<BaseState.Type, BaseState.Type> fromStates;
             public readonly BaseState.Type toState;
-            public readonly Func<WorldHandler, Config, BaseState, bool> predicate;
+            public readonly Func<BaseState, bool> predicate;
 
-            public Transition(List<BaseState.Type> fromStates, BaseState.Type toState, Func<WorldHandler, Config, BaseState, bool>? predicate = null)
+            public Transition(List<BaseState.Type> fromStates, BaseState.Type toState, Func<BaseState, bool>? predicate = null)
             {
                 this.fromStates = fromStates.ToDictionary(x => x, x => x);
                 this.toState = toState;
-                this.predicate = predicate != null ? predicate : (worldHandler, config, state) => { return true; };
+                this.predicate = predicate != null ? predicate : (state) => { return true; };
             }
         }
 
-        List<Transition> Build();
+        List<Transition> Build(WorldHandler worldHandler, Config config, AsyncPathMoverInterface pathMover);
     }
 }

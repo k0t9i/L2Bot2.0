@@ -48,7 +48,7 @@ namespace Client.Domain.AI.State
             }
 
             var skill = Helper.GetSkillByConfig(worldHandler, config, hero, hero.Target);
-            if (skill != null)
+            if (skill != null && skill.IsReadyToUse && hero.VitalStats.Mp >= skill.Cost)
             {
                 worldHandler.RequestUseSkill(skill.Id, false, false);
             }

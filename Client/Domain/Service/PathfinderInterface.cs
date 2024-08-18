@@ -11,5 +11,6 @@ namespace Client.Domain.Service
     public interface PathfinderInterface
     {
         public List<PathSegment> FindPath(Vector3 start, Vector3 end);
+        public bool HasLineOfSight(Vector3 start, Vector3 end);
     }
 }

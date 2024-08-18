@@ -25,7 +25,8 @@ namespace Client.Domain.AI.State
             {
                 return;
             }
-            if (distance >= Helper.GetAttackDistanceByConfig(worldHandler, config, hero, target))
+            var hasLineOfSight = asyncPathMover.Pathfinder.HasLineOfSight(hero.Transform.Position, target.Transform.Position);
+            if (distance >= Helper.GetAttackDistanceByConfig(worldHandler, config, hero, target) || !hasLineOfSight)
             {
                 asyncPathMover.MoveAsync(target.Transform.Position);
             }

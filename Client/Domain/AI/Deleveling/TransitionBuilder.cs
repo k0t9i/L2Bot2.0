@@ -12,37 +12,39 @@ namespace Client.Domain.AI.Deleveling
 {
     public class TransitionBuilder : TransitionBuilderInterface
     {
-        public List<TransitionBuilderInterface.Transition> Build()
+     
+        // todo add MoveToDropState, SweepState
+        public List<TransitionBuilderInterface.Transition> Build(WorldHandler worldHandler, Config config, AsyncPathMoverInterface pathMover)
         {
             if (transitions.Count == 0)
             {
                 transitions = new List<TransitionBuilderInterface.Transition>()
                 {
-                    new(new List<BaseState.Type>{BaseState.Type.Any}, BaseState.Type.Dead, (worldHandler, config, state) => {
+                    new(new List<BaseState.Type>{BaseState.Type.Any}, BaseState.Type.Dead, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }
                         return worldHandler.Hero.VitalStats.IsDead;
                     }),
-                     new(new List<BaseState.Type>{BaseState.Type.Dead}, BaseState.Type.Idle, (worldHandler, config, state) => {
+                     new(new List<BaseState.Type>{BaseState.Type.Dead}, BaseState.Type.Idle, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }
                         return !worldHandler.Hero.VitalStats.IsDead;
                     }),
-                    new(new List<BaseState.Type>{BaseState.Type.FindGuard}, BaseState.Type.MoveToTarget, (worldHandler, config, state) => {
+                    new(new List<BaseState.Type>{BaseState.Type.FindGuard}, BaseState.Type.MoveToTarget, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }
                         return worldHandler.Hero.Target != null;
                     }),
-                    new(new List<BaseState.Type>{BaseState.Type.MoveToTarget}, BaseState.Type.Idle, (worldHandler, config, state) => {
+                    new(new List<BaseState.Type>{BaseState.Type.MoveToTarget}, BaseState.Type.Idle, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }
                         return worldHandler.Hero.Target == null;
                     }),
-                    new(new List<BaseState.Type>{BaseState.Type.MoveToTarget}, BaseState.Type.AttackGuard, (worldHandler, config, state) => {
+                    new(new List<BaseState.Type>{BaseState.Type.MoveToTarget}, BaseState.Type.AttackGuard, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }
@@ -55,7 +57,7 @@ namespace Client.Domain.AI.Deleveling
                         var expectedDistance = config.Deleveling.AttackDistance;
                         return distance < expectedDistance;
                     }),
-                    new(new List<BaseState.Type>{BaseState.Type.AttackGuard}, BaseState.Type.FindGuard, (worldHandler, config, state) => {
+                    new(new List<BaseState.Type>{BaseState.Type.AttackGuard}, BaseState.Type.FindGuard, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }
@@ -68,7 +70,7 @@ namespace Client.Domain.AI.Deleveling
                         var expectedDistance = config.Deleveling.AttackDistance;
                         return distance >= expectedDistance;
                     }),
-                    new(new List<BaseState.Type>{BaseState.Type.Idle}, BaseState.Type.FindGuard, (worldHandler, config, state) => {
+                    new(new List<BaseState.Type>{BaseState.Type.Idle}, BaseState.Type.FindGuard, (state) => {
                         if (worldHandler.Hero == null) {
                             return false;
                         }

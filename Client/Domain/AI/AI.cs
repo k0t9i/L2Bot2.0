@@ -47,11 +47,11 @@ namespace Client.Domain.AI
                 if (isEnabled && worldHandler.Hero != null)
                 {
                     states[currentState].Execute();
-                    foreach (var transition in locator.Get(Type).Build())
+                    foreach (var transition in locator.Get(Type).Build(worldHandler, config, asyncPathMover))
                     {
                         if (transition.fromStates.ContainsKey(BaseState.Type.Any) && transition.toState != currentState || transition.fromStates.ContainsKey(currentState))
                         {
-                            if (transition.predicate(worldHandler, config, states[currentState]))
+                            if (transition.predicate(states[currentState]))
                             {
                                 states[currentState].OnLeave();
                                 currentState = transition.toState;

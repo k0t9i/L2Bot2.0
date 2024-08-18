@@ -17,6 +17,9 @@ namespace Client.Infrastructure.Service
         [DllImport("L2JGeoDataPathFinder.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern uint ReleasePath(IntPtr arrayPtr);
 
+        [DllImport("L2JGeoDataPathFinder.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool HasLineOfSight(string geoDataDirectory, float startX, float startY, float startZ, float endX, float endY, ushort maxPassableHeight);
+
         public L2jGeoDataPathfinder(string geodataDirectory, ushort maxPassableHeight)
         {
             this.geodataDirectory = geodataDirectory;
@@ -46,6 +49,11 @@ namespace Client.Infrastructure.Service
             }
 
             return BuildPath(nodes);
+        }
+
+        public bool HasLineOfSight(Vector3 start, Vector3 end)
+        {
+            return HasLineOfSight(GetGeodataFullpath(), start.X, start.Y, start.Z, end.X, end.Y, maxPassableHeight);
         }
 
         private List<PathSegment> BuildPath(List<PathNode> nodes)

@@ -27,10 +27,7 @@ namespace Client.Domain.AI.Combat
                     {
                         continue;
                     }
-                    if (skill.IsReadyToUse && hero.VitalStats.Mp >= skill.Cost)
-                    {
-                        return skill;
-                    }
+                    return skill;
                 }
             }
 
