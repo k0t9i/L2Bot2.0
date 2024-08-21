@@ -1,7 +1,8 @@
 ﻿using Client.Domain.AI.Combat;
 using Client.Domain.Entities;
 using Client.Domain.Service;
-using Client.Infrastructure.Service;
+using Client.Domain.ValueObjects;
+using System;
 
 namespace Client.Domain.AI.State
 {
@@ -19,17 +20,32 @@ namespace Client.Domain.AI.State
                 target = hero;
             }
 
-            var distance = hero.Transform.Position.HorizontalDistance(target.Transform.Position);
+            var distanceToPrevPosition = targetPosition != null ? targetPosition.HorizontalDistance(target.Transform.Position) : 0;
+
+            var routeNeedsToBeAdjusted = MathF.Abs(distanceToPrevPosition) > config.Combat.AttackDistanceMili;
+            if (routeNeedsToBeAdjusted)
+            {
+                asyncPathMover.Unlock();
+            }
 
             if (asyncPathMover.IsLocked)
             {
                 return;
             }
-            var hasLineOfSight = asyncPathMover.Pathfinder.HasLineOfSight(hero.Transform.Position, target.Transform.Position);
-            if (distance >= Helper.GetAttackDistanceByConfig(worldHandler, config, hero, target) || !hasLineOfSight)
+
+            var distance = hero.Transform.Position.HorizontalDistance(target.Transform.Position);
+            if (routeNeedsToBeAdjusted || distance >= Helper.GetAttackDistanceByConfig(worldHandler, config, hero, target) || !asyncPathMover.Pathfinder.HasLineOfSight(hero.Transform.Position, target.Transform.Position))
             {
+                targetPosition = target.Transform.Position.Clone() as Vector3;
                 asyncPathMover.MoveAsync(target.Transform.Position);
             }
         }
+
+        protected override void DoOnLeave(WorldHandler worldHandler, Config config, Hero hero)
+        {
+            targetPosition = null;
+        }
+
+        private Vector3? targetPosition = null;
     }
 }

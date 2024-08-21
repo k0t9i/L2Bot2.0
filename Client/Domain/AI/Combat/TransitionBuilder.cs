@@ -99,11 +99,6 @@ namespace Client.Domain.AI.Combat
                             return false;
                         }
 
-                        if (!pathMover.Pathfinder.HasLineOfSight(worldHandler.Hero.Transform.Position, worldHandler.Hero.Target.Transform.Position))
-                        {
-                            return false;
-                        }
-
                         if (config.Combat.SpoilIsPriority) {
                             var spoil = worldHandler.GetSkillById(config.Combat.SpoilSkillId);
                             if (spoil != null && !spoil.IsReadyToUse) {
@@ -112,7 +107,8 @@ namespace Client.Domain.AI.Combat
                         }
 
                         var distance = worldHandler.Hero.Transform.Position.HorizontalDistance(worldHandler.Hero.Target.Transform.Position);
-                        return distance < Helper.GetAttackDistanceByConfig(worldHandler, config, worldHandler.Hero, worldHandler.Hero.Target);
+                        return distance < Helper.GetAttackDistanceByConfig(worldHandler, config, worldHandler.Hero, worldHandler.Hero.Target)
+                            && pathMover.Pathfinder.HasLineOfSight(worldHandler.Hero.Transform.Position, worldHandler.Hero.Target.Transform.Position);
                     }),
                     new(new List<BaseState.Type>{BaseState.Type.Attack}, BaseState.Type.Pickup, (state) => {
                         if (worldHandler.Hero == null) {

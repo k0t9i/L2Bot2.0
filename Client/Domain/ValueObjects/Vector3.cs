@@ -3,7 +3,7 @@ using System;
 
 namespace Client.Domain.ValueObjects
 {
-    public class Vector3 : ObservableObject
+    public class Vector3 : ObservableObject, ICloneable
     {
         private float x;
         private float y;
@@ -75,6 +75,11 @@ namespace Client.Domain.ValueObjects
         public float Distance(Vector3 other)
         {
             return MathF.Sqrt(MathF.Pow(x - other.x, 2) + MathF.Pow(y - other.y, 2) + MathF.Pow(z - other.z, 2));
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
         public static Vector3 operator -(Vector3 left, Vector3 right)
