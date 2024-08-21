@@ -46,6 +46,13 @@ namespace Interlude
 			m_Players.clear();
 		}
 
+		void Init() override
+		{
+			Services::ServiceLocator::GetInstance().GetEventDispatcher()->Subscribe(Events::CreatureDiedEvent::name, [this](const Events::Event& evt) {
+				OnCreatureDied(evt);
+			});
+		}
+
 		PlayerRepository(const NetworkHandlerWrapper& networkHandler, const PlayerFactory& factory, const uint16_t radius) :
 			m_NetworkHandler(networkHandler),
 			m_Factory(factory),
@@ -56,6 +63,18 @@ namespace Interlude
 
 		PlayerRepository() = delete;
 		virtual ~PlayerRepository() = default;
+
+		void OnCreatureDied(const Events::Event& evt)
+		{
+			std::shared_lock<std::shared_timed_mutex>(m_Mutex);
+			if (evt.GetName() == Events::CreatureDiedEvent::name)
+			{
+				const auto casted = static_cast<const Events::CreatureDiedEvent&>(evt);
+				if (m_Players.find(casted.GetCreatureId()) != m_Players.end()) {
+					m_Players[casted.GetCreatureId()]->MarkAsDead();
+				}
+			}
+		}
 
 	private:
 		const PlayerFactory& m_Factory;

@@ -28,7 +28,7 @@ namespace L2Bot::Domain::Entities
 			m_IsHostile = isHostile;
 			m_NpcId = npcId;
 			m_FullName = fullName;
-			m_VitalStats = vitalStats;
+			m_VitalStats.LoadFromOther(vitalStats);
 		}
 		const size_t GetHash() const override
 		{
@@ -44,6 +44,10 @@ namespace L2Bot::Domain::Entities
 		const std::string GetEntityName() const override
 		{
 			return "npc";
+		}
+		void MarkAsDead()
+		{
+			m_VitalStats.MarkAsDead();
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

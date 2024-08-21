@@ -31,7 +31,7 @@ namespace L2Bot::Domain::Entities
 			WorldObject::Update(transform);
 
 			m_FullName = fullName;
-			m_VitalStats = vitalStats;
+			m_VitalStats.LoadFromOther(vitalStats);
 			m_Phenotype = phenotype;
 			m_ExperienceInfo = experienceInfo;
 			m_PermanentStats = permanentStats;
@@ -92,6 +92,10 @@ namespace L2Bot::Domain::Entities
 		void ClearAttackers()
 		{
 			m_AttackerIds.clear();
+		}
+		void MarkAsDead()
+		{
+			m_VitalStats.MarkAsDead();
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override

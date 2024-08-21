@@ -111,6 +111,9 @@ namespace Interlude
 						m_Spoiled[casted.GetCreatureId()] = Enums::SpoilStateEnum::none;
 					}
 				}
+				if (m_Npcs.find(casted.GetCreatureId()) != m_Npcs.end()) {
+					m_Npcs[casted.GetCreatureId()]->MarkAsDead();
+				}
 			}
 		}
 

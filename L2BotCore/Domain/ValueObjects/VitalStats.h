@@ -10,9 +10,9 @@ namespace L2Bot::Domain::ValueObjects
 	class VitalStats : public Serializers::Serializable, public Entities::Hashable
 	{
 	public:
-		const bool IsAlive() const
+		const bool IsDead() const
 		{
-			return m_MaxHp <= 0 || m_Hp > 0;
+			return m_IsDead || (m_MaxHp > 0 && m_Hp < 0);
 		}
 		const uint32_t GetMaxHp() const
 		{
@@ -46,8 +46,18 @@ namespace L2Bot::Domain::ValueObjects
 				std::hash<uint32_t>{}(m_MaxMp),
 				std::hash<uint32_t>{}(m_Mp),
 				std::hash<uint32_t>{}(m_MaxCp),
-				std::hash<uint32_t>{}(m_Cp)
+				std::hash<uint32_t>{}(m_Cp),
+				std::hash<bool>{}(m_IsDead)
 			});
+		}
+		void LoadFromOther(VitalStats other)
+		{
+			m_MaxHp = other.m_MaxHp;
+			m_Hp = other.m_Hp;
+			m_MaxMp = other.m_MaxMp;
+			m_Mp = other.m_Mp;
+			m_MaxCp = other.m_MaxCp;
+			m_Cp = other.m_Cp;
 		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
@@ -59,8 +69,13 @@ namespace L2Bot::Domain::ValueObjects
 				{ L"maxMp", std::to_wstring(m_MaxMp) },
 				{ L"mp", std::to_wstring(m_Mp) },
 				{ L"maxCp", std::to_wstring(m_MaxCp) },
-				{ L"cp", std::to_wstring(m_Cp) }
+				{ L"cp", std::to_wstring(m_Cp) },
+				{ L"isDead", std::to_wstring(m_IsDead) }
 			};
+		}
+		void MarkAsDead()
+		{
+			m_IsDead = true;;
 		}
 
 		VitalStats(
@@ -90,5 +105,6 @@ namespace L2Bot::Domain::ValueObjects
 		uint32_t m_Mp = 0;
 		uint32_t m_MaxCp = 0;
 		uint32_t m_Cp = 0;
+		uint32_t m_IsDead = false;
 	};
 }
