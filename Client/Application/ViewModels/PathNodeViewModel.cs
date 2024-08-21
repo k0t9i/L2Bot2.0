@@ -69,6 +69,11 @@ namespace Client.Application.ViewModels
             hero.Transform.Position.PropertyChanged += HeroPosition_PropertyChanged;
         }
 
+        public void UnsubscribeAll()
+        {
+            hero.Transform.Position.PropertyChanged -= HeroPosition_PropertyChanged;
+        }
+
         private void HeroPosition_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged("From");

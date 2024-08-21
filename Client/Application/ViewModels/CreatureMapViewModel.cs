@@ -109,6 +109,16 @@ namespace Client.Application.ViewModels
             MouseRightClickCommand = new RelayCommand(async (o) => await OnMouseRightClick(o));
         }
 
+        public void UnsubscribeAll()
+        {
+            creature.PropertyChanged -= Creature_PropertyChanged;
+            creature.Transform.PropertyChanged -= Transform_PropertyChanged;
+            creature.Transform.Position.PropertyChanged -= Position_PropertyChanged;
+            creature.VitalStats.PropertyChanged -= VitalStats_PropertyChanged;
+            hero.Transform.Position.PropertyChanged -= HeroPosition_PropertyChanged;
+            hero.PropertyChanged -= Hero_PropertyChanged;
+        }
+
         private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Hp" || e.PropertyName == "MaxHp")

@@ -38,6 +38,14 @@ namespace Client.Application.ViewModels
             this.hero = hero;
         }
 
+        public void UnsubscribeAll()
+        {
+            creature.PropertyChanged -= Creature_PropertyChanged;
+            creature.Transform.Position.PropertyChanged -= Position_PropertyChanged;
+            creature.VitalStats.PropertyChanged -= VitalStats_PropertyChanged;
+            hero.Transform.Position.PropertyChanged -= HeroPosition_PropertyChanged;
+        }
+
         private void VitalStats_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Hp")

@@ -230,11 +230,16 @@ namespace Client.Application.ViewModels
                 {
                     foreach (var item in e.OldItems)
                     {
+                        Path[0].UnsubscribeAll();
                         Path.RemoveAt(0);
                     }
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
+                    foreach (var item in Path)
+                    {
+                        item.UnsubscribeAll();
+                    }
                     Path.RemoveAll();
                 }
             }

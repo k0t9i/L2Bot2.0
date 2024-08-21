@@ -62,6 +62,14 @@ namespace Client.Application.ViewModels
             this.pathMover = pathMover;
         }
 
+        public void UnsubscribeAll()
+        {
+            creature.PropertyChanged -= Creature_PropertyChanged;
+            creature.Transform.Position.PropertyChanged -= Position_PropertyChanged;
+            hero.Transform.Position.PropertyChanged -= HeroPosition_PropertyChanged;
+            hero.PropertyChanged -= Hero_PropertyChanged;
+        }
+
         private void HeroPosition_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged("Distance");

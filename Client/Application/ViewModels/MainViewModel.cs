@@ -6,6 +6,7 @@ using Client.Domain.Entities;
 using Client.Domain.Events;
 using Client.Domain.Service;
 using Client.Domain.ValueObjects;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -72,7 +73,12 @@ namespace Client.Application.ViewModels
 
         public void Handle(CreatureDeletedEvent @event)
         {
-            Creatures.RemoveAll(x => x.Id == @event.Id);
+            var creature = Creatures.Where(x => x.Id == @event.Id).FirstOrDefault();
+            if (creature != null)
+            {
+                creature.UnsubscribeAll();
+                Creatures.Remove(creature);
+            }
             RemoveCreature(@event.Id);
         }
 
@@ -87,8 +93,18 @@ namespace Client.Application.ViewModels
 
         public void Handle(DropDeletedEvent @event)
         {
-            Drops.RemoveAll(x => x.Id == @event.Id);
-            Map.Drops.RemoveAll(x => x.Id == @event.Id);
+            var drop = Drops.Where(x => x.Id == @event.Id).FirstOrDefault();
+            if (drop != null)
+            {
+                drop.UnsubscribeAll();
+                Drops.Remove(drop);
+            }
+            var mapDrop = Map.Drops.Where(x => x.Id == @event.Id).FirstOrDefault();
+            if (mapDrop != null)
+            {
+                mapDrop.UnsubscribeAll();
+                Map.Drops.Remove(mapDrop);
+            }
         }
 
         public void Handle(ChatMessageCreatedEvent @event)
@@ -156,7 +172,12 @@ namespace Client.Application.ViewModels
 
         private void RemoveCreature(uint id)
         {
-            Map.Creatures.RemoveAll(x => x.Id == id);
+            var creature = Map.Creatures.Where(x => x.Id == id).FirstOrDefault();
+            if (creature != null)
+            {
+                creature.UnsubscribeAll();
+                Map.Creatures.Remove(creature);
+            }
         }
 
         private void OnToggleAI(object? sender)

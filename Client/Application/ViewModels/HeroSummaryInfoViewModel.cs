@@ -105,6 +105,7 @@ namespace Client.Application.ViewModels
                 }
                 else if (target != null && hero.Target == null)
                 {
+                    target.UnsubscribeAll();
                     target = null;
                     OnPropertyChanged("Target");
                 }

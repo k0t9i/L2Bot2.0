@@ -73,11 +73,18 @@ namespace Client.Application.ViewModels
             this.hero = hero;
             this.worldHandler = worldHandler;
             this.pathMover = pathMover;
-            drop.PropertyChanged += Creature_PropertyChanged;
-            drop.Transform.Position.PropertyChanged += Position_PropertyChanged;
+            drop.PropertyChanged += Drop_PropertyChanged;
+            drop.Transform.Position.PropertyChanged += DropPosition_PropertyChanged;
             hero.Transform.Position.PropertyChanged += HeroPosition_PropertyChanged;
             MouseLeftClickCommand = new RelayCommand(OnMouseLeftClick);
             MouseRightClickCommand = new RelayCommand(async (o) => await OnMouseRightClick(o));
+        }
+
+        public void UnsubscribeAll()
+        {
+            drop.PropertyChanged -= Drop_PropertyChanged;
+            drop.Transform.Position.PropertyChanged -= DropPosition_PropertyChanged;
+            hero.Transform.Position.PropertyChanged -= HeroPosition_PropertyChanged;
         }
 
         private void HeroPosition_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -85,12 +92,12 @@ namespace Client.Application.ViewModels
             OnPropertyChanged("Position");
         }
 
-        private void Position_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void DropPosition_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             OnPropertyChanged("Position");
         }
 
-        private void Creature_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void Drop_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "Name" || e.PropertyName == "Amount")
             {

@@ -92,6 +92,13 @@ namespace Client.Application.ViewModels
             MouseRightClickCommand = new RelayCommand(async (o) => await OnMouseRightClick(o));
         }
 
+        public void UnsubscribeAll()
+        {
+            drop.PropertyChanged -= Drop_PropertyChanged;
+            drop.Transform.Position.PropertyChanged -= DropPosition_PropertyChanged;
+            hero.Transform.Position.PropertyChanged -= HeroPosition_PropertyChanged;
+        }
+
         private void HeroPosition_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged("Distance");
