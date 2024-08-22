@@ -169,7 +169,7 @@ namespace Client.Application.ViewModels
                 hero.Transform.Position.Z
             );
 
-            await pathMover.MoveUntilReachedAsync(location);
+            await pathMover.MoveAsync(location);
         }
 
         public void OnMouseWheel(object sender, MouseWheelEventArgs e)

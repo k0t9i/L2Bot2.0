@@ -117,6 +117,7 @@ namespace Client.Application.ViewModels
         public byte DelevelingTargetLevel { get => delevelingTargetLevel; set { if (value != delevelingTargetLevel) { delevelingTargetLevel = value; OnPropertyChanged(); } } }
         public uint DelevelingAttackDistance { get => delevelingAttackDistance; set { if (value != delevelingAttackDistance) { delevelingAttackDistance = value; OnPropertyChanged(); } } }
         public uint DelevelingSkillId { get => delevelingSkillId; set { if (value != delevelingSkillId) { delevelingSkillId = value; OnPropertyChanged(); } } }
+        public byte MaxPassableHeight { get => maxPassableHeight; set { if (value != maxPassableHeight) { maxPassableHeight = value; OnPropertyChanged(); } } }
 
         public void LoadConfig()
         {
@@ -151,6 +152,7 @@ namespace Client.Application.ViewModels
             DelevelingTargetLevel = config.Deleveling.TargetLevel;
             DelevelingAttackDistance = config.Deleveling.AttackDistance;
             DelevelingSkillId = config.Deleveling.SkillId;
+            MaxPassableHeight = config.Combat.MaxPassableHeight;
         }
 
         private void SaveConfig()
@@ -181,6 +183,7 @@ namespace Client.Application.ViewModels
             config.Deleveling.TargetLevel = DelevelingTargetLevel;
             config.Deleveling.AttackDistance = DelevelingAttackDistance;
             config.Deleveling.SkillId = DelevelingSkillId;
+            config.Combat.MaxPassableHeight = MaxPassableHeight;
             SaveCollections();
         }
 
@@ -318,7 +321,7 @@ namespace Client.Application.ViewModels
         private readonly ConfigDeserializerInterface configDeserializer;
         private uint mobsMaxDeltaZ = 0;
         private byte? mobLevelLowerLimit = null;
-        private byte? mobLevelUpperLimit = null;
+        private byte maxPassableHeight = 0;
         private bool spoilIfPossible = false;
         private bool spoilIsPriority = false;
         private uint spoilSkillId = 0;
@@ -340,5 +343,6 @@ namespace Client.Application.ViewModels
         private byte delevelingTargetLevel = 0;
         private uint delevelingAttackDistance = 0;
         private uint delevelingSkillId = 0;
+        private byte? mobLevelUpperLimit = null;
     }
 }

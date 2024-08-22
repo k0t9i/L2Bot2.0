@@ -31,7 +31,7 @@ namespace Client.Domain.AI.State
                 config.Combat.Zone.Center.X,
                 config.Combat.Zone.Center.Y,
                 hero.Transform.Position.Z
-            ));
+            ), config.Combat.MaxPassableHeight);
         }
     }
 }

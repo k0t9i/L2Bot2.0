@@ -120,8 +120,7 @@ namespace Client
                 .AddSingleton(
                     typeof(PathfinderInterface),
                     x => new L2jGeoDataPathfinder(
-                        config.GetValue<string>("GeoDataDirectory") ?? "",
-                        config.GetValue<ushort>("MaxPassableHeight")
+                        config.GetValue<string>("GeoDataDirectory") ?? ""
                     )
                  )
                 .AddSingleton(
@@ -129,10 +128,10 @@ namespace Client
                     x => new AsyncPathMover(
                         x.GetRequiredService<WorldHandler>(),
                         x.GetRequiredService<PathfinderInterface>(),
-                        config.GetValue<int>("PathNumberOfAttempts"),
                         config.GetValue<double>("NodeWaitingTime"),
                         config.GetValue<int>("NodeDistanceTolerance"),
-                        config.GetValue<int>("NextNodeDistanceTolerance")
+                        config.GetValue<int>("NextNodeDistanceTolerance"),
+                        config.GetValue<ushort>("MaxPassableHeight")
                     )
                 )
 

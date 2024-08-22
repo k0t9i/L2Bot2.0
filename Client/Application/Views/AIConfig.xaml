@@ -40,10 +40,19 @@
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
                                     </Grid.RowDefinitions>
                                     <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutoUseShots}">Auto use soul and spiritshots</CheckBox>
                                     <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding UseOnlySkills}">Use only skills</CheckBox>
                                     <StackPanel Grid.Row="2" Grid.Column="0">
+                                        <Label>Pathfinder max passable height:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="MaxPassableHeight" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="3" Grid.Column="0">
                                         <Label>Attack distance for mili weapon:</Label>
                                         <TextBox Width="100" HorizontalAlignment="Left">
                                             <TextBox.Text>
@@ -51,7 +60,7 @@
                                             </TextBox.Text>
                                         </TextBox>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="3" Grid.Column="0">
+                                    <StackPanel Grid.Row="4" Grid.Column="0">
                                         <Label>Attack distance for bows:</Label>
                                         <TextBox Width="100" HorizontalAlignment="Left">
                                             <TextBox.Text>
@@ -59,7 +68,7 @@
                                             </TextBox.Text>
                                         </TextBox>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="4" Grid.Column="0">
+                                    <StackPanel Grid.Row="5" Grid.Column="0">
                                         <Label>Skill conditions:</Label>
                                         <DataGrid
                                             AutoGenerateColumns="False" 
@@ -91,7 +100,7 @@
                                             </DataGrid.Columns>
                                         </DataGrid>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="5" Grid.Column="0">
+                                    <StackPanel Grid.Row="6" Grid.Column="0">
                                         <Label>Combat zone:</Label>
                                         <Grid>
                                             <Grid.ColumnDefinitions>

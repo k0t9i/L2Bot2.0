@@ -89,7 +89,7 @@ namespace Client.Application.ViewModels
         
         private async Task OnMouseRightClick(object? obj)
         {
-            await pathMover.MoveUntilReachedAsync(creature.Transform.Position);
+            await pathMover.MoveAsync(creature.Transform.Position);
         }
 
         public CreatureMapViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover, CreatureInterface creature, Hero hero)

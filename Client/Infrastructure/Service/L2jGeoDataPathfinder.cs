@@ -20,13 +20,12 @@ namespace Client.Infrastructure.Service
         [DllImport("L2JGeoDataPathFinder.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool HasLineOfSight(string geoDataDirectory, float startX, float startY, float startZ, float endX, float endY, ushort maxPassableHeight);
 
-        public L2jGeoDataPathfinder(string geodataDirectory, ushort maxPassableHeight)
+        public L2jGeoDataPathfinder(string geodataDirectory)
         {
             this.geodataDirectory = geodataDirectory;
-            this.maxPassableHeight = maxPassableHeight;
         }
 
-        public List<PathSegment> FindPath(Vector3 start, Vector3 end)
+        public List<PathSegment> FindPath(Vector3 start, Vector3 end, ushort maxPassableHeight)
         {
             var arrayPtr = IntPtr.Zero;
             var size = FindPath(out arrayPtr, GetGeodataFullpath(), start.X, start.Y, start.Z, end.X, end.Y, maxPassableHeight);
@@ -53,7 +52,7 @@ namespace Client.Infrastructure.Service
 
         public bool HasLineOfSight(Vector3 start, Vector3 end)
         {
-            return HasLineOfSight(GetGeodataFullpath(), start.X, start.Y, start.Z, end.X, end.Y, maxPassableHeight);
+            return HasLineOfSight(GetGeodataFullpath(), start.X, start.Y, start.Z, end.X, end.Y, LINE_OF_SIGHT_HEIGHT_OF_OBSTACLE);
         }
 
         private List<PathSegment> BuildPath(List<PathNode> nodes)
@@ -98,6 +97,6 @@ namespace Client.Infrastructure.Service
         }
 
         private readonly string geodataDirectory;
-        private readonly ushort maxPassableHeight;
+        private const ushort LINE_OF_SIGHT_HEIGHT_OF_OBSTACLE = 999;
     }
 }

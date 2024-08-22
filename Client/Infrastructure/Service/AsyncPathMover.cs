@@ -21,10 +21,10 @@ namespace Client.Infrastructure.Service
     {
         private readonly WorldHandler worldHandler;
         private readonly PathfinderInterface pathfinder;
-        private readonly int pathNumberOfAttempts;
         private readonly double nodeWaitingTime;
         private readonly int nodeDistanceTolerance;
         private readonly int nextNodeDistanceTolerance;
+        private readonly ushort maxPassableHeight;
         private CancellationTokenSource? cancellationTokenSource;
 
         public PathfinderInterface Pathfinder => pathfinder;
@@ -43,16 +43,7 @@ namespace Client.Infrastructure.Service
             }
         }
 
-        public async Task MoveUntilReachedAsync(Vector3 location)
-        {
-            var remainingAttempts = pathNumberOfAttempts;
-            while (!await MoveAsync(location) && remainingAttempts > 0)
-            {
-                remainingAttempts--;
-            }
-        }
-
-        public async Task<bool> MoveAsync(Vector3 location)
+        public async Task<bool> MoveAsync(Vector3 location, ushort maxPassableHeight)
         {
             IsLocked = true;
 
@@ -69,7 +60,7 @@ namespace Client.Infrastructure.Service
                 return await Task.Run(async () =>
                 {
                     Debug.WriteLine("Find path started");
-                    FindPath(location);
+                    FindPath(location, maxPassableHeight);
                     Debug.WriteLine("Find path finished");
 
 
@@ -99,17 +90,22 @@ namespace Client.Infrastructure.Service
             }
         }
 
-        public AsyncPathMover(WorldHandler worldHandler, PathfinderInterface pathfinder, int pathNumberOfAttempts, double nodeWaitingTime, int nodeDistanceTolerance, int nextNodeDistanceTolerance)
+        public async Task<bool> MoveAsync(Vector3 location)
+        {
+            return await MoveAsync(location, maxPassableHeight);
+        }
+
+        public AsyncPathMover(WorldHandler worldHandler, PathfinderInterface pathfinder, double nodeWaitingTime, int nodeDistanceTolerance, int nextNodeDistanceTolerance, ushort maxPassableHeight)
         {
             this.worldHandler = worldHandler;
             this.pathfinder = pathfinder;
-            this.pathNumberOfAttempts = pathNumberOfAttempts;
             this.nodeWaitingTime = nodeWaitingTime;
             this.nodeDistanceTolerance = nodeDistanceTolerance;
             this.nextNodeDistanceTolerance = nextNodeDistanceTolerance;
+            this.maxPassableHeight = maxPassableHeight;
         }
 
-        private void FindPath(Vector3 location)
+        private void FindPath(Vector3 location, ushort maxPassableHeight)
         {
             var hero = worldHandler.Hero;
 
@@ -119,7 +115,7 @@ namespace Client.Infrastructure.Service
                 return;
             }
 
-            var path = pathfinder.FindPath(hero.Transform.Position, location);
+            var path = pathfinder.FindPath(hero.Transform.Position, location, maxPassableHeight);
             foreach (var segment in path)
             {
                 Path.Add(segment);

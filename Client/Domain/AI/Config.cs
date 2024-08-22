@@ -33,6 +33,7 @@ namespace Client.Domain.AI
             public uint AttackDistanceBow { get; set; } = 500;
             public bool UseOnlySkills { get; set; } = false;
             public List<SkillCondition> SkillConditions { get; set; } = new List<SkillCondition>();
+            public byte MaxPassableHeight { get; set; } = 30;
 
             public bool SpoilIfPossible { get; set; } = true;
             public bool SpoilIsPriority { get; set; } = false;

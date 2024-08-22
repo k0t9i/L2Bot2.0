@@ -64,7 +64,7 @@ namespace Client.Application.ViewModels
         }
         private async Task OnMouseRightClick(object? obj)
         {
-            await pathMover.MoveUntilReachedAsync(drop.Transform.Position);
+            await pathMover.MoveAsync(drop.Transform.Position);
         }
 
         public DropMapViewModel(WorldHandler worldHandler, AsyncPathMoverInterface pathMover, Drop drop, Hero hero)
