@@ -104,7 +104,11 @@ namespace Interlude
 				{
 					if (m_Hero->GetId() == casted.GetTargetId())
 					{
-						m_Hero->AddAttacker(casted.GetAttackerId());
+						const auto attacker = m_NetworkHandler.GetUser(casted.GetAttackerId());
+						if (attacker && attacker->userType == L2::UserType::NPC)
+						{
+							m_Hero->AddAttacker(casted.GetAttackerId());
+						}
 					}
 					else if (casted.GetAttackerId() != casted.GetTargetId())
 					{
