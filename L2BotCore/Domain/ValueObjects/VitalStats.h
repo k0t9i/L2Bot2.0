@@ -12,7 +12,7 @@ namespace L2Bot::Domain::ValueObjects
 	public:
 		const bool IsDead() const
 		{
-			return m_IsDead || (m_MaxHp > 0 && m_Hp < 0);
+			return m_IsDead || (m_MaxHp > 0 && m_Hp <= 0);
 		}
 		const uint32_t GetMaxHp() const
 		{
@@ -70,7 +70,7 @@ namespace L2Bot::Domain::ValueObjects
 				{ L"mp", std::to_wstring(m_Mp) },
 				{ L"maxCp", std::to_wstring(m_MaxCp) },
 				{ L"cp", std::to_wstring(m_Cp) },
-				{ L"isDead", std::to_wstring(m_IsDead) }
+				{ L"isDead", std::to_wstring(IsDead()) }
 			};
 		}
 		void MarkAsDead()

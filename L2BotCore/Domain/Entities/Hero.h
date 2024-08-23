@@ -93,10 +93,6 @@ namespace L2Bot::Domain::Entities
 		{
 			m_AttackerIds.clear();
 		}
-		void MarkAsDead()
-		{
-			m_VitalStats.MarkAsDead();
-		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{

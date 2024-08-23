@@ -83,7 +83,6 @@ namespace Interlude
 					{
 						Services::ServiceLocator::GetInstance().GetLogger()->App(L"{} died", m_Hero->GetFullName().GetNickname());
 						m_Hero->ClearAttackers();
-						m_Hero->MarkAsDead();
 					}
 					else
 					{

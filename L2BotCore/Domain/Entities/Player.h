@@ -34,10 +34,6 @@ namespace L2Bot::Domain::Entities
 		{
 			return "player";
 		}
-		void MarkAsDead()
-		{
-			m_VitalStats.MarkAsDead();
-		}
 
 		const std::vector<Serializers::Node> BuildSerializationNodes() const override
 		{
