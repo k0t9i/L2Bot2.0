@@ -4,6 +4,7 @@ using Client.Domain.Entities;
 using Client.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,10 +90,19 @@ namespace Client.Application.ViewModels
                 return ai.IsEnabled ? ai.CurrentState.ToString() : "Disabled";
             }
         }
-        public HeroSummaryInfoViewModel(Hero hero, AIInterface ai)
+        public int InventoryOccupiedSlots
+        {
+            get
+            {
+                return items.Count + questItems.Count;
+            }
+        }
+        public HeroSummaryInfoViewModel(Hero hero, AIInterface ai, ObservableCollection<ItemListViewModel> items, ObservableCollection<ItemListViewModel> questItems)
         {
             this.hero = hero;
             this.ai = ai;
+            this.items = items;
+            this.questItems = questItems;
             hero.FullName.PropertyChanged += FullName_PropertyChanged;
             hero.Phenotype.PropertyChanged += Phenotype_PropertyChanged;
             hero.ExperienceInfo.PropertyChanged += ExperienceInfo_PropertyChanged;
@@ -101,6 +111,18 @@ namespace Client.Application.ViewModels
             hero.InventoryInfo.PropertyChanged += InventoryInfo_PropertyChanged;
             hero.PropertyChanged += Hero_PropertyChanged;
             ai.PropertyChanged += Ai_PropertyChanged;
+            items.CollectionChanged += Items_CollectionChanged;
+            questItems.CollectionChanged += QuestItems_CollectionChanged;
+        }
+
+        private void QuestItems_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("InventoryOccupiedSlots");
+        }
+
+        private void Items_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("InventoryOccupiedSlots");
         }
 
         private void Ai_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -169,6 +191,8 @@ namespace Client.Application.ViewModels
 
         private readonly Hero hero;
         private readonly AIInterface ai;
+        private readonly ObservableCollection<ItemListViewModel> items;
+        private readonly ObservableCollection<ItemListViewModel> questItems;
         private TargetSummaryInfoViewModel? target;
     }
 }

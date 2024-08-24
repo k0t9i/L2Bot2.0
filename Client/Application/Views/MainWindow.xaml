@@ -257,7 +257,7 @@
                     <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
-                                <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
+                                <Binding Path="InventoryOccupiedSlots" Mode="OneWay"/>
                                 <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
                             </MultiBinding>
                         </TextBlock.Text>

@@ -39,7 +39,7 @@ namespace Client.Application.ViewModels
 
         public void Handle(HeroCreatedEvent @event)
         {
-            Hero = new HeroSummaryInfoViewModel(@event.Hero, ai);
+            Hero = new HeroSummaryInfoViewModel(@event.Hero, ai, Items, QuestItems);
             hero = @event.Hero;
             Map.Hero = hero;
             Map.CombatZone = new AICombatZoneMapViewModel(aiConfig.Combat.Zone, hero);
