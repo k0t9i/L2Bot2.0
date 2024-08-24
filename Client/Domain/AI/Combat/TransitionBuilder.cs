@@ -35,9 +35,6 @@ namespace Client.Domain.AI.Combat
                             return false;
                         }
 
-                        // TODO если нет цели, а тебя атаковали, то моб берется автоматом в таргет, из-за этого баг в Rest и MoveToSpot
-                        // а без этой проверки зацикливается MoveToTarget->FindTarget->MoveToTarget
-                        // один из вариантов решения, брать себя в таргет при входе в Rest и MoveToSpot 
                         if (worldHandler.Hero.Target != null && (worldHandler.Hero.AttackerIds.Contains(worldHandler.Hero.Target.Id) || worldHandler.Hero.Target.VitalStats.IsDead))
                         {
                             return false;

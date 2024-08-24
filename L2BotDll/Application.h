@@ -78,4 +78,4 @@ private:
 
 const std::wstring Application::PIPE_NAME = std::wstring(L"PipeL2Bot");
 const uint16_t Application::CREATURE_RADIUS = 4000;
-const uint16_t Application::DROP_RADIUS = 1000;
+const uint16_t Application::DROP_RADIUS = 4000;

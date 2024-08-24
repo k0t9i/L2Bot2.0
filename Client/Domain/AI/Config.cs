@@ -48,6 +48,7 @@ namespace Client.Domain.AI
             public byte PickupAttemptsCount { get; set; } = 10;
             public Dictionary<uint, bool> ExcludedItemIdsToPickup { get; set; } = new Dictionary<uint, bool>();
             public Dictionary<uint, bool> IncludedItemIdsToPickup { get; set; } = new Dictionary<uint, bool>();
+            public short PickupRadius = 200;
         }
 
         public class DelevelingSection

@@ -15,7 +15,14 @@ namespace Client.Domain.AI.State
 
         public List<Drop> GetDrops(WorldHandler worldHandler, Config config)
         {
-            var drops = Helper.GetDropByConfig(worldHandler, config);
+            var hero = worldHandler.Hero;
+
+            if (hero == null)
+            {
+                return new List<Drop>();
+            }
+
+            var drops = Helper.GetDropByConfig(worldHandler, config, hero);
             for (var i = drops.Count - 1; i >= 0; i--)
             {
                 if (pickupAttempts.ContainsKey(drops[0].Id) && pickupAttempts[drops[0].Id] > config.Combat.PickupAttemptsCount)

@@ -202,9 +202,18 @@
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
                                         <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
                                     </Grid.RowDefinitions>
                                     <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PickupIfPossible}">Pickup if possible</CheckBox>
                                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <Label>Pickup radius:</Label>
+                                        <TextBox Width="100" HorizontalAlignment="Left">
+                                            <TextBox.Text>
+                                                <Binding Path="PickupRadius" UpdateSourceTrigger="PropertyChanged"/>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                                         <Label>Max delta z:</Label>
                                         <TextBox Width="100" HorizontalAlignment="Left">
                                             <TextBox.Text>
@@ -212,7 +221,7 @@
                                             </TextBox.Text>
                                         </TextBox>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                                         <Label>Pickup attempts count:</Label>
                                         <TextBox Width="100" HorizontalAlignment="Left">
                                             <TextBox.Text>
@@ -221,13 +230,13 @@
                                         </TextBox>
                                     </StackPanel>
                                     <components:MultipleObjectSelector
-                                        Grid.Row="3"
+                                        Grid.Row="4"
                                         Grid.Column="0"
                                         Source="{Binding ExcludedItems}"
                                         Target="{Binding SelectedExcludedItems}"
                                         Header="Excluded:"/>
                                     <components:MultipleObjectSelector
-                                        Grid.Row="3"
+                                        Grid.Row="4"
                                         Grid.Column="1"
                                         Source="{Binding IncludedItems}"
                                         Target="{Binding SelectedIncludedItems}"

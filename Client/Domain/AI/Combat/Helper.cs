@@ -34,7 +34,7 @@ namespace Client.Domain.AI.Combat
             return null;
         }
 
-        public static List<Drop> GetDropByConfig(WorldHandler worldHandler, Config config)
+        public static List<Drop> GetDropByConfig(WorldHandler worldHandler, Config config, Hero hero)
         {
             if (!config.Combat.PickupIfPossible)
             {
@@ -48,6 +48,8 @@ namespace Client.Domain.AI.Combat
             {
                 result = result.Where(x => config.Combat.IncludedItemIdsToPickup.ContainsKey(x.ItemId));
             }
+
+            result = result.Where(x => x.Transform.Position.HorizontalDistance(hero.Transform.Position) <= config.Combat.PickupRadius);
 
             return result.ToList();
         }

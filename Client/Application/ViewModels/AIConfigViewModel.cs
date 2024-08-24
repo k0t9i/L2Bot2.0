@@ -118,6 +118,7 @@ namespace Client.Application.ViewModels
         public uint DelevelingAttackDistance { get => delevelingAttackDistance; set { if (value != delevelingAttackDistance) { delevelingAttackDistance = value; OnPropertyChanged(); } } }
         public uint DelevelingSkillId { get => delevelingSkillId; set { if (value != delevelingSkillId) { delevelingSkillId = value; OnPropertyChanged(); } } }
         public byte MaxPassableHeight { get => maxPassableHeight; set { if (value != maxPassableHeight) { maxPassableHeight = value; OnPropertyChanged(); } } }
+        public short PickupRadius { get => pickupRadius; set { if (value != pickupRadius) { pickupRadius = value; OnPropertyChanged(); } } }
 
         public void LoadConfig()
         {
@@ -153,6 +154,7 @@ namespace Client.Application.ViewModels
             DelevelingAttackDistance = config.Deleveling.AttackDistance;
             DelevelingSkillId = config.Deleveling.SkillId;
             MaxPassableHeight = config.Combat.MaxPassableHeight;
+            PickupRadius = config.Combat.PickupRadius;
         }
 
         private void SaveConfig()
@@ -184,6 +186,7 @@ namespace Client.Application.ViewModels
             config.Deleveling.AttackDistance = DelevelingAttackDistance;
             config.Deleveling.SkillId = DelevelingSkillId;
             config.Combat.MaxPassableHeight = MaxPassableHeight;
+            config.Combat.PickupRadius = PickupRadius;
             SaveCollections();
         }
 
@@ -344,5 +347,6 @@ namespace Client.Application.ViewModels
         private uint delevelingAttackDistance = 0;
         private uint delevelingSkillId = 0;
         private byte? mobLevelUpperLimit = null;
+        private short pickupRadius = 0;
     }
 }
