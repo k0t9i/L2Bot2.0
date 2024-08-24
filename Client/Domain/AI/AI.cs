@@ -1,4 +1,5 @@
 ﻿using Client.Domain.AI.State;
+using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.Events;
 using Client.Domain.Service;
@@ -13,7 +14,7 @@ using System.Windows.Input;
 
 namespace Client.Domain.AI
 {
-    public class AI : AIInterface
+    public class AI : ObservableObject, AIInterface
     {
         public AI(WorldHandler worldHandler, Config config, AsyncPathMoverInterface asyncPathMover, TransitionBuilderLocator locator)
         {
@@ -27,16 +28,17 @@ namespace Client.Domain.AI
 
         public void Toggle()
         {
-            isEnabled = !isEnabled;
-            if (isEnabled)
+            IsEnabled = !IsEnabled;
+            if (IsEnabled)
             {
                 ResetState();
             }
         }
 
-        public bool IsEnabled => isEnabled;
+        public bool IsEnabled { get { return isEnabled; } private set { if (isEnabled != value) { isEnabled = value; OnPropertyChanged(); } } }
 
-        public TypeEnum Type { get { return type; } set { if (type != value) { type = value; ResetState(); } } }
+        public TypeEnum Type { get { return type; } set { if (type != value) { type = value; ResetState(); OnPropertyChanged(); } } }
+        public BaseState.Type CurrentState { get { return currentState; } private set { if (currentState != value) { currentState = value; OnPropertyChanged(); } } }
 
         public async Task Update()
         {
@@ -44,19 +46,18 @@ namespace Client.Domain.AI
 
             await Task.Run(() =>
             {
-                if (isEnabled && worldHandler.Hero != null)
+                if (IsEnabled && worldHandler.Hero != null)
                 {
-                    states[currentState].Execute();
+                    states[CurrentState].Execute();
                     foreach (var transition in locator.Get(Type).Build(worldHandler, config, asyncPathMover))
                     {
-                        if (transition.fromStates.ContainsKey(BaseState.Type.Any) && transition.toState != currentState || transition.fromStates.ContainsKey(currentState))
+                        if (transition.fromStates.ContainsKey(BaseState.Type.Any) && transition.toState != CurrentState || transition.fromStates.ContainsKey(CurrentState))
                         {
-                            if (transition.predicate(states[currentState]))
+                            if (transition.predicate(states[CurrentState]))
                             {
-                                states[currentState].OnLeave();
-                                currentState = transition.toState;
-                                Debug.WriteLine(currentState.ToString());
-                                states[currentState].OnEnter();
+                                states[CurrentState].OnLeave();
+                                CurrentState = transition.toState;
+                                states[CurrentState].OnEnter();
                                 break;
                             }
                         }
@@ -87,7 +88,7 @@ namespace Client.Domain.AI
 
         private void ResetState()
         {
-            currentState = BaseState.Type.Idle;
+            CurrentState = BaseState.Type.Idle;
         }
 
         private readonly WorldHandler worldHandler;

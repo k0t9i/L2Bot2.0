@@ -225,8 +225,8 @@
                     <TextBlock Padding="0 0 0 3">Position:</TextBlock>
                     <TextBlock Padding="0 0 0 3">Exp:</TextBlock>
                     <TextBlock Padding="0 0 0 3">Weight:</TextBlock>
-                    <TextBlock Padding="0 0 0 3">Adena:</TextBlock>
                     <TextBlock Padding="0 0 0 3">Inv. slots:</TextBlock>
+                    <TextBlock Padding="0 0 0 3">AI:</TextBlock>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock Padding="0 0 0 3">
@@ -254,12 +254,19 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock Text="{Binding Path=Money, Mode=OneWay}" Padding="0 0 0 3"></TextBlock>
                     <TextBlock Padding="0 0 0 3">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
                                 <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
                                 <Binding Path="InventoryInfo.Slots" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Padding="0 0 0 3">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1})">
+                                <Binding Path="AIType" Mode="OneWay"/>
+                                <Binding Path="AIState" Mode="OneWay"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>

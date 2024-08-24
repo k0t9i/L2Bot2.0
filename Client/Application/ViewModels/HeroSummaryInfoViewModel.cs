@@ -1,4 +1,5 @@
-﻿using Client.Domain.Common;
+﻿using Client.Domain.AI;
+using Client.Domain.Common;
 using Client.Domain.Entities;
 using Client.Domain.ValueObjects;
 using System;
@@ -59,13 +60,6 @@ namespace Client.Application.ViewModels
                 return hero.InventoryInfo;
             }
         }
-        public ulong Money
-        {
-            get
-            {
-                return 0;
-            }
-        }
 
         public TargetSummaryInfoViewModel? Target
         {
@@ -81,10 +75,24 @@ namespace Client.Application.ViewModels
                 return hero.AttackerIds.ToList();
             }
         }
-        public HeroSummaryInfoViewModel(Hero hero)
+        public string AIType
+        {
+            get
+            {
+                return ai.Type.ToString();
+            }
+        }
+        public string AIState
+        {
+            get
+            {
+                return ai.IsEnabled ? ai.CurrentState.ToString() : "Disabled";
+            }
+        }
+        public HeroSummaryInfoViewModel(Hero hero, AIInterface ai)
         {
             this.hero = hero;
-
+            this.ai = ai;
             hero.FullName.PropertyChanged += FullName_PropertyChanged;
             hero.Phenotype.PropertyChanged += Phenotype_PropertyChanged;
             hero.ExperienceInfo.PropertyChanged += ExperienceInfo_PropertyChanged;
@@ -92,6 +100,19 @@ namespace Client.Application.ViewModels
             hero.VitalStats.PropertyChanged += VitalStats_PropertyChanged;
             hero.InventoryInfo.PropertyChanged += InventoryInfo_PropertyChanged;
             hero.PropertyChanged += Hero_PropertyChanged;
+            ai.PropertyChanged += Ai_PropertyChanged;
+        }
+
+        private void Ai_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Type")
+            {
+                OnPropertyChanged("AIType");
+            }
+            if (e.PropertyName == "CurrentState" || e.PropertyName == "IsEnabled")
+            {
+                OnPropertyChanged("AIState");
+            }
         }
 
         private void Hero_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -147,6 +168,7 @@ namespace Client.Application.ViewModels
         }
 
         private readonly Hero hero;
+        private readonly AIInterface ai;
         private TargetSummaryInfoViewModel? target;
     }
 }

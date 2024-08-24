@@ -1,4 +1,6 @@
-﻿using Client.Domain.Events;
+﻿using Client.Domain.AI.State;
+using Client.Domain.Common;
+using Client.Domain.Events;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Client.Domain.AI
 {
-    public interface AIInterface
+    public interface AIInterface : ObservableObjectInterface
     {
         Task Update();
 
@@ -17,5 +19,6 @@ namespace Client.Domain.AI
         bool IsEnabled { get; }
 
         TypeEnum Type { get; set; }
+        BaseState.Type CurrentState { get; }
     }
 }
